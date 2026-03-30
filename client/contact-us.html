@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contactanos | Luddies</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ── Estilos especificos de Contact Us ── */
+
+        .hero-contact {
+            padding: 5.5rem 0 3.5rem;
+            background: radial-gradient(circle at top right, rgba(162, 155, 254, 0.18), transparent 45%),
+                radial-gradient(circle at bottom left, rgba(158, 108, 124, 0.15), transparent 40%);
+        }
+
+        /* Tarjeta principal del formulario */
+        .contact-card {
+            background: #ffffff;
+            border: 1px solid rgba(162, 155, 254, 0.15);
+            border-radius: 2rem;
+            box-shadow: var(--soft-shadow);
+            padding: 2.5rem;
+        }
+
+        /* Inputs */
+        .form-control-luddies {
+            border: 1.5px solid rgba(162, 155, 254, 0.35);
+            border-radius: 0.9rem;
+            padding: 0.75rem 1rem;
+            font-family: "Poppins", sans-serif;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            background-color: #fafafe;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .form-control-luddies:focus {
+            border-color: var(--primary-accent);
+            box-shadow: 0 0 0 3px rgba(162, 155, 254, 0.2);
+            outline: none;
+            background-color: #ffffff;
+        }
+
+        .form-control-luddies.is-invalid {
+            border-color: #e07087;
+            box-shadow: 0 0 0 3px rgba(224, 112, 135, 0.15);
+        }
+
+        .form-control-luddies.is-valid {
+            border-color: #74c7a5;
+            box-shadow: 0 0 0 3px rgba(116, 199, 165, 0.15);
+        }
+
+        /* Labels */
+        .form-label-luddies {
+            font-weight: 600;
+            font-size: 0.88rem;
+            color: var(--text-main);
+            margin-bottom: 0.4rem;
+        }
+
+        /* Mensajes de error */
+        .error-msg {
+            font-size: 0.8rem;
+            color: #c0455e;
+            margin-top: 0.35rem;
+            display: none;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .error-msg.visible {
+            display: flex;
+        }
+
+        /* Boton de envio */
+        .btn-submit {
+            background: linear-gradient(135deg, #a29bfe, #9e6c7c);
+            color: #2f2630;
+            border: none;
+            border-radius: 0.9rem;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 0.85rem 2rem;
+            width: 100%;
+            transition: transform 0.2s ease, filter 0.2s ease, opacity 0.2s ease;
+            cursor: pointer;
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            transform: translateY(-2px);
+            filter: brightness(1.05);
+            color: #2f2630;
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+
+        /* Mensaje de exito */
+        .success-banner {
+            display: none;
+            background: linear-gradient(135deg, #d4f1e4, #e8f8f0);
+            border: 1.5px solid #74c7a5;
+            border-radius: 1.5rem;
+            padding: 2rem 2.5rem;
+            text-align: center;
+            animation: fadeUp 0.5s ease forwards;
+        }
+
+        .success-banner.visible {
+            display: block;
+        }
+
+        .success-banner .success-icon {
+            width: 4rem;
+            height: 4rem;
+            background: linear-gradient(135deg, #74c7a5, #4aad82);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+
+        .success-banner h3 {
+            color: #2a6e50;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .success-banner p {
+            color: #3d7a62;
+            margin-bottom: 1.2rem;
+        }
+
+        /* Contador de caracteres */
+        .char-counter {
+            font-size: 0.78rem;
+            color: #a0919d;
+            text-align: right;
+            margin-top: 0.3rem;
+        }
+
+        .char-counter.near-limit {
+            color: #c0455e;
+        }
+
+        /* Tarjeta de info de contacto */
+        .info-card {
+            background: linear-gradient(135deg, #ece9ff, #f3dfe5);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            height: 100%;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-icon {
+            width: 2.8rem;
+            height: 2.8rem;
+            min-width: 2.8rem;
+            border-radius: 0.75rem;
+            background: linear-gradient(135deg, #a29bfe, #9e6c7c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 1rem;
+        }
+
+        .info-text strong {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--secondary-accent);
+            margin-bottom: 0.15rem;
+        }
+
+        .info-text span {
+            font-size: 0.88rem;
+            opacity: 0.85;
+        }
+
+        /* Spinner dentro del boton */
+        .spinner-btn {
+            display: none;
+            width: 1.1rem;
+            height: 1.1rem;
+            border: 2px solid rgba(47, 38, 48, 0.3);
+            border-top-color: #2f2630;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+        .btn-submit.loading .spinner-btn {
+            display: inline-block;
+        }
+
+        .btn-submit.loading .btn-text {
+            opacity: 0.7;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Tema oscuro: textarea resize */
+        textarea.form-control-luddies {
+            resize: vertical;
+            min-height: 130px;
+        }
+
+        /* Select */
+        select.form-control-luddies {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239e6c7c' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            padding-right: 2.5rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ══════════════════════════════════════
+         HEADER / NAVBAR
+    ══════════════════════════════════════ -->
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-glass sticky-top" aria-label="Navegacion principal">
+            <div class="container py-2">
+                <a class="navbar-brand fw-semibold d-flex align-items-center gap-2" href="index.html">
+                    <i class="fas fa-th-large brand-icon" aria-hidden="true"></i>
+                    <span class="brand-name">Luddies</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#luddiesNavbar"
+                    aria-controls="luddiesNavbar" aria-expanded="false" aria-label="Abrir navegacion">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="luddiesNavbar">
+                    <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+                        <li class="nav-item"><a class="nav-link" href="index.html"><i class="fas fa-home me-1" aria-hidden="true"></i>Inicio</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-book me-1" aria-hidden="true"></i>Catalogo</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-users me-1" aria-hidden="true"></i>Comunidad</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-certificate me-1" aria-hidden="true"></i>Certificaciones</a></li>
+                        <li class="nav-item"><a class="nav-link" href="about-us.html"><i class="fas fa-info-circle me-1" aria-hidden="true"></i>Nosotros</a></li>
+                        <li class="nav-item"><a class="nav-link nav-link-active" href="contact-us.html" aria-current="page"><i class="fas fa-envelope me-1" aria-hidden="true"></i>Contacto</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-user me-1" aria-hidden="true"></i>Perfil</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ══════════════════════════════════════
+         MAIN
+    ══════════════════════════════════════ -->
+    <main>
+
+        <!-- Hero -->
+        <section class="hero-contact">
+            <div class="container text-center">
+                <div class="fade-in">
+                    <span class="pill-icon mb-3" aria-hidden="true"><i class="fas fa-envelope-open-text"></i></span>
+                    <h1 class="hero-title mb-3">Contactanos</h1>
+                    <p class="hero-lead mx-auto">¿Tienes preguntas, ideas o quieres colaborar con nosotros?<br>Escríbenos y te responderemos a la brevedad.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Formulario + Info -->
+        <section class="page-section pt-0">
+            <div class="container">
+                <div class="row g-4 align-items-start">
+
+                    <!-- Columna formulario -->
+                    <div class="col-12 col-lg-7 fade-in">
+                        <div class="contact-card">
+
+                            <!-- Mensaje de exito (oculto por defecto) -->
+                            <div class="success-banner" id="successBanner" role="alert" aria-live="polite">
+                                <div class="success-icon"><i class="fas fa-check"></i></div>
+                                <h3>¡Mensaje enviado!</h3>
+                                <p>Gracias por contactarnos. Nos comunicaremos contigo pronto.</p>
+                                <button class="btn btn-brand" id="btnNewMessage" type="button">Enviar otro mensaje</button>
+                            </div>
+
+                            <!-- Formulario -->
+                            <form id="contactForm" novalidate>
+
+                                <!-- Nombre -->
+                                <div class="mb-3">
+                                    <label class="form-label-luddies" for="inputNombre">
+                                        <i class="fas fa-user me-1" aria-hidden="true"></i>Nombre completo <span class="text-danger">*</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        class="form-control-luddies w-100"
+                                        id="inputNombre"
+                                        name="nombre"
+                                        placeholder="Ej. Leopoldo García"
+                                        autocomplete="name"
+                                        maxlength="60"
+                                        aria-describedby="errorNombre"
+                                    >
+                                    <p class="error-msg" id="errorNombre" role="alert">
+                                        <i class="fas fa-circle-exclamation" aria-hidden="true"></i>
+                                        <span id="errorNombreText"></span>
+                                    </p>
+                                </div>
+
+                                <!-- Correo -->
+                                <div class="mb-3">
+                                    <label class="form-label-luddies" for="inputCorreo">
+                                        <i class="fas fa-envelope me-1" aria-hidden="true"></i>Correo electrónico <span class="text-danger">*</span>
+                                    </label>
+                                    <input
+                                        type="email"
+                                        class="form-control-luddies w-100"
+                                        id="inputCorreo"
+                                        name="correo"
+                                        placeholder="correo@ejemplo.com"
+                                        autocomplete="email"
+                                        aria-describedby="errorCorreo"
+                                    >
+                                    <p class="error-msg" id="errorCorreo" role="alert">
+                                        <i class="fas fa-circle-exclamation" aria-hidden="true"></i>
+                                        <span id="errorCorreoText"></span>
+                                    </p>
+                                </div>
+
+                                <!-- Asunto (campo adicional) -->
+                                <div class="mb-3">
+                                    <label class="form-label-luddies" for="inputAsunto">
+                                        <i class="fas fa-tag me-1" aria-hidden="true"></i>Motivo de contacto <span class="text-danger">*</span>
+                                    </label>
+                                    <select
+                                        class="form-control-luddies w-100"
+                                        id="inputAsunto"
+                                        name="asunto"
+                                        aria-describedby="errorAsunto"
+                                    >
+                                        <option value="">— Selecciona una opción —</option>
+                                        <option value="informacion">Información general</option>
+                                        <option value="cursos">Cursos y certificaciones</option>
+                                        <option value="colaboracion">Colaboración o alianza</option>
+                                        <option value="soporte">Soporte técnico</option>
+                                        <option value="otro">Otro</option>
+                                    </select>
+                                    <p class="error-msg" id="errorAsunto" role="alert">
+                                        <i class="fas fa-circle-exclamation" aria-hidden="true"></i>
+                                        <span id="errorAsuntoText"></span>
+                                    </p>
+                                </div>
+
+                                <!-- Mensaje -->
+                                <div class="mb-4">
+                                    <label class="form-label-luddies" for="inputMensaje">
+                                        <i class="fas fa-comment-dots me-1" aria-hidden="true"></i>Mensaje <span class="text-danger">*</span>
+                                    </label>
+                                    <textarea
+                                        class="form-control-luddies w-100"
+                                        id="inputMensaje"
+                                        name="mensaje"
+                                        placeholder="Cuéntanos en qué podemos ayudarte..."
+                                        maxlength="500"
+                                        aria-describedby="errorMensaje charCounterMensaje"
+                                    ></textarea>
+                                    <p class="char-counter" id="charCounterMensaje" aria-live="polite">0 / 500</p>
+                                    <p class="error-msg" id="errorMensaje" role="alert">
+                                        <i class="fas fa-circle-exclamation" aria-hidden="true"></i>
+                                        <span id="errorMensajeText"></span>
+                                    </p>
+                                </div>
+
+                                <!-- Boton -->
+                                <button class="btn-submit" type="submit" id="btnSubmit">
+                                    <span class="spinner-btn" aria-hidden="true"></span>
+                                    <span class="btn-text"><i class="fas fa-paper-plane me-2" aria-hidden="true"></i>Enviar mensaje</span>
+                                </button>
+
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Columna info -->
+                    <div class="col-12 col-lg-5 fade-in">
+                        <div class="info-card">
+                            <h2 class="section-title mb-1" style="font-size:1.3rem;">¿Cómo podemos ayudarte?</h2>
+                            <p class="mb-4" style="opacity:.8;font-size:.92rem;">Estamos aquí para responder tus dudas y apoyarte en tu camino de aprendizaje STEM.</p>
+
+                            <div class="info-item">
+                                <div class="info-icon"><i class="fas fa-envelope" aria-hidden="true"></i></div>
+                                <div class="info-text">
+                                    <strong>Correo</strong>
+                                    <span>hola@luddies.edu</span>
+                                </div>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-icon"><i class="fas fa-clock" aria-hidden="true"></i></div>
+                                <div class="info-text">
+                                    <strong>Horario de atención</strong>
+                                    <span>Lunes a viernes, 9:00 – 18:00 (CST)</span>
+                                </div>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-icon"><i class="fas fa-map-marker-alt" aria-hidden="true"></i></div>
+                                <div class="info-text">
+                                    <strong>Ubicación</strong>
+                                    <span>Ciudad de México, México</span>
+                                </div>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-icon"><i class="fas fa-reply" aria-hidden="true"></i></div>
+                                <div class="info-text">
+                                    <strong>Tiempo de respuesta</strong>
+                                    <span>Respondemos en menos de 48 horas hábiles</span>
+                                </div>
+                            </div>
+
+                            <hr style="border-color:rgba(158,108,124,.2);margin:1.5rem 0;">
+
+                            <p style="font-size:.88rem;font-weight:600;color:var(--secondary-accent);margin-bottom:.75rem;">Síguenos</p>
+                            <div class="d-flex gap-3">
+                                <a href="#" class="footer-link fs-5" aria-label="Facebook de Luddies"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#" class="footer-link fs-5" aria-label="Instagram de Luddies"><i class="fab fa-instagram"></i></a>
+                                <a href="#" class="footer-link fs-5" aria-label="LinkedIn de Luddies"><i class="fab fa-linkedin-in"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA final -->
+        <section class="page-section pt-0">
+            <div class="container">
+                <div class="gradient-cta p-4 p-md-5 text-center fade-in">
+                    <h2 class="h3 fw-semibold mb-3">¿Listo para comenzar tu camino STEM?</h2>
+                    <p class="mb-4">Explora nuestros programas, conoce al equipo o vuelve al inicio.</p>
+                    <div class="d-flex flex-wrap justify-content-center gap-2">
+                        <a href="about-us.html" class="btn btn-brand">Conoce al equipo</a>
+                        <a href="index.html" class="btn btn-brand">Volver al inicio</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ══════════════════════════════════════
+         FOOTER
+    ══════════════════════════════════════ -->
+    <footer class="footer-lite">
+        <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+            <p class="mb-0 text-center text-md-start">&copy; 2026 Luddies. Educación STEM para todos.</p>
+            <div class="d-flex gap-3" aria-label="Redes sociales">
+                <a href="#" class="footer-link" aria-label="Facebook de Luddies"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
+                <a href="#" class="footer-link" aria-label="Instagram de Luddies"><i class="fab fa-instagram" aria-hidden="true"></i></a>
+                <a href="#" class="footer-link" aria-label="LinkedIn de Luddies"><i class="fab fa-linkedin-in" aria-hidden="true"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+
+    <script>
+    /* ══════════════════════════════════════
+       VALIDACION DEL FORMULARIO - contact-us
+    ══════════════════════════════════════ */
+    (function () {
+        "use strict";
+
+        /* ── Referencias al DOM ── */
+        const form        = document.getElementById("contactForm");
+        const btnSubmit   = document.getElementById("btnSubmit");
+        const successBanner = document.getElementById("successBanner");
+        const btnNew      = document.getElementById("btnNewMessage");
+
+        const inputNombre  = document.getElementById("inputNombre");
+        const inputCorreo  = document.getElementById("inputCorreo");
+        const inputAsunto  = document.getElementById("inputAsunto");
+        const inputMensaje = document.getElementById("inputMensaje");
+        const charCounter  = document.getElementById("charCounterMensaje");
+
+        /* ── Regex ── */
+        const regexNombre = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s'-]+$/;
+        const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+        /* ══════════════════════
+           Helpers
+        ══════════════════════ */
+        function showError(input, errorContainer, errorTextEl, mensaje) {
+            input.classList.remove("is-valid");
+            input.classList.add("is-invalid");
+            errorTextEl.textContent = mensaje;
+            errorContainer.classList.add("visible");
+        }
+
+        function clearError(input, errorContainer) {
+            input.classList.remove("is-invalid");
+            input.classList.add("is-valid");
+            errorContainer.classList.remove("visible");
+        }
+
+        function resetField(input, errorContainer) {
+            input.classList.remove("is-valid", "is-invalid");
+            errorContainer.classList.remove("visible");
+        }
+
+        /* ══════════════════════
+           Validaciones individuales
+        ══════════════════════ */
+        function validarNombre() {
+            const val = inputNombre.value.trim();
+            const errorEl = document.getElementById("errorNombre");
+            const errorText = document.getElementById("errorNombreText");
+
+            if (val === "") {
+                showError(inputNombre, errorEl, errorText, "El nombre es obligatorio.");
+                return false;
+            }
+            if (!regexNombre.test(val)) {
+                showError(inputNombre, errorEl, errorText, "El nombre no debe contener números ni caracteres especiales.");
+                return false;
+            }
+            if (val.length < 2) {
+                showError(inputNombre, errorEl, errorText, "El nombre debe tener al menos 2 caracteres.");
+                return false;
+            }
+            clearError(inputNombre, errorEl);
+            return true;
+        }
+
+        function validarCorreo() {
+            const val = inputCorreo.value.trim();
+            const errorEl = document.getElementById("errorCorreo");
+            const errorText = document.getElementById("errorCorreoText");
+
+            if (val === "") {
+                showError(inputCorreo, errorEl, errorText, "El correo electrónico es obligatorio.");
+                return false;
+            }
+            if (!regexCorreo.test(val)) {
+                showError(inputCorreo, errorEl, errorText, "Ingresa un correo válido (ej: usuario@dominio.com).");
+                return false;
+            }
+            clearError(inputCorreo, errorEl);
+            return true;
+        }
+
+        function validarAsunto() {
+            const val = inputAsunto.value;
+            const errorEl = document.getElementById("errorAsunto");
+            const errorText = document.getElementById("errorAsuntoText");
+
+            if (val === "") {
+                showError(inputAsunto, errorEl, errorText, "Por favor selecciona un motivo de contacto.");
+                return false;
+            }
+            clearError(inputAsunto, errorEl);
+            return true;
+        }
+
+        function validarMensaje() {
+            const val = inputMensaje.value.trim();
+            const errorEl = document.getElementById("errorMensaje");
+            const errorText = document.getElementById("errorMensajeText");
+
+            if (val === "") {
+                showError(inputMensaje, errorEl, errorText, "El mensaje es obligatorio.");
+                return false;
+            }
+            if (val.length < 10) {
+                showError(inputMensaje, errorEl, errorText, "El mensaje debe tener al menos 10 caracteres.");
+                return false;
+            }
+            clearError(inputMensaje, errorEl);
+            return true;
+        }
+
+        /* ══════════════════════
+           Contador de caracteres
+        ══════════════════════ */
+        inputMensaje.addEventListener("input", function () {
+            const len = inputMensaje.value.length;
+            charCounter.textContent = len + " / 500";
+            charCounter.classList.toggle("near-limit", len >= 450);
+        });
+
+        /* ══════════════════════
+           Validacion en tiempo real (blur)
+        ══════════════════════ */
+        inputNombre.addEventListener("blur", validarNombre);
+        inputCorreo.addEventListener("blur", validarCorreo);
+        inputAsunto.addEventListener("blur", validarAsunto);
+        inputMensaje.addEventListener("blur", validarMensaje);
+
+        /* Limpiar error al empezar a escribir */
+        inputNombre.addEventListener("input", function () {
+            if (inputNombre.classList.contains("is-invalid")) validarNombre();
+        });
+        inputCorreo.addEventListener("input", function () {
+            if (inputCorreo.classList.contains("is-invalid")) validarCorreo();
+        });
+
+        /* ══════════════════════
+           Envio del formulario
+        ══════════════════════ */
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const okNombre  = validarNombre();
+            const okCorreo  = validarCorreo();
+            const okAsunto  = validarAsunto();
+            const okMensaje = validarMensaje();
+
+            if (!okNombre || !okCorreo || !okAsunto || !okMensaje) {
+                /* Hacer foco en el primer campo con error */
+                const primerError = form.querySelector(".is-invalid");
+                if (primerError) primerError.focus();
+                return;
+            }
+
+            /* Simular envio con spinner */
+            btnSubmit.disabled = true;
+            btnSubmit.classList.add("loading");
+
+            setTimeout(function () {
+                btnSubmit.disabled = false;
+                btnSubmit.classList.remove("loading");
+
+                /* Ocultar formulario y mostrar banner de exito */
+                form.style.display = "none";
+                successBanner.classList.add("visible");
+                successBanner.focus();
+            }, 1400);
+        });
+
+        /* ══════════════════════
+           Boton "Enviar otro mensaje"
+        ══════════════════════ */
+        btnNew.addEventListener("click", function () {
+            /* Resetear formulario */
+            form.reset();
+            charCounter.textContent = "0 / 500";
+            charCounter.classList.remove("near-limit");
+
+            /* Quitar estilos de validacion */
+            [inputNombre, inputCorreo, inputAsunto, inputMensaje].forEach(function (el) {
+                resetField(el, el.nextElementSibling || el.parentElement.querySelector(".error-msg"));
+            });
+            document.querySelectorAll(".error-msg").forEach(function (el) {
+                el.classList.remove("visible");
+            });
+            [inputNombre, inputCorreo, inputAsunto, inputMensaje].forEach(function (el) {
+                el.classList.remove("is-valid", "is-invalid");
+            });
+
+            /* Mostrar formulario y ocultar banner */
+            successBanner.classList.remove("visible");
+            form.style.display = "block";
+            inputNombre.focus();
+        });
+
+    })();
+    </script>
+
+</body>
+</html>
