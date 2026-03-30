@@ -15,6 +15,8 @@ body {
     background-color: var(--bg-soft);
     color: var(--text-main);
     font-family: "Poppins", sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
 }
 
 main {
@@ -63,6 +65,7 @@ main {
     font-size: 1.05rem;
     max-width: 640px;
     opacity: 0.9;
+    font-weight: 300; 
 }
 
 .hero-image-wrap img {
@@ -83,6 +86,24 @@ main {
     max-width: 680px;
     margin: 0 auto;
     opacity: 0.85;
+    font-weight: 300; 
+}
+
+/* Jerarquía tipográfica */
+h1,
+h2,
+h3,
+h4,
+h5 {
+    font-weight: 600; 
+}
+
+p {
+    font-weight: 400;
+}
+
+.brand-card p {
+    font-weight: 400;
 }
 
 .brand-card {
