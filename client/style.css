@@ -17,16 +17,27 @@ body {
     font-family: "Poppins", sans-serif;
     font-weight: 400;
     line-height: 1.6;
+    overflow-x: hidden; 
 }
 
-main {
-    overflow: clip;
+header {
+    position: relative;
+    z-index: 1050;
 }
 
 .navbar-glass {
-    background: rgba(255, 255, 255, 0.92);
-    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.92) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 2px 15px rgba(0, 0, 0, 0.04);
+    position: sticky !important;
+    top: 0 !important;
+    width: 100%;
+}
+
+main {
+    overflow: visible !important; 
+    display: block;
 }
 
 .brand-icon {
@@ -35,6 +46,26 @@ main {
 
 .brand-name {
     color: var(--secondary-accent);
+    font-weight: 600;
+}
+
+.logo-container {
+    width: 38px;
+    height: 38px;
+    background-color: #fff;
+    border-radius: 10px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(162, 155, 254, 0.2);
+    border: 1px solid rgba(162, 155, 254, 0.15);
+}
+
+.brand-logo-img {
+    width: 90%;
+    height: 90%;
+    object-fit: contain;
 }
 
 .nav-link-active {
@@ -49,7 +80,7 @@ main {
 }
 
 .hero-about {
-    padding: 5.5rem 0 3.5rem;
+    padding: 7.5rem 0 3.5rem;
     background: radial-gradient(circle at top right, rgba(162, 155, 254, 0.18), transparent 45%),
         radial-gradient(circle at bottom left, rgba(158, 108, 124, 0.15), transparent 40%);
 }
@@ -87,23 +118,6 @@ main {
     margin: 0 auto;
     opacity: 0.85;
     font-weight: 300; 
-}
-
-/* Jerarquía tipográfica */
-h1,
-h2,
-h3,
-h4,
-h5 {
-    font-weight: 600; 
-}
-
-p {
-    font-weight: 400;
-}
-
-.brand-card p {
-    font-weight: 400;
 }
 
 .brand-card {
@@ -152,12 +166,6 @@ p {
     background: linear-gradient(135deg, #a29bfe, #9e6c7c);
 }
 
-.btn-accent:hover,
-.btn-accent:focus-visible {
-    color: #2f2630;
-    filter: brightness(1.04);
-}
-
 .btn-brand {
     background: #ffffff;
     color: var(--secondary-accent);
@@ -168,11 +176,17 @@ p {
     transition: transform 0.2s ease, filter 0.2s ease;
 }
 
-.btn-brand:hover,
-.btn-brand:focus-visible {
-    transform: translateY(-2px);
-    filter: brightness(0.97);
+.btn-outline-brand {
     color: var(--secondary-accent);
+    border: 2px solid var(--secondary-accent);
+    background: transparent;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-brand:hover {
+    background: var(--secondary-accent);
+    color: #ffffff;
 }
 
 .footer-lite {
@@ -187,8 +201,7 @@ p {
     transition: color 0.2s ease;
 }
 
-.footer-link:hover,
-.footer-link:focus-visible {
+.footer-link:hover {
     color: var(--primary-accent);
 }
 
@@ -203,75 +216,37 @@ p {
     transform: translateY(0);
 }
 
-@media (max-width: 767.98px) {
-    .page-section {
-        padding: 3.5rem 0;
-    }
-
-    .hero-about {
-        padding-top: 4.5rem;
-    }
-}
-
-@media (min-width: 768px) and (max-width: 1199.98px) {
-    .hero-about {
-        padding-top: 5rem;
-    }
-}
-
-
-
-
-
-/* Redes */
-.socials {
-  display: flex;
-  justify-content: center;
-  gap: 1.5rem;
-}
-
-.socials a {
-  color: #6e6e73;
-  font-size: 1.5rem;
-  transition: 0.3s;
-}
-
-.socials a:hover {
-  color: #4a3f4d;
-}
-
-
-
-/* Carrusel */
-
 .carrusel {
-  overflow: hidden;
-  max-width: 1100px;
-  margin: auto;
+    overflow: hidden;
+    max-width: 1100px;
+    margin: auto;
 }
 
 .track {
-  display: flex;
-  gap: 1.5rem;
-  width: max-content; 
-  padding: 1rem;
+    display: flex;
+    gap: 1.5rem;
+    width: max-content; 
+    padding: 1rem;
 }
 
 .brand-card {
-  flex: 0 0 250px;
+    flex: 0 0 250px;
 }
 
-/* Botones del carrusel */
+.socials {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+.socials a {
+    color: #6e6e73;
+    font-size: 1.2rem;
+    transition: 0.3s;
+}
+
 .controls {
-    display:flex;
+    display: flex;
     justify-content: space-between;
 }
-
-
-
-
-
-
-
-
-
