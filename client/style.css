@@ -181,9 +181,11 @@ p {
     padding: 2rem 0;
 }
 
+
 .footer-link {
     color: var(--text-main);
     text-decoration: none;
+    font-family: rubik; 
     transition: color 0.2s ease;
 }
 
