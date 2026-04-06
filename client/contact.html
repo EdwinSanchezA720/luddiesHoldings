@@ -64,7 +64,312 @@
             </div>
         </section>
 
+         <!-- Formulario + Info -->
+        <section class="page-section pt-0">
+            <div class="container">
+                <div class="row g-4 align-items-start">
 
+                    <!-- Columna formulario -->
+                    <div class="col-12 col-lg-7 fade-in">
+                        <div class="contact-card">
+
+                            <!-- Mensaje de exito (oculto por defecto) -->
+                            <div class="success-banner" id="successBanner" role="alert" aria-live="polite">
+                                <div class="success-icon"><i class="fas fa-check"></i></div>
+                                <h3>¡Mensaje enviado!</h3>
+                                <p>Gracias por contactarnos. Nos comunicaremos contigo pronto.</p>
+                                <button class="btn btn-brand" id="btnNewMessage" type="button">Enviar otro mensaje</button>
+                            </div>
+
+                            <!-- Formulario -->
+                            <form id="contactUsForm" novalidate>
+
+                                <!-- Nombre -->
+                                <div class="mb-3">
+                                    <label class="form-label-luddies" for="inputNombre">
+                                        <i class="fas fa-user me-1" aria-hidden="true"></i>Nombre completo <span class="text-danger">*</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        class="form-control-luddies w-100"
+                                        id="inputNombre"
+                                        name="nombre"
+                                        placeholder="Ej. Leopoldo García"
+                                        autocomplete="name"
+                                        required
+                                        minlength="2"
+                                        maxlength="60"
+                                        pattern="^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s'-]+$"
+                                        aria-describedby="errorNombre"
+                                    >
+                                    <p class="error-msg" id="errorNombre" role="alert">
+                                        <i class="fas fa-circle-exclamation" aria-hidden="true"></i>
+                                        <span id="errorNombreText"></span>
+                                    </p>
+                                </div>
+
+                                <!-- Correo -->
+                                <div class="mb-3">
+                                    <label class="form-label-luddies" for="inputCorreo">
+                                        <i class="fas fa-envelope me-1" aria-hidden="true"></i>Correo electrónico <span class="text-danger">*</span>
+                                    </label>
+                                    <input
+                                        type="email"
+                                        class="form-control-luddies w-100"
+                                        id="inputCorreo"
+                                        name="correo"
+                                        placeholder="correo@ejemplo.com"
+                                        autocomplete="email"
+                                        required
+                                        aria-describedby="errorCorreo"
+                                    >
+                                    <p class="error-msg" id="errorCorreo" role="alert">
+                                        <i class="fas fa-circle-exclamation" aria-hidden="true"></i>
+                                        <span id="errorCorreoText"></span>
+                                    </p>
+                                </div>
+
+                                <!-- Asunto (campo adicional) -->
+                                <div class="mb-3">
+                                    <label class="form-label-luddies" for="inputAsunto">
+                                        <i class="fas fa-tag me-1" aria-hidden="true"></i>Motivo de contacto <span class="text-danger">*</span>
+                                    </label>
+                                    <select
+                                        class="form-control-luddies w-100"
+                                        id="inputAsunto"
+                                        name="asunto"
+                                        required
+                                        aria-describedby="errorAsunto"
+                                    >
+                                        <option value="">— Selecciona una opción —</option>
+                                        <option value="informacion">Información general</option>
+                                        <option value="cursos">Cursos y certificaciones</option>
+                                        <option value="colaboracion">Colaboración o alianza</option>
+                                        <option value="soporte">Soporte técnico</option>
+                                        <option value="otro">Otro</option>
+                                    </select>
+                                    <p class="error-msg" id="errorAsunto" role="alert">
+                                        <i class="fas fa-circle-exclamation" aria-hidden="true"></i>
+                                        <span id="errorAsuntoText"></span>
+                                    </p>
+                                </div>
+
+                                <!-- Mensaje -->
+                                <div class="mb-4">
+                                    <label class="form-label-luddies" for="inputMensaje">
+                                        <i class="fas fa-comment-dots me-1" aria-hidden="true"></i>Mensaje <span class="text-danger">*</span>
+                                    </label>
+                                    <textarea
+                                        class="form-control-luddies w-100"
+                                        id="inputMensaje"
+                                        name="mensaje"
+                                        placeholder="Cuéntanos en qué podemos ayudarte..."
+                                        required
+                                        minlength="10"
+                                        maxlength="500"
+                                        aria-describedby="errorMensaje charCounterMensaje"
+                                    ></textarea>
+                                    <p class="char-counter" id="charCounterMensaje" aria-live="polite">0 / 500</p>
+                                    <p class="error-msg" id="errorMensaje" role="alert">
+                                        <i class="fas fa-circle-exclamation" aria-hidden="true"></i>
+                                        <span id="errorMensajeText"></span>
+                                    </p>
+                                </div>
+
+                                <!-- Boton -->
+                                <button class="btn-submit" type="submit" id="btnSubmit">
+                                    <span class="spinner-btn" aria-hidden="true"></span>
+                                    <span class="btn-text"><i class="fas fa-paper-plane me-2" aria-hidden="true"></i>Enviar mensaje</span>
+                                </button>
+
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Columna info -->
+                    <div class="col-12 col-lg-5 fade-in">
+                        <div class="info-card">
+                            <h2 class="section-title mb-1 info-card-title">¿Cómo podemos ayudarte?</h2>
+                            <p class="mb-4 info-card-copy">Estamos aquí para responder tus dudas y apoyarte en tu camino de aprendizaje STEM.</p>
+
+                            <div class="info-item">
+                                <div class="info-icon"><i class="fas fa-envelope" aria-hidden="true"></i></div>
+                                <div class="info-text">
+                                    <strong>Correo</strong>
+                                    <span>hola@luddies.edu</span>
+                                </div>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-icon"><i class="fas fa-clock" aria-hidden="true"></i></div>
+                                <div class="info-text">
+                                    <strong>Horario de atención</strong>
+                                    <span>Lunes a viernes, 9:00 – 18:00 (CST)</span>
+                                </div>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-icon"><i class="fas fa-map-marker-alt" aria-hidden="true"></i></div>
+                                <div class="info-text">
+                                    <strong>Ubicación</strong>
+                                    <span>Ciudad de México, México</span>
+                                </div>
+                            </div>
+
+                            <div class="info-item">
+                                <div class="info-icon"><i class="fas fa-reply" aria-hidden="true"></i></div>
+                                <div class="info-text">
+                                    <strong>Tiempo de respuesta</strong>
+                                    <span>Respondemos en menos de 48 horas hábiles</span>
+                                </div>
+                            </div>
+
+                            <hr class="info-divider">
+
+                            <p class="info-social-title">Síguenos</p>
+                            <div class="d-flex gap-3">
+                                <a href="#" class="footer-link fs-5" aria-label="Facebook de Luddies"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#" class="footer-link fs-5" aria-label="Instagram de Luddies"><i class="fab fa-instagram"></i></a>
+                                <a href="#" class="footer-link fs-5" aria-label="LinkedIn de Luddies"><i class="fab fa-linkedin-in"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ══════════════════════════════════════
+         FOOTER
+    ══════════════════════════════════════ -->
+    <footer class="footer-lite">
+        <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+            <p class="mb-0 text-center text-md-start">&copy; 2026 Luddies. Educación STEM para todos.</p>
+            <div class="d-flex gap-3" aria-label="Redes sociales">
+                <a href="#" class="footer-link" aria-label="Facebook de Luddies"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
+                <a href="#" class="footer-link" aria-label="Instagram de Luddies"><i class="fab fa-instagram" aria-hidden="true"></i></a>
+                <a href="#" class="footer-link" aria-label="LinkedIn de Luddies"><i class="fab fa-linkedin-in" aria-hidden="true"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="script.js"></script>
+
+    <script>
+    /* ══════════════════════════════════════
+       VALIDACION DEL FORMULARIO - contact-us
+    ══════════════════════════════════════ */
+    (function () {
+        "use strict";
+
+        const form = document.getElementById("contactUsForm");
+        const btnSubmit = document.getElementById("btnSubmit");
+        const successBanner = document.getElementById("successBanner");
+        const btnNew = document.getElementById("btnNewMessage");
+        const inputMensaje = document.getElementById("inputMensaje");
+        const charCounter = document.getElementById("charCounterMensaje");
+        const fields = Array.from(form.querySelectorAll("input, select, textarea"));
+
+        const messages = {
+            inputNombre: {
+                valueMissing: "El nombre es obligatorio.",
+                tooShort: "El nombre debe tener al menos 2 caracteres.",
+                patternMismatch: "El nombre no debe contener números ni caracteres especiales."
+            },
+            inputCorreo: {
+                valueMissing: "El correo electrónico es obligatorio.",
+                typeMismatch: "Ingresa un correo válido (ej: usuario@dominio.com)."
+            },
+            inputAsunto: {
+                valueMissing: "Por favor selecciona un motivo de contacto."
+            },
+            inputMensaje: {
+                valueMissing: "El mensaje es obligatorio.",
+                tooShort: "El mensaje debe tener al menos 10 caracteres."
+            }
+        };
+
+        function getErrorNodes(field) {
+            const container = document.getElementById("error" + field.id.replace("input", ""));
+            const text = document.getElementById((container ? container.id : "") + "Text");
+            return { container, text };
+        }
+
+        function getMessage(field) {
+            const cfg = messages[field.id] || {};
+            if (field.validity.valueMissing) return cfg.valueMissing || "Este campo es obligatorio.";
+            if (field.validity.typeMismatch) return cfg.typeMismatch || "Formato inválido.";
+            if (field.validity.tooShort) return cfg.tooShort || "El valor es demasiado corto.";
+            if (field.validity.patternMismatch) return cfg.patternMismatch || "El formato no es válido.";
+            return "";
+        }
+
+        function updateField(field) {
+            const valid = field.checkValidity();
+            const { container, text } = getErrorNodes(field);
+            field.classList.toggle("is-invalid", !valid);
+            field.classList.toggle("is-valid", valid);
+            if (container) container.classList.toggle("visible", !valid);
+            if (text) text.textContent = valid ? "" : getMessage(field);
+            return valid;
+        }
+
+        function resetUI() {
+            fields.forEach((field) => {
+                field.classList.remove("is-valid", "is-invalid");
+                const { container, text } = getErrorNodes(field);
+                if (container) container.classList.remove("visible");
+                if (text) text.textContent = "";
+            });
+            charCounter.textContent = "0 / 500";
+            charCounter.classList.remove("near-limit");
+        }
+
+        inputMensaje.addEventListener("input", () => {
+            const len = inputMensaje.value.length;
+            charCounter.textContent = len + " / 500";
+            charCounter.classList.toggle("near-limit", len >= 450);
+            if (inputMensaje.classList.contains("is-invalid")) updateField(inputMensaje);
+        });
+
+        fields.forEach((field) => {
+            field.addEventListener("blur", () => updateField(field));
+            field.addEventListener("input", () => {
+                if (field.classList.contains("is-invalid")) updateField(field);
+            });
+        });
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const allValid = fields.every(updateField);
+            if (!allValid) {
+                const firstInvalid = form.querySelector(".is-invalid");
+                if (firstInvalid) firstInvalid.focus();
+                return;
+            }
+
+            btnSubmit.disabled = true;
+            btnSubmit.classList.add("loading");
+
+            setTimeout(() => {
+                btnSubmit.disabled = false;
+                btnSubmit.classList.remove("loading");
+                form.style.display = "none";
+                successBanner.classList.add("visible");
+            }, 1400);
+        });
+
+        btnNew.addEventListener("click", () => {
+            form.reset();
+            resetUI();
+            successBanner.classList.remove("visible");
+            form.style.display = "block";
+            document.getElementById("inputNombre").focus();
+        });
+    })();
+    </script>
 
     <footer class="footer-lite">
         <div class="container">
