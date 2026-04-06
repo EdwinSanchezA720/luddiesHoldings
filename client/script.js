@@ -82,7 +82,6 @@ if (track && carrusel) {
   }
 }
 
-// Validación KISS para formulario de contacto
 (function initContactFormValidation() {
   const form = document.getElementById("contactForm");
   if (!form) {
@@ -92,41 +91,42 @@ if (track && carrusel) {
   const statusEl = document.getElementById("contactFormStatus");
   const fields = Array.from(form.querySelectorAll("input, select, textarea"));
 
-  function setFieldValidity(field) {
-    const isValid = field.checkValidity();
-    field.classList.toggle("is-invalid", !isValid);
-    field.classList.toggle("is-valid", isValid);
-    return isValid;
-  }
+  const setStatus = (message = "") => {
+    if (statusEl) {
+      statusEl.textContent = message;
+    }
+  };
+
+  const updateFieldState = (field) => {
+    const valid = field.checkValidity();
+    field.classList.toggle("is-invalid", !valid);
+    field.classList.toggle("is-valid", valid);
+    return valid;
+  };
+
+  const clearFieldState = () => {
+    fields.forEach((field) => field.classList.remove("is-valid", "is-invalid"));
+  };
 
   fields.forEach((field) => {
-    field.addEventListener("blur", () => setFieldValidity(field));
-    field.addEventListener("input", () => {
-      if (field.classList.contains("is-invalid")) {
-        setFieldValidity(field);
-      }
-    });
+    const syncValidity = () => updateFieldState(field);
+    field.addEventListener("blur", syncValidity);
+    field.addEventListener("input", syncValidity);
   });
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();
 
-    const allValid = fields.every((field) => setFieldValidity(field));
+    const allValid = fields.every(updateFieldState);
     if (!allValid) {
       form.reportValidity();
-      if (statusEl) {
-        statusEl.textContent = "Revisa los campos marcados antes de enviar.";
-      }
+      setStatus("Revisa los campos marcados antes de enviar.");
       return;
     }
 
-    if (statusEl) {
-      statusEl.textContent = "Formulario válido. (Demo) Envío simulado.";
-    }
+    setStatus("Formulario valido. (Demo) Envio simulado.");
     form.reset();
-    fields.forEach((field) => {
-      field.classList.remove("is-valid", "is-invalid");
-    });
+    clearFieldState();
   });
 })();
 
