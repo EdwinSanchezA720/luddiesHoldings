@@ -126,6 +126,9 @@ main {
     border-radius: 1.5rem;
     box-shadow: var(--soft-shadow);
     transition: transform 0.25s ease, box-shadow 0.25s ease;
+    display: flex !important;
+    flex-direction: column !important;
+    height: auto !important;
 }
 
 .brand-card:hover {
