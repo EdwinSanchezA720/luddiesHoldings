@@ -7,29 +7,55 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-glass sticky-top" aria-label="Navegacion principal">
+        <nav class="navbar navbar-expand-lg navbar-glass sticky-top" aria-label="Navegación principal">
             <div class="container py-2">
                 <a class="navbar-brand fw-semibold d-flex align-items-center gap-2" href="index.html">
-                    <i class="fas fa-th-large brand-icon" aria-hidden="true"></i>
-                    <span class="brand-name">Luddies</span>
+                    <div class="logo-container">
+                        <img src="images/team/logo_luddies.jpeg" alt="Luddies Logo" class="brand-logo-img" data-i18n="logo_alt">
+                    </div>
+                    <span class="brand-name" data-i18n="brand_name">Luddies</span>
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#luddiesNavbar" aria-controls="luddiesNavbar" aria-expanded="false" aria-label="Abrir navegacion">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#luddiesNavbar" aria-controls="luddiesNavbar" aria-expanded="false" aria-label="Abrir navegación">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="luddiesNavbar">
                     <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
-                        <li class="nav-item"><a class="nav-link" href="index.html"><i class="fas fa-home me-1" aria-hidden="true"></i>Inicio</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-book me-1" aria-hidden="true"></i>Catalogo</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-users me-1" aria-hidden="true"></i>Comunidad</a></li>
-                        <li class="nav-item"><a class="nav-link nav-link-active" href="about-us.html" aria-current="page">About Us</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-user me-1" aria-hidden="true"></i>Perfil</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html">
+                                <i class="fas fa-home me-1" aria-hidden="true"></i><span data-i18n="nav_home">Inicio</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="about-us.html">
+                                <i class="fas fa-book me-1" aria-hidden="true"></i><span data-i18n="nav_catalog">Catálogo</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="about-us.html">
+                                <i class="fas fa-users me-1" aria-hidden="true"></i><span data-i18n="nav_community">Comunidad</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-active" href="about-us.html" aria-current="page">
+                                <span data-i18n="nav_about">About Us</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="about-us.html">
+                                <i class="fas fa-user me-1" aria-hidden="true"></i><span data-i18n="nav_profile">Perfil</span>
+                            </a>
+                        </li>
+                        <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
+                            <button type="button" id="lang-toggle" class="btn btn-sm btn-outline-brand rounded-pill px-3">EN</button>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -41,9 +67,9 @@
             <div class="container">
                 <div class="row align-items-center g-4">
                     <div class="col-12 col-lg-6 fade-in">
-                        <h1 class="hero-title mb-3">Creamos experiencias STEM para transformar el futuro.</h1>
-                        <p class="hero-lead mb-4">En Luddies impulsamos el aprendizaje practico, inclusivo y colaborativo para que mas ninos y jovenes en Latinoamerica desarrollen habilidades cientificas y tecnologicas reales.</p>
-                        <a class="btn btn-accent btn-lg px-4 py-2" href="#cta">Conoce nuestra comunidad</a>
+                        <h1 class="hero-title mb-3" data-i18n="hero_title">Creamos experiencias STEM para transformar el futuro.</h1>
+                        <p class="hero-lead mb-4" data-i18n="hero_lead">En Luddies impulsamos el aprendizaje practico, inclusivo y colaborativo para que mas ninos y jovenes en Latinoamerica desarrollen habilidades cientificas y tecnologicas reales.</p>
+                        <a class="btn btn-accent btn-lg px-4 py-2" href="#cta" data-i18n="hero_cta">Conoce nuestra comunidad</a>
                     </div>
                     <div class="col-12 col-lg-6 fade-in">
                         <div class="hero-image-wrap">
@@ -58,8 +84,8 @@
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-12 col-xl-10 text-center fade-in">
-                        <h2 class="section-title">Quienes somos</h2>
-                        <p class="section-subtitle">Somos una organizacion educativa y tecnologica enfocada en democratizar el acceso a formacion STEM de calidad. Disenamos rutas de aprendizaje conectadas con retos reales y acompanamos a estudiantes, docentes y familias en su crecimiento.</p>
+                        <h2 class="section-title" data-i18n="who_title">Quienes somos</h2>
+                        <p class="section-subtitle" data-i18n="who_desc">Somos una organizacion educativa y tecnologica enfocada en democratizar el acceso a formacion STEM de calidad. Disenamos rutas de aprendizaje conectadas con retos reales y acompanamos a estudiantes, docentes y familias en su crecimiento.</p>
                     </div>
                 </div>
             </div>
@@ -78,8 +104,8 @@
                     <div class="col-12 col-md-6 fade-in">
                         <article class="brand-card h-100 p-4 p-lg-5">
                             <span class="pill-icon mb-3" aria-hidden="true"><i class="fas fa-eye"></i></span>
-                            <h3 class="h4 mb-3">Vision</h3>
-                            <p class="mb-0">Ser la plataforma referente de innovacion educativa STEM, conectando comunidades de aprendizaje que construyen soluciones para los desafios del futuro.</p>
+                            <h3 class="h4 mb-3" data-i18n="vision_title">Vision</h3>
+                            <p class="mb-0" data-i18n="vision_desc">Ser la plataforma referente de innovacion educativa STEM, conectando comunidades de aprendizaje que construyen soluciones para los desafios del futuro.</p>
                         </article>
                     </div>
                 </div>
@@ -89,42 +115,37 @@
         <section class="page-section pt-0">
             <div class="container">
                 <div class="text-center mb-4 fade-in">
-                    <h2 class="section-title mb-2">Nuestros valores</h2>
-                    <p class="section-subtitle">Principios que guian cada programa, mentoria y experiencia que construimos.</p>
+                    <h2 class="section-title mb-2" data-i18n="values_title">Nuestros valores</h2>
+                    <p class="section-subtitle" data-i18n="values_subtitle">Principios que guian cada programa, mentoria y experiencia que construimos.</p>
                 </div>
                 <div class="row g-4">
                     <div class="col-12 col-md-6 col-xl-4 fade-in">
                         <article class="brand-card h-100 p-4">
                             <span class="pill-icon mb-3" aria-hidden="true"><i class="fas fa-lightbulb"></i></span>
-                            <h3 class="h5">Innovacion</h3>
-                            <p class="mb-0">Promovemos metodologias activas y herramientas digitales para aprender haciendo.</p>
+                            <h3 class="h5" data-i18n="val_inno_title">Innovacion</h3>
+                            <p class="mb-0" data-i18n="val_inno_desc">Promovemos metodologias activas y herramientas digitales para aprender haciendo.</p>
                         </article>
                     </div>
                     <div class="col-12 col-md-6 col-xl-4 fade-in">
                         <article class="brand-card h-100 p-4">
                             <span class="pill-icon mb-3" aria-hidden="true"><i class="fas fa-people-group"></i></span>
-                            <h3 class="h5">Inclusion</h3>
-                            <p class="mb-0">Disenamos experiencias para que cualquier estudiante pueda participar y crecer.</p>
+                            <h3 class="h5" data-i18n="val_inclu_title">Inclusion</h3>
+                            <p class="mb-0" data-i18n="val_inclu_desc">Disenamos experiencias para que cualquier estudiante pueda participar y crecer.</p>
                         </article>
                     </div>
                     <div class="col-12 col-md-6 col-xl-4 fade-in">
                         <article class="brand-card h-100 p-4">
                             <span class="pill-icon mb-3" aria-hidden="true"><i class="fas fa-award"></i></span>
-                            <h3 class="h5">Excelencia</h3>
-                            <p class="mb-0">Buscamos resultados medibles con contenidos de alta calidad academica y humana.</p>
+                            <h3 class="h5" data-i18n="val_excel_title">Excelencia</h3>
+                            <p class="mb-0" data-i18n="val_excel_desc">Buscamos resultados medibles con contenidos de alta calidad academica y humana.</p>
                         </article>
                     </div>
                 </div>
             </div>
         </section>
 
-
-<!-- Modificacion de apartado "Nuestro equipo" -->
-
         <section class="page-section pt-0">
             <div class="container">
-                
-                <!-- Título -->
                 <div class="text-center mb-4 fade-in">
                     <h2 class="section-title mb-2">Nuestro equipo</h2>
                     <p class="section-subtitle">
@@ -134,10 +155,6 @@
 
                 <div class="carrusel" id="carrusel">
                     <div id="track" class="track">
-
-                        <!-- CARDS -->
-
-                        <!-- CARD 1 -->
                         <article class="brand-card h-100">
                             <img class="team-photo" src="images/team/antonio.jpg">
 
@@ -148,8 +165,6 @@
                             <p class="mb-0 text-muted small">Líder en código y colaboración, haciendo que las ideas cobren vida</p>
                             </div>
                         </article>
-                    
-                        <!-- CARD 2 -->
                         <article class="brand-card h-100">
                             <img class="team-photo" src="images/team/Azúl.png">
 
@@ -160,8 +175,6 @@
                             <p class="mb-0 text-muted small">Apasionado por la creatividad, siempre buscando el por qué de los cómos.</p>
                             </div>
                         </article>
-                    
-                        <!-- CARD 3 -->
                         <article class="brand-card h-100">
                             <img class="team-photo" src="images/team/julio.png">
 
@@ -172,8 +185,6 @@
                             <p class="mb-0 text-muted small">Diseño soluciones digitales prácticas, innovadoras y escalables.</p>
                             </div>
                         </article>
-                    
-                        <!-- CARD 4 -->
                         <article class="brand-card h-100">
                             <img class="team-photo" src="images/team/Cleyri_Solano.png">
 
@@ -184,8 +195,6 @@
                             <p class="mb-0 text-muted small">Apasionada por la tecnología, enfocada en soluciones back-end.</p>
                             </div>
                         </article>
-
-                        <!-- CARD 5 -->
                         <article class="brand-card h-100">
                             <img class="team-photo" src="images/team/Daniela.PNG">
 
@@ -196,8 +205,6 @@
                             <p class="mb-0 text-muted small">Transformo ideas en código, construyendo soluciones prácticas e innovadoras. </p>
                             </div>
                         </article>
-
-                        <!-- CARD 6 -->
                         <article class="brand-card h-100">
                             <img class="team-photo" src="images/team/DGEM.jpg">
 
@@ -208,8 +215,6 @@
                             <p class="mb-0 text-muted small">Apasionado por crear aplicaciones que simplifican la vida.</p>
                             </div>
                         </article>
-
-                        <!-- CARD 7 -->
                         <article class="brand-card h-100">
                             <img class="team-photo" src="images/team/edwinS.png">
 
@@ -220,8 +225,6 @@
                             <p class="mb-0 text-muted small">Codificando sueños y proyectos con creatividad y precisión.</p>
                             </div>
                         </article>
-
-                        <!-- CARD 8 -->
                         <article class="brand-card h-100">
                             <img class="team-photo" src="images/team/erik.jpg">
 
@@ -232,8 +235,6 @@
                             <p class="mb-0 text-muted small">Me encanta innovar y explorar nuevas tecnologías.</p>
                             </div>
                         </article>
-
-                        <!-- CARD 9 -->
                         <article class="brand-card h-100">
                             <img class="team-photo" src="images/team/leopoldo.jpg">
 
@@ -244,8 +245,6 @@
                             <p class="mb-0 text-muted small">Creo experiencias digitales que conectan personas y proyectos.</p>
                             </div>
                         </article>
-
-                        <!-- CARD 10 -->
                         <article class="brand-card h-100">
                             <img class="team-photo" src="images/team/marytere.png">
 
@@ -256,29 +255,24 @@
                             <p class="mb-0 text-muted small">Desarrolladora de software, apasionada por crear soluciones que impactan.</p>
                             </div>
                         </article>
-                    
                     </div>
-
                 </div>
 
-                <!-- Botones Retroceder y avanzar -->
-                <div class="controls">
-                    <button class="btn btn-brand btn-lg px-2 py-2" id="prev">Retroceder</button>
-                    <button class="btn btn-brand btn-lg px-2 py-2" id="fast">Avanzar</button>
+                <div class="controls mt-3">
+                    <button class="btn btn-brand btn-lg px-2 py-2" id="prev" data-i18n="btn_prev">Retroceder</button>
+                    <button class="btn btn-brand btn-lg px-2 py-2" id="fast" data-i18n="btn_next">Avanzar</button>
                 </div>
-
             </div>
         </section>
-
 
         <section id="cta" class="page-section pt-0">
             <div class="container">
                 <div class="gradient-cta p-4 p-md-5 text-center fade-in">
-                    <h2 class="h3 fw-semibold mb-3">Construyamos juntos la proxima generacion de talento STEM.</h2>
-                    <p class="mb-4">Unete a nuestra comunidad, conoce nuestros programas o vuelve al inicio para explorar mas.</p>
+                    <h2 class="h3 fw-semibold mb-3" data-i18n="cta_title">Construyamos juntos la proxima generacion de talento STEM.</h2>
+                    <p class="mb-4" data-i18n="cta_desc">Unete a nuestra comunidad, conoce nuestros programas o vuelve al inicio para explorar mas.</p>
                     <div class="d-flex flex-wrap justify-content-center gap-2" aria-label="Acciones principales">
-                        <a href="#" class="btn btn-brand">Contactanos</a>
-                        <a href="index.html" class="btn btn-brand">Volver a Inicio</a>
+                        <a href="about-us.html" class="btn btn-brand" data-i18n="cta_contact">Contactanos</a>
+                        <a href="index.html" class="btn btn-brand" data-i18n="cta_back">Volver a Inicio</a>
                     </div>
                 </div>
             </div>
@@ -290,38 +284,38 @@
             <div class="footer-grid">
                 
                 <div class="footer-brand-col">
-                    <a class="footer-brand-link d-flex align-items-center gap-2 mb-3" href="index.html" target="_blank" rel="noopener noreferrer">
+                    <a class="footer-brand-link d-flex align-items-center gap-2 mb-3" href="index.html" aria-label="Página principal de Luddies">
                         <span class="footer-brand-icon">
-                            <img src="images/logo1.png" alt="Logo Luddies">
+                            <img src="images/identidad-grafica/Luddies-imagotipo-alt.png" alt="Imagotipo Luddies">
                         </span>
                         <span class="footer-brand-name">Luddies</span>
                     </a>
                     <p class="footer-desc">Impulsamos el aprendizaje STEM con experiencias prácticas, inclusivas y colaborativas.</p>
                     <div class="footer-socials" aria-label="Redes sociales">
-                        <a href="https://www.facebook.com/LuddiesHoldings/" target="_blank" rel="noopener noreferrer" class="footer-social-link"><i class="fab fa-facebook-f"></i></a>
-                        <a href="https://www.instagram.com/luddiesholdings/" target="_blank" rel="noopener noreferrer" class="footer-social-link"><i class="fab fa-instagram"></i></a>
-                        <a href="https://www.linkedin.com/in/luddies-holdings/" target="_blank" rel="noopener noreferrer" class="footer-social-link"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="https://x.com/Luddies_Holding" target="_blank" rel="noopener noreferrer" class="footer-social-link"><i class="fab fa-x-twitter"></i></a>
-                        <a href="https://github.com/LuddiesHoldings" target="_blank" rel="noopener noreferrer" class="footer-social-link"><i class="fab fa-github"></i></a>
+                        <a href="https://www.facebook.com/LuddiesHoldings/" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Facebook de Luddies"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
+                        <a href="https://www.instagram.com/luddiesholdings/" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Instagram de Luddies"><i class="fab fa-instagram" aria-hidden="true"></i></a>
+                        <a href="https://www.linkedin.com/in/luddies-holdings/" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="LinkedIn de Luddies"><i class="fab fa-linkedin-in" aria-hidden="true"></i></a>
+                        <a href="https://x.com/Luddies_Holding" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Twitter/X de Luddies"><i class="fab fa-x-twitter" aria-hidden="true"></i></a>
+                        <a href="https://github.com/LuddiesHoldings" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="GitHub de Luddies"><i class="fab fa-github" aria-hidden="true"></i></a>
                     </div>
                 </div>
 
                 <div class="footer-nav-col">
                     <h4 class="footer-col-title">Explorar</h4>
                     <ul class="footer-nav-list">
-                        <li><a href="index.html" class="footer-nav-link">Inicio</a></li>
-                        <li><a href="#" class="footer-nav-link">Catalogo</a></li>
-                        <li><a href="#" class="footer-nav-link">Comunidad</a></li>
-                        <li><a href="about-us.html" class="footer-nav-link">Nosotros</a></li>
-                        <li><a href="contact.html" class="footer-nav-link">Contacto</a></li>
+                        <li><a href="index.html" class="footer-nav-link" aria-label="Inicio">Inicio</a></li>
+                        <li><a href="#" class="footer-nav-link" aria-label="Catálogo">Catálogo</a></li>
+                        <li><a href="#" class="footer-nav-link" aria-label="Comunidad">Comunidad</a></li>
+                        <li><a href="about-us.html" class="footer-nav-link" aria-label="Nosotros">Nosotros</a></li>
+                        <li><a href="contact.html" class="footer-nav-link" aria-label="Contacto">Contacto</a></li>
                     </ul>
                 </div>
 
                 <div class="footer-nav-col">
                     <h4 class="footer-col-title">Soporte</h4>
                     <ul class="footer-nav-list">
-                        <li><a href="terminos.html" class="footer-nav-link">Términos y Condiciones</a></li>
-                        <li><a href="privacidad.html" class="footer-nav-link">Aviso de Privacidad</a></li>
+                        <li><a href="terminos.html" class="footer-nav-link" aria-label="Términos y condiciones">Términos y Condiciones</a></li>
+                        <li><a href="privacidad.html" class="footer-nav-link" aria-label="Aviso de privacidad">Aviso de Privacidad</a></li>
                     </ul>
                 </div>
 
@@ -330,14 +324,13 @@
             <div class="footer-divider"></div>
 
             <div class="footer-bottom">
-                <p class="footer-copy">&copy; 2026 Luddies&reg;. Educacion STEM para todos.</p>
+                <p class="footer-copy">&copy; 2026 Luddies&reg;. Educación STEM para todos.</p>
             </div>
 
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-
     <script src="script.js"></script>
 </body>
 </html>
