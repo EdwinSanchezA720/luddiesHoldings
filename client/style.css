@@ -189,23 +189,6 @@ main {
     color: #ffffff;
 }
 
-.footer-lite {
-    background: #ffffff;
-    border-top: 1px solid rgba(158, 108, 124, 0.15);
-    padding: 2rem 0;
-}
-
-
-.footer-link {
-    color: var(--text-main);
-    text-decoration: none;
-    font-family: rubik; 
-    transition: color 0.2s ease;
-}
-
-.footer-link:hover {
-    color: var(--primary-accent);
-}
 
 .fade-in {
     opacity: 0;
