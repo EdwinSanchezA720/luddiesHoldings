@@ -318,9 +318,89 @@
                 <div class="gradient-cta p-4 p-md-5 text-center fade-in">
                     <h2 class="h3 fw-semibold mb-3">Construyamos juntos la proxima generacion de talento STEM.</h2>
                     <p class="mb-4">Unete a nuestra comunidad, conoce nuestros programas o vuelve al inicio para explorar mas.</p>
-                    <div class="d-flex flex-wrap justify-content-center gap-2" aria-label="Acciones principales">
-                        <a href="#" class="btn btn-brand">Contactanos</a>
-                        <a href="index.html" class="btn btn-brand">Volver a Inicio</a>
+                    <div class="mx-auto" style="max-width: 720px;">
+                        <form id="contactForm" class="text-start" novalidate>
+                            <div class="row g-3">
+                                <div class="col-12 col-md-6">
+                                    <label for="contactName" class="form-label fw-semibold mb-1">Nombre</label>
+                                    <input
+                                        id="contactName"
+                                        name="name"
+                                        type="text"
+                                        class="form-control"
+                                        autocomplete="name"
+                                        required
+                                        minlength="2"
+                                        maxlength="60"
+                                        placeholder="Tu nombre"
+                                    >
+                                    <div class="invalid-feedback">Ingresa tu nombre (2 a 60 caracteres).</div>
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <label for="contactEmail" class="form-label fw-semibold mb-1">Correo</label>
+                                    <input
+                                        id="contactEmail"
+                                        name="email"
+                                        type="email"
+                                        class="form-control"
+                                        autocomplete="email"
+                                        required
+                                        maxlength="120"
+                                        placeholder="tu@correo.com"
+                                    >
+                                    <div class="invalid-feedback">Ingresa un correo válido.</div>
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <label for="contactRole" class="form-label fw-semibold mb-1">Soy</label>
+                                    <select id="contactRole" name="role" class="form-select" required>
+                                        <option value="" selected disabled>Selecciona una opción</option>
+                                        <option value="docente">Docente</option>
+                                        <option value="padre_madre">Padre/Madre</option>
+                                        <option value="directivo">Directivo</option>
+                                        <option value="creador">Creador</option>
+                                        <option value="otro">Otro</option>
+                                    </select>
+                                    <div class="invalid-feedback">Selecciona una opción.</div>
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <label for="contactTopic" class="form-label fw-semibold mb-1">Tema</label>
+                                    <input
+                                        id="contactTopic"
+                                        name="topic"
+                                        type="text"
+                                        class="form-control"
+                                        required
+                                        minlength="3"
+                                        maxlength="80"
+                                        placeholder="Ej. Colaboración / Dudas / Programas"
+                                    >
+                                    <div class="invalid-feedback">Escribe un tema (3 a 80 caracteres).</div>
+                                </div>
+
+                                <div class="col-12">
+                                    <label for="contactMessage" class="form-label fw-semibold mb-1">Mensaje</label>
+                                    <textarea
+                                        id="contactMessage"
+                                        name="message"
+                                        class="form-control"
+                                        rows="4"
+                                        required
+                                        minlength="10"
+                                        maxlength="600"
+                                        placeholder="Cuéntanos un poco más para ayudarte mejor."
+                                    ></textarea>
+                                    <div class="invalid-feedback">Escribe un mensaje (10 a 600 caracteres).</div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex flex-column flex-sm-row gap-2 align-items-sm-center mt-4">
+                                <button type="submit" class="btn btn-accent btn-lg px-4">Enviar</button>
+                                <p id="contactFormStatus" class="mb-0 small" role="status" aria-live="polite"></p>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
