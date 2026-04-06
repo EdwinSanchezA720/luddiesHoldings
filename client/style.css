@@ -112,6 +112,9 @@ p {
     border-radius: 1.5rem;
     box-shadow: var(--soft-shadow);
     transition: transform 0.25s ease, box-shadow 0.25s ease;
+    display: flex !important;
+    flex-direction: column !important;
+    height: auto !important;
 }
 
 .brand-card:hover {
@@ -251,7 +254,8 @@ p {
 }
 
 .track {
-  display: flex;
+  align-items: stretch !important;
+  display: flex !important;
   gap: 1.5rem;
   width: max-content; 
   padding: 1rem;
@@ -259,6 +263,16 @@ p {
 
 .brand-card {
   flex: 0 0 250px;
+}
+
+.brand-card .p-4 {
+    flex-grow: 1 !important; 
+    display: flex;
+    flex-direction: column;
+}
+
+.brand-card hr {
+    margin-top: auto; 
 }
 
 /* Botones del carrusel */
