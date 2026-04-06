@@ -14,7 +14,7 @@ body {
     margin: 0;
     background-color: var(--bg-soft);
     color: var(--text-main);
-    font-family: "Poppins", sans-serif;
+    font-family: "Nunito Sans", sans-serif;
     font-weight: 400;
     line-height: 1.6;
     overflow-x: hidden; 
@@ -126,6 +126,9 @@ main {
     border-radius: 1.5rem;
     box-shadow: var(--soft-shadow);
     transition: transform 0.25s ease, box-shadow 0.25s ease;
+    display: flex !important;
+    flex-direction: column !important;
+    height: auto !important;
 }
 
 .brand-card:hover {
@@ -309,15 +312,15 @@ main {
 .footer-lite {
     background: #ffffff;
     color: var(--text-main);
-    padding: 4rem 0 0;
+    padding: 0.5rem 0 0;
     border-top: 1px solid rgba(158, 108, 124, 0.15);
 }
 
 .footer-grid {
     display: grid;
     grid-template-columns: 1.5fr 1fr 1fr;
-    gap: 3rem;
-    padding-bottom: 3rem;
+    gap: 0.5rem;
+    padding-bottom: 0.5rem;
 }
 
 /* --- Columna 1: Marca --- */
@@ -352,14 +355,14 @@ main {
     color: var(--text-main);
     opacity: 0.75;
     line-height: 1.65;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.5rem;
     max-width: 280px;
     font-weight: 300;
 }
 
 .footer-socials {
     display: flex;
-    gap: 0.7rem;
+    gap: 0.5rem;
     flex-wrap: wrap;
 }
 
@@ -415,7 +418,7 @@ main {
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.6rem;
+    gap: 0.25rem;
 }
 
 .footer-nav-link {
@@ -445,12 +448,12 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 1.5rem 0;
+    padding: 0.25rem 0;
 }
 
 .footer-copy {
     font-size: 0.8rem;
-    color: var(--text-main);
+    color: #000;
     opacity: 0.55;
     margin: 0;
     font-weight: 300;
