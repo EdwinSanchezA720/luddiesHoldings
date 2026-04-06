@@ -139,6 +139,118 @@ const translations = {
     }
 };
 
+    /* ══════════════════════════════════════
+       VALIDACION DEL FORMULARIO - contact-us
+    ══════════════════════════════════════ */
+    (function () {
+        "use strict";
+
+        const form = document.getElementById("contactUsForm");
+        const btnSubmit = document.getElementById("btnSubmit");
+        const successBanner = document.getElementById("successBanner");
+        const btnNew = document.getElementById("btnNewMessage");
+        const inputMensaje = document.getElementById("inputMensaje");
+        const charCounter = document.getElementById("charCounterMensaje");
+        const fields = Array.from(form.querySelectorAll("input, select, textarea"));
+
+        const messages = {
+            inputNombre: {
+                valueMissing: "El nombre es obligatorio.",
+                tooShort: "El nombre debe tener al menos 2 caracteres.",
+                patternMismatch: "El nombre no debe contener números ni caracteres especiales."
+            },
+            inputCorreo: {
+                valueMissing: "El correo electrónico es obligatorio.",
+                typeMismatch: "Ingresa un correo válido (ej: usuario@dominio.com)."
+            },
+            inputAsunto: {
+                valueMissing: "Por favor selecciona un motivo de contacto."
+            },
+            inputMensaje: {
+                valueMissing: "El mensaje es obligatorio.",
+                tooShort: "El mensaje debe tener al menos 10 caracteres."
+            }
+        };
+
+        function getErrorNodes(field) {
+            const container = document.getElementById("error" + field.id.replace("input", ""));
+            const text = document.getElementById((container ? container.id : "") + "Text");
+            return { container, text };
+        }
+
+        function getMessage(field) {
+            const cfg = messages[field.id] || {};
+            if (field.validity.valueMissing) return cfg.valueMissing || "Este campo es obligatorio.";
+            if (field.validity.typeMismatch) return cfg.typeMismatch || "Formato inválido.";
+            if (field.validity.tooShort) return cfg.tooShort || "El valor es demasiado corto.";
+            if (field.validity.patternMismatch) return cfg.patternMismatch || "El formato no es válido.";
+            return "";
+        }
+
+        function updateField(field) {
+            const valid = field.checkValidity();
+            const { container, text } = getErrorNodes(field);
+            field.classList.toggle("is-invalid", !valid);
+            field.classList.toggle("is-valid", valid);
+            if (container) container.classList.toggle("visible", !valid);
+            if (text) text.textContent = valid ? "" : getMessage(field);
+            return valid;
+        }
+
+        function resetUI() {
+            fields.forEach((field) => {
+                field.classList.remove("is-valid", "is-invalid");
+                const { container, text } = getErrorNodes(field);
+                if (container) container.classList.remove("visible");
+                if (text) text.textContent = "";
+            });
+            charCounter.textContent = "0 / 500";
+            charCounter.classList.remove("near-limit");
+        }
+
+        inputMensaje.addEventListener("input", () => {
+            const len = inputMensaje.value.length;
+            charCounter.textContent = len + " / 500";
+            charCounter.classList.toggle("near-limit", len >= 450);
+            if (inputMensaje.classList.contains("is-invalid")) updateField(inputMensaje);
+        });
+
+        fields.forEach((field) => {
+            field.addEventListener("blur", () => updateField(field));
+            field.addEventListener("input", () => {
+                if (field.classList.contains("is-invalid")) updateField(field);
+            });
+        });
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const allValid = fields.every(updateField);
+            if (!allValid) {
+                const firstInvalid = form.querySelector(".is-invalid");
+                if (firstInvalid) firstInvalid.focus();
+                return;
+            }
+
+            btnSubmit.disabled = true;
+            btnSubmit.classList.add("loading");
+
+            setTimeout(() => {
+                btnSubmit.disabled = false;
+                btnSubmit.classList.remove("loading");
+                form.style.display = "none";
+                successBanner.classList.add("visible");
+            }, 1400);
+        });
+
+        btnNew.addEventListener("click", () => {
+            form.reset();
+            resetUI();
+            successBanner.classList.remove("visible");
+            form.style.display = "block";
+            document.getElementById("inputNombre").focus();
+        });
+    })();
+
 let currentLang = "es";
 
 document.addEventListener("DOMContentLoaded", () => {
