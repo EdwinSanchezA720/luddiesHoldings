@@ -163,10 +163,26 @@ main {
     box-shadow: var(--soft-shadow);
 }
 
-.btn-accent {
+.btn-submit {
     border: none;
+    border-radius: 2rem;
     color: #2f2630;
     background: linear-gradient(135deg, #a29bfe, #9e6c7c);
+    padding: 0.8rem 2rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    font-family: "Nunito Sans", sans-serif;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    width: 50%;
+    justify-content: center;
+}
+
+.success-banner.visible {
+    display: flex !important;
 }
 
 .btn-brand {
@@ -221,18 +237,6 @@ main {
     flex: 0 0 250px;
 }
 
-.socials {
-    display: flex;
-    justify-content: center;
-    gap: 1.5rem;
-    padding-bottom: 1.5rem;
-}
-
-.socials a {
-    color: #6e6e73;
-    font-size: 1.2rem;
-    transition: 0.3s;
-}
 
 .controls {
     display: flex;
@@ -563,13 +567,6 @@ main {
     .gradient-cta {
         padding: 2rem 1.5rem;
     }
+
     
-    .controls {
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-    
-    .controls button {
-        width: 100%;
-    }
 }
