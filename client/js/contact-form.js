@@ -8,6 +8,28 @@
         var form = document.getElementById("contactUsForm");
         if (!form) return;
 
+        (function consumeCheckoutPrefill() {
+            try {
+                var raw = sessionStorage.getItem("luddies.contact_prefill");
+                if (!raw) return;
+                var d = JSON.parse(raw);
+                sessionStorage.removeItem("luddies.contact_prefill");
+                var n = document.getElementById("inputNombre");
+                var c = document.getElementById("inputCorreo");
+                var a = document.getElementById("inputAsunto");
+                var m = document.getElementById("inputMensaje");
+                if (d.nombre && n) n.value = d.nombre;
+                if (d.correo && c) c.value = d.correo;
+                if (d.asunto && a) a.value = d.asunto;
+                if (d.mensaje && m) {
+                    m.value = d.mensaje;
+                    m.dispatchEvent(new Event("input", { bubbles: true }));
+                }
+            } catch (e) {
+                /* ignore */
+            }
+        })();
+
         var btnSubmit = document.getElementById("btnSubmit");
         var successBanner = document.getElementById("successBanner");
         var btnNew = document.getElementById("btnNewMessage");
