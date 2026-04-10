@@ -1,0 +1,41 @@
+PROPUESTA: Marketplace Educativo STEM
+NOMBRE: Luddies
+MODELO DE NEGOCIO: Marketplace de Activos Digitales y Físicos (B2B & B2C)
+ENFOQUE: Educación STEM+ en español para Latinoamérica (México)
+TESIS DEL PROYECTO:
+El proyecto busca profesionalizar y monetizar el talento pedagógico mediante una
+plataforma de "Activos Pedagógicos Estandarizados".
+A diferencia de repositorios informales (Pinterest/Facebook/etsy), este marketplace
+ofrece soluciones para docentes y padres de familia, enfocándose inicialmente en el
+mercado mexicano con miras a expansión regional (Colombia, Argentina, Perú).
+SOLUCIÓN DE PROBLEMA
+Trabajo no remunerado. Un docente promedio invierte entre 5 y 10 horas semanales
+fuera de su horario laboral diseñando presentaciones, guías y exámenes.
+Falta de especialización STEM. Existe una carencia de material técnico de alta
+calidad, actualizado y en español, que cumpla con los estándares educativos de
+Latinoamérica.
+Barrera de entrada a la enseñanza: Personas con conocimiento técnico (ingenieros,
+científicos) a menudo no enseñan por falta de materiales didácticos listos para usar.
+CÁTALOGO
+La plataforma se centra en la venta de activos digitales con miras de expandirse a
+entregas físicas.
+Activos Digitales. PDF's (actividades, tareas, posters), Presentaciones dinámicas y
+Scripts de planeación de clase.
+Kits de Experiencias (Físicos). Narrativa, juegos, dinámicas y códigos para el aula.
+Material de Neurodiversidad. Recursos visuales específicos para alumnos con
+TDAH, Dislexia o Autismo (nicho de alta demanda).
+Certificación educacional (SEP)
+Público: Nivel básico. (Expansión a plus)
+Propósito general
+Enfoque a Girls in STEM: Seccion especial dedicada a mujeres en STEM
+DIFERENCIIACIÓN:
+Especialización STEM: El catálogo se organiza rigurosamente en:
+Science: Biología, Medicina, Física, Química.
+Technology: Programación y Robótica.
+Engineering: ¿??.
+Mathematics: Álgebra, Geometría, Cálculo ¿??.
+Estandarización: Todo el material sigue una jerarquía lógica: Enfoque. Tema. Clase.
+Actividad de Refuerzo.
+VALOR SOCIAL. Democratiza la enseñanza bajo la premisa de que "cualquiera con el
+material correcto puede enseñar", promoviendo las vocaciones científicas y de
+ingeniería en la región.
