@@ -1,6 +1,8 @@
 /**
- * Filter catalog grid by data-catalog-cats. Supports multiple .catalog-filter-root
- * (desktop sidebar + mobile offcanvas); keeps active state in sync.
+ * Filter catalog grid by data-catalog-cats.
+ * Supports multiple .catalog-filter-root (desktop sidebar + mobile offcanvas).
+ * Supports multi-select: clicking a filter toggles it on/off.
+ * Clicking "all" clears all active filters and shows everything.
  */
 (function () {
     "use strict";
@@ -13,32 +15,66 @@
         var mobileLabel = document.getElementById("catalog-active-filter-label");
         var offcanvasEl = document.getElementById("catalogFiltersOffcanvas");
 
+        var activeFilters = new Set();
+
         function allFilterButtons() {
             return document.querySelectorAll(".catalog-filter-root [data-catalog-filter]");
         }
 
-        function apply(filter, closeMobilePanel) {
-            allFilterButtons().forEach(function (b) {
-                var active = b.getAttribute("data-catalog-filter") === filter;
-                b.classList.toggle("active", active);
-                b.setAttribute("aria-pressed", active ? "true" : "false");
+        function applyFilters() {
+            var isAll = activeFilters.size === 0;
+
+            allFilterButtons().forEach(function (btn) {
+                var val = btn.getAttribute("data-catalog-filter");
+                var isActive;
+
+                if (val === "all") {
+                    isActive = isAll;
+                } else {
+                    isActive = activeFilters.has(val);
+                }
+
+                btn.classList.toggle("active", isActive);
+                btn.setAttribute("aria-pressed", isActive ? "true" : "false");
             });
 
             items.forEach(function (item) {
+                if (isAll) {
+                    item.hidden = false;
+                    return;
+                }
                 var raw = item.getAttribute("data-catalog-cats") || "";
                 var cats = raw.split(/\s+/).filter(Boolean);
-                var show = filter === "all" || cats.indexOf(filter) !== -1;
+                var show = cats.some(function (cat) {
+                    return activeFilters.has(cat);
+                });
                 item.hidden = !show;
             });
 
             if (mobileLabel) {
-                var pick = document.querySelector(
-                    '.catalog-filter-root [data-catalog-filter="' + filter + '"]'
-                );
-                if (pick) {
-                    mobileLabel.textContent = pick.textContent.trim();
+                if (isAll) {
+                    var allBtn = document.querySelector(
+                        '.catalog-filter-root [data-catalog-filter="all"]'
+                    );
+                    if (allBtn) mobileLabel.textContent = allBtn.textContent.trim();
+                } else {
+                    mobileLabel.textContent = activeFilters.size + " filtro(s) activo(s)";
                 }
             }
+        }
+
+        function handleFilterClick(filterValue, closeMobilePanel) {
+            if (filterValue === "all") {
+                activeFilters.clear();
+            } else {
+                if (activeFilters.has(filterValue)) {
+                    activeFilters.delete(filterValue);
+                } else {
+                    activeFilters.add(filterValue);
+                }
+            }
+
+            applyFilters();
 
             if (
                 closeMobilePanel &&
@@ -56,7 +92,7 @@
                 var btn = e.target.closest("[data-catalog-filter]");
                 if (!btn || !root.contains(btn)) return;
                 e.preventDefault();
-                apply(btn.getAttribute("data-catalog-filter"), true);
+                handleFilterClick(btn.getAttribute("data-catalog-filter"), true);
             });
         });
 
