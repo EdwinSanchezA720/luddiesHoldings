@@ -5,7 +5,7 @@
     "use strict";
 
     var STORAGE_KEY = "luddies.catalog_cart";
-    var NON_PURCHASABLE_IDS = { "7": true };
+    var NON_PURCHASABLE_IDS = {};
 
     function readCart() {
         try {
