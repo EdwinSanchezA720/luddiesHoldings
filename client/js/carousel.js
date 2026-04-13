@@ -26,26 +26,47 @@
             window.LuddiesI18n.applyTranslations(window.LuddiesI18n.getLang());
         }
 
-        var speed = 0.4;
+        var baseSpeed = 0.4;
+        var boostSpeed = 4.0;
+        var speed = baseSpeed;
         var position = 0;
 
         function tick() {
             position -= speed;
             var half = track.scrollWidth / 2;
-            if (half > 0 && position <= -half) {
+
+            if (position <= -half) {
                 position = 0;
+            } else if (position > 0) {
+                position = -half;
             }
             track.style.transform = "translateX(" + position + "px)";
             requestAnimationFrame(tick);
         }
 
         tick();
+        var btnNext = document.getElementById("btn-next");
+        var btnPrev = document.getElementById("btn-prev");
 
-        carrusel.addEventListener("pointerenter", function () {
-            speed = 0;
+        if (btnNext) {
+            btnNext.addEventListener("pointerenter", function() { speed = boostSpeed; });
+            btnNext.addEventListener("pointerleave", function() { speed = 0; });
+        }
+
+        if (btnPrev) {
+            btnPrev.addEventListener("pointerenter", function() { speed = -boostSpeed; });
+            btnPrev.addEventListener("pointerleave", function() { speed = 0; });
+        }
+        carrusel.addEventListener("pointerenter", function (e) {
+
+            if (e.target.tagName !== "BUTTON") {
+                speed = 0;
+            }
         });
+
         carrusel.addEventListener("pointerleave", function () {
-            speed = 0.4;
+            speed = baseSpeed;
         });
+
     });
 })();
