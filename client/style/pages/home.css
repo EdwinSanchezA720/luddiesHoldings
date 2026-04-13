@@ -1,6 +1,11 @@
 .page-home .home-hero-section {
     padding-top: 6rem;
     padding-bottom: var(--section-padding-y);
+    background: none;
+}
+.page-home {
+    background-image: var(--luddies-bg-gradient);
+    background-attachment: fixed;
 }
 
 @media (max-width: 767.98px) {
@@ -35,56 +40,97 @@
 
 .home-steps {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
+    grid-template-columns: repeat(4, 1fr);
+    align-items: start;
+    gap: 0;
+    position: relative;
 }
 
-@media (min-width: 576px) {
-    .home-steps {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (min-width: 992px) {
-    .home-steps {
-        grid-template-columns: repeat(4, 1fr);
-    }
+.home-steps::before {
+    content: "";
+    position: absolute;
+    top: 28px;
+    left: calc(100% / 8);
+    right: calc(100% / 8);
+    height: 2px;
+    background: linear-gradient(90deg, #a29bfe, #9e6c7c);
+    border-radius: 2px;
+    z-index: 0;
 }
 
 .home-step {
-    background: #fff;
-    border: 1px solid rgba(162, 155, 254, 0.15);
-    border-radius: 1rem;
-    padding: 1.15rem 1.1rem;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
     text-align: center;
-    box-shadow: var(--soft-shadow);
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
 }
 
-.home-step-num {
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--secondary-accent);
-    margin-bottom: 0.35rem;
+.home-step-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid #a29bfe;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #9e6c7c;
+    margin-bottom: 0.25rem;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
 }
 
 .home-step-title {
-    font-size: 1rem;
+    font-size: 1.25rem;
     font-weight: 600;
-    color: var(--text-main);
+    color: var(--secondary-accent);
     margin: 0;
 }
 
-.home-girls-block {
+.home-step-desc {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--text-main);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.home-step-example {
+    font-size: 0.875rem;
+    font-style: normal;
+    color: var(--primary-accent);
+    margin: 0;
+}
+
+@media (max-width: 991.98px) {
+    .home-steps {
+        grid-template-columns: 1fr;
+    }
+
+    .home-steps::before {
+        display: none;
+    }
+}
+
+.home-highlight-block {
     background: linear-gradient(135deg, rgba(162, 155, 254, 0.14), rgba(158, 108, 124, 0.1));
     border-radius: 1.5rem;
-    border: 1px solid rgba(162, 155, 254, 0.22);
+    border: none;
     padding: 2rem 1.5rem;
+    box-shadow: var(--soft-shadow);
 }
 
 @media (min-width: 768px) {
-    .home-girls-block {
+    .home-highlight-block {
         padding: 2.25rem 2.5rem;
     }
 }
@@ -118,15 +164,12 @@
     padding-top: 0.75rem;
 }
 
-.home-cta-band .gradient-cta {
-    max-width: 52rem;
-    margin-left: auto;
-    margin-right: auto;
+.page-home .row > [class*="col-"] {
+    display: flex;
+    flex-direction: column;
 }
 
-.home-cta-band-lead {
-    max-width: 36rem;
-    margin-left: auto;
-    margin-right: auto;
-    opacity: 0.9;
+.page-home .row > [class*="col-"] > .brand-card {
+    flex: 1;
 }
+
