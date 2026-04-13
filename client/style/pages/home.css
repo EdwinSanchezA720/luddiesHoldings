@@ -14,13 +14,6 @@
     }
 }
 
-.home-cta-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.65rem;
-    align-items: center;
-}
-
 .home-line-card {
     height: 100%;
 }
@@ -173,3 +166,6 @@
     flex: 1;
 }
 
+.page-home .hero-lead {
+    max-width: 35em;
+}
