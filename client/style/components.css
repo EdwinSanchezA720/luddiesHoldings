@@ -63,6 +63,12 @@
     padding: 0.55rem 0.95rem !important;
 }
 
+#lang-toggle {
+   background: linear-gradient(135deg, #a29bfe, #9e6c7c);
+    color: #2f2630 !important;
+    border-radius: var(--luddies-btn-radius);
+}
+
 .hero-title {
     color: var(--secondary-accent);
     font-size: clamp(2rem, 4vw, 3.2rem);
@@ -300,4 +306,51 @@ a.btn-luddies--primary:hover {
         height: 2.8rem;
         font-size: 1.1rem;
     }
+}
+
+.lh-gotop-container {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 55px;
+  height: 55px;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease, z-index 0.3s ease;
+}
+
+.lh-gotop-button {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #a29bfe, #9e6c7c);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(74, 63, 77, 0.15);
+  transform: scale(0);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.2s ease;
+}
+
+.lh-gotop-button i {
+  color: #2f2630;
+  font-size: 1.25rem;
+}
+
+.lh-gotop-container.lh-show {
+  z-index: 999;
+  opacity: 1;
+}
+
+.lh-gotop-container.lh-show .lh-gotop-button {
+  transform: scale(1);
+}
+
+.lh-gotop-button:hover {
+  filter: brightness(1.05);
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 6px 20px rgba(74, 63, 77, 0.25);
 }
