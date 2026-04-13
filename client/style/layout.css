@@ -15,8 +15,8 @@
 
 .footer-grid {
     display: grid;
-    grid-template-columns: minmax(12rem, 1.35fr) minmax(0, 1fr);
-    gap: 1.5rem 2rem;
+    grid-template-columns: minmax(11rem, 1.15fr) repeat(4, minmax(0, 1fr));
+    gap: 1.35rem 1.5rem;
     align-items: start;
     padding-top: 0;
     padding-bottom: 0.85rem;
@@ -60,18 +60,7 @@
     font-weight: 300;
 }
 
-.footer-nav-cluster {
-    display: flex;
-    flex-direction: column;
-    gap: 1.15rem;
-    justify-content: flex-start;
-    min-width: 0;
-    width: 100%;
-    padding-top: 0;
-}
-
-.footer-nav-group {
-    width: 100%;
+.footer-nav-col {
     min-width: 0;
 }
 
@@ -104,24 +93,23 @@
     border-radius: 2px;
 }
 
-.footer-nav-inline {
+.footer-nav-list {
     list-style: none;
     padding: 0;
     margin: 0;
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.2rem 1rem;
-    width: 100%;
+    flex-direction: column;
+    gap: 0.45rem;
+    align-items: flex-start;
 }
 
-.footer-nav-inline .footer-nav-link {
+.footer-nav-list .footer-nav-link {
     padding-left: 0;
 }
 
-.footer-nav-inline .footer-nav-link:hover,
-.footer-nav-inline .footer-nav-link:focus-visible {
-    padding-left: 0;
+.footer-nav-list .footer-nav-link:hover,
+.footer-nav-list .footer-nav-link:focus-visible {
+    padding-left: 0.3rem;
 }
 
 .footer-socials {
@@ -196,17 +184,22 @@
         /* Encabezado fijo: dejar más aire bajo la barra */
         padding-top: 5.75rem;
     }
+
+    .footer-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1.25rem 1.5rem;
+    }
+
+    .footer-brand-col {
+        grid-column: 1 / -1;
+        padding-bottom: 0.35rem;
+        border-bottom: 1px solid rgba(158, 108, 124, 0.12);
+    }
 }
 
 @media (max-width: 991.98px) {
     .footer-grid {
-        grid-template-columns: 1fr;
-        gap: 1.25rem;
-    }
-
-    .footer-nav-cluster {
-        padding-top: 0.35rem;
-        border-top: 1px solid rgba(158, 108, 124, 0.12);
+        gap: 1.25rem 1.25rem;
     }
 }
 
@@ -222,18 +215,8 @@
         padding-bottom: var(--section-padding-y-sm);
     }
 
-    /* Explorar / Soporte centrados en tablet y móvil */
-    .footer-nav-cluster {
-        align-items: center;
+    .footer-nav-col {
         text-align: center;
-    }
-
-    .footer-nav-group {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-        max-width: 100%;
     }
 
     .footer-col-title {
@@ -247,13 +230,14 @@
         transform: translateX(-50%);
     }
 
-    .footer-nav-inline {
-        justify-content: center;
+    .footer-nav-list {
+        align-items: center;
     }
 }
 
 @media (max-width: 575.98px) {
     .footer-grid {
+        grid-template-columns: 1fr;
         gap: 1rem;
     }
 

@@ -96,7 +96,23 @@
             });
         });
 
-        applyFilters();
+        apply("all", false);
+
+        var allowed = [
+            "science",
+            "technology",
+            "engineering",
+            "mathematics",
+            "neurodiversity",
+            "certification",
+            "physical",
+        ];
+        try {
+            var q = new URLSearchParams(window.location.search).get("filter");
+            if (q && allowed.indexOf(q) !== -1) {
+                apply(q, false);
+            }
+        } catch (ignore) {}
     }
 
     document.addEventListener("DOMContentLoaded", initCatalogFilter);
