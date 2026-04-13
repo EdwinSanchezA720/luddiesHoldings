@@ -19,7 +19,7 @@
             nav_profile: "Perfil",
             hero_title: "Creamos experiencias STEM para transformar el futuro.",
             hero_lead:
-                "En Luddies impulsamos el aprendizaje práctico, inclusivo y colaborativo para que mas niñas, niños y jóvenes en Latinoamérica desarrollen habilidades científicas y tecnológicas reales.",
+                "En Luddies impulsamos el aprendizaje práctico, inclusivo y colaborativo para que más niños y jóvenes en Latinoamérica desarrollen habilidades científicas y tecnológicas reales.",
             hero_cta: "Conoce al equipo",
             hero_image_alt: "Equipo de Luddies colaborando en un espacio creativo",
             who_title: "Quiénes somos",
@@ -32,7 +32,7 @@
             vision_desc:
                 "Ser la plataforma referente de innovación educativa STEM, conectando comunidades de aprendizaje que construyen soluciones para los desafíos del futuro.",
             values_title: "Nuestros valores",
-            values_subtitle: "Principios que guian cada programa, mentoría y experiencia que construímos.",
+            values_subtitle: "Principios que guían cada programa, mentoría y experiencia que construimos.",
             val_inno_title: "Innovación",
             val_inno_desc: "Promovemos metodologías activas y herramientas digitales para aprender haciendo.",
             val_inclu_title: "Inclusión",
@@ -43,14 +43,15 @@
             team_subtitle:
                 "Profesionales comprometidos con la educación, la tecnología y el impacto social.",
             team_bio_antonio:
-                "Líder en codigo y colaboración, haciendo que las ideas cobren vida.",
+                "Líder en código y colaboración, haciendo que las ideas cobren vida.",
             team_bio_azul:
-                "Apasionado por la creatividad, siempre buscando el por qué de los cómos.",
-            team_bio_julio: "Diseñando soluciones digitales prácticas, innovadoras y escalables.",
+                "Apasionado por la creatividad, siempre buscando el porqué de los cómos.",
+            team_bio_julio: "Diseño soluciones digitales prácticas, innovadoras y escalables.",
             team_bio_cleyri: "Apasionada por la tecnología, enfocada en soluciones back-end.",
-            team_bio_daniela: "Transformo ideas en código, construyendo soluciones prácticas e innovadoras.",
+            team_bio_daniela:
+                "Transformo ideas en código, construyendo soluciones prácticas e innovadoras.",
             team_bio_diego: "Apasionado por crear aplicaciones que simplifican la vida.",
-            team_bio_edwin: "Codificando sueños y proyectos con creatividad y precisión.",
+            team_bio_edwin: "Desarrollo backend con precisión analítica y criterio estructurado.",
             team_bio_erick: "Me encanta innovar y explorar nuevas tecnologías.",
             contact_form_title: "Envíanos un mensaje",
             contact_form_intro:
