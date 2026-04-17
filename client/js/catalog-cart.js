@@ -9,7 +9,7 @@
 
     function readCart() {
         try {
-            var raw = sessionStorage.getItem(STORAGE_KEY);
+            var raw = localStorage.getItem(STORAGE_KEY);
             var data = raw ? JSON.parse(raw) : [];
             var arr = Array.isArray(data) ? data : [];
             var filtered = arr.filter(function (p) {
@@ -17,7 +17,7 @@
             });
             if (filtered.length !== arr.length) {
                 try {
-                    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
                 } catch (e2) {
                     /* ignore */
                 }
@@ -30,7 +30,7 @@
 
     function writeCart(items) {
         try {
-            sessionStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
         } catch (e) {
             /* ignore */
         }
