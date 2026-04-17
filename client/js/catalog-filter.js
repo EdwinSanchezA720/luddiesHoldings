@@ -106,6 +106,7 @@
             "neurodiversity",
             "certification",
             "physical",
+            "dissidents",
         ];
         try {
             var q = new URLSearchParams(window.location.search).get("filter");
