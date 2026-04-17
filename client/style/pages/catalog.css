@@ -5,18 +5,17 @@
     background-attachment: fixed;
 }
 
-@media (max-width: 767.98px) {
+
     .page-catalog .catalog-hero {
-        padding-top: calc(6.25rem + env(safe-area-inset-top, 0px));
+        padding-top: calc(var(--navbar-height, 72px) + 1.25rem);
     }
-}
+
 
 /* Space for fixed selection bar */
 .page-catalog main {
     padding-bottom: 6.25rem;
 }
 
-/* Aire entre hero y grid (misma familia que otras page-section) */
 .page-catalog #destacados.page-section {
     padding-top: 2.75rem;
 }

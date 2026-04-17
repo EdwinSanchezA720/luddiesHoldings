@@ -189,12 +189,12 @@ a.btn-luddies--primary:hover {
 
 .btn-luddies--secondary,
 .btn-brand {
-    background: #ffffff;
+    background: transparent;
     color: var(--secondary-accent);
+    border: 2px solid var(--secondary-accent);
     border-radius: var(--luddies-btn-radius);
-    padding: 0.8rem 1.4rem;
+    padding: 0.55rem 1.25rem;
     font-size: 0.95rem;
-    border: none;
     font-weight: 600;
     font-family: "Nunito Sans", sans-serif;
     cursor: pointer;
@@ -208,6 +208,8 @@ a.btn-luddies--primary:hover {
 .btn-brand:hover {
     filter: brightness(0.98);
     transform: translateY(-1px);
+    background: var(--secondary-accent);
+    color: #ffffff;
 }
 
 .btn-luddies--outline {
