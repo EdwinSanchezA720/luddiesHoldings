@@ -67,12 +67,17 @@
         });
     }
 
+    function fragmentFromHtmlFile(text) {
+        var m = text.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+        return m ? m[1].trim() : text;
+    }
+
     async function injectPartial(url, targetId) {
         const target = document.getElementById(targetId);
         if (!target) return;
         const res = await fetch(url, { cache: "no-cache" });
         if (!res.ok) throw new Error("Failed to load " + url);
-        target.innerHTML = await res.text();
+        target.innerHTML = fragmentFromHtmlFile(await res.text());
     }
 
     document.addEventListener("DOMContentLoaded", async function () {
