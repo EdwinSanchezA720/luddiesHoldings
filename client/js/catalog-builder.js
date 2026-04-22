@@ -1,9 +1,16 @@
 /**
- * catalog-builder.js
- * Genera la grilla del catálogo a partir de catalogLuddies[]
- * usando <template id="catalog-card-tpl"> y el sistema i18n existente.
+ * catalog-builder.js  — versión con soporte localStorage
+ *
+ * Novedades:
+ *  • readCustomProducts()     lee productos creados desde catalog-admin.html
+ *  • normalizeCustomProduct() convierte el formato admin → formato catálogo
+ *  • buildCatalogCard()       detecta isCustom y usa textContent (no data-i18n)
+ *  • renderCatalog()          fusiona catalogLuddies[] + customProducts[]
  */
 
+/* ─────────────────────────────────────────────
+   Productos base (sin cambios)
+───────────────────────────────────────────── */
 const catalogLuddies = [
     { id:"1",  name:"cat_prod_1_title",  img:"https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?auto=format&fit=crop&w=800&q=80",  description:"cat_prod_1_desc",  meta:"cat_prod_1_meta",  price:"cat_prod_1_price",  category:"science" },
     { id:"2",  name:"cat_prod_2_title",  img:"https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?auto=format&fit=crop&w=800&q=80",  description:"cat_prod_2_desc",  meta:"cat_prod_2_meta",  price:"cat_prod_2_price",  category:"technology" },
@@ -19,58 +26,110 @@ const catalogLuddies = [
     { id:"12", name:"cat_prod_12_title", img:"https://plus.unsplash.com/premium_photo-1684173662177-2cfca11897ba?w=1000&auto=format&fit=crop&q=60", description:"cat_prod_12_desc", meta:"cat_prod_12_meta", price:"cat_prod_12_price", category:"dissidents" }
 ];
 
+/* ─────────────────────────────────────────────
+   Productos personalizados (localStorage)
+───────────────────────────────────────────── */
+const CUSTOM_PRODUCTS_KEY = "luddies.custom_products";
+
+function readCustomProducts() {
+    try {
+        const raw  = localStorage.getItem(CUSTOM_PRODUCTS_KEY);
+        const data = raw ? JSON.parse(raw) : [];
+        return Array.isArray(data) ? data : [];
+    } catch (e) {
+        return [];
+    }
+}
+
+function normalizeCustomProduct(p) {
+    return {
+        id:          p.id,
+        name:        p.title    || "",
+        img:         p.img      || "",
+        description: p.desc     || "",
+        meta:        p.meta     || "",
+        price:       p.price    || "",
+        category:    p.category || "",
+        isCustom:    true
+    };
+}
+
+/* ─────────────────────────────────────────────
+   Construcción de tarjetas
+───────────────────────────────────────────── */
 function buildCatalogCard(product) {
     const tpl = document.getElementById("catalog-card-tpl");
     if (!tpl) return null;
 
-    // Clonamos el template (true = clonar hijos también)
-    const clone = tpl.content.cloneNode(true);
+    const clone   = tpl.content.cloneNode(true);
     const wrapper = clone.querySelector(".catalog-grid-item");
 
-    // Categorías para el filtro
     wrapper.setAttribute("data-catalog-cats", product.category);
 
     // Imagen
     const img = clone.querySelector(".catalog-card-img");
     img.src = product.img;
-    img.alt = ""; // el alt real lo pone i18n si quieres, o lo dejas vacío (decorativo)
+    img.alt = "";
 
-    // Textos — usamos data-i18n para que i18n.js los traduzca automáticamente
-    clone.querySelector(".catalog-card-meta").setAttribute("data-i18n", product.meta);
-    clone.querySelector(".catalog-card-title").setAttribute("data-i18n", product.name);
-    clone.querySelector(".catalog-card-desc").setAttribute("data-i18n", product.description);
-    clone.querySelector(".catalog-card-price").setAttribute("data-i18n", product.price);
+    if (product.isCustom) {
+        // Texto literal — sin pasar por i18n
+        clone.querySelector(".catalog-card-meta").textContent  = product.meta;
+        clone.querySelector(".catalog-card-title").textContent = product.name;
+        clone.querySelector(".catalog-card-desc").textContent  = product.description;
+        clone.querySelector(".catalog-card-price").textContent = product.price;
 
-    // Botón de adquirir
-    const btn = clone.querySelector(".js-catalog-acquire");
-    btn.setAttribute("data-product-id", product.id);
-    btn.setAttribute("data-product-title-key", product.name);
-    btn.setAttribute("data-product-price-key", product.price);
-    btn.setAttribute("data-i18n", "cat_acquire_btn");
+        // Botón adquirir
+        const btn = clone.querySelector(".js-catalog-acquire");
+        btn.textContent = "Adquirir";
+        btn.setAttribute("data-product-id",        product.id);
+        btn.setAttribute("data-product-title-key", product.name);
+        btn.setAttribute("data-product-price-key", product.price);
 
-    // Enlace "más info"
-    clone.querySelector(".btn-luddies--outline").setAttribute("data-i18n", "cat_prod_more_info");
+        // Enlace más info
+        clone.querySelector(".btn-luddies--outline").textContent = "Más info";
 
-    // Badge
-    clone.querySelector(".catalog-badge").setAttribute("data-i18n", "cat_prod_badge_consult");
+        // Badge "Nuevo" para productos personalizados
+        clone.querySelector(".catalog-badge").textContent = "Nuevo";
+
+    } else {
+        // Claves i18n — el sistema existente las traduce
+        clone.querySelector(".catalog-card-meta").setAttribute("data-i18n",  product.meta);
+        clone.querySelector(".catalog-card-title").setAttribute("data-i18n", product.name);
+        clone.querySelector(".catalog-card-desc").setAttribute("data-i18n",  product.description);
+        clone.querySelector(".catalog-card-price").setAttribute("data-i18n", product.price);
+
+        const btn = clone.querySelector(".js-catalog-acquire");
+        btn.setAttribute("data-product-id",        product.id);
+        btn.setAttribute("data-product-title-key", product.name);
+        btn.setAttribute("data-product-price-key", product.price);
+        btn.setAttribute("data-i18n",              "cat_acquire_btn");
+
+        clone.querySelector(".btn-luddies--outline").setAttribute("data-i18n", "cat_prod_more_info");
+        clone.querySelector(".catalog-badge").setAttribute("data-i18n",        "cat_prod_badge_consult");
+    }
 
     return clone;
 }
 
+/* ─────────────────────────────────────────────
+   Render principal
+───────────────────────────────────────────── */
 function renderCatalog() {
     const container = document.getElementById("catalog-products-container");
     if (!container) return;
 
-    const fragment = document.createDocumentFragment();
+    const customProducts = readCustomProducts().map(normalizeCustomProduct);
+    const allProducts    = [...catalogLuddies, ...customProducts];
 
-    catalogLuddies.forEach(function(product) {
+    const fragment = document.createDocumentFragment();
+    allProducts.forEach(function (product) {
         const card = buildCatalogCard(product);
         if (card) fragment.appendChild(card);
     });
 
     container.appendChild(fragment);
 
-    // Pedimos a i18n que traduzca los nuevos elementos
+    // Aplica i18n solo a los elementos con data-i18n
     if (window.LuddiesI18n && window.LuddiesI18n.applyTranslations) {
         window.LuddiesI18n.applyTranslations(window.LuddiesI18n.getLang());
     }
