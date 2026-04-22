@@ -1,0 +1,22 @@
+.page-admin .admin-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.page-admin .table-responsive {
+    border-radius: 12px;
+    border: 1px solid rgba(162, 155, 254, 0.2);
+    background: #fff;
+}
+
+.page-admin .admin-table-head {
+    background: rgba(162, 155, 254, 0.12);
+}
+
+.page-admin #product-form-modal .modal-body .form-floating {
+    margin-bottom: 0.75rem;
+}

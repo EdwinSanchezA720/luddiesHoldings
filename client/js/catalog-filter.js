@@ -1,120 +1,185 @@
 /**
  * Filter catalog grid by data-catalog-cats.
- * Supports multiple .catalog-filter-root (desktop sidebar + mobile offcanvas).
- * Supports multi-select: clicking a filter toggles it on/off.
- * Clicking "all" clears all active filters and shows everything.
+ * Desktop + mobile offcanvas; multi-select toggles. "all" clears selection.
+ * Injects extra filter buttons for category tokens that appear in LuddiesAuth products
+ * but are not in the static catalog (see CANONICAL).
  */
 (function () {
     "use strict";
 
-    function initCatalogFilter() {
-        var roots = document.querySelectorAll(".catalog-filter-root");
-        var items = document.querySelectorAll(".catalog-grid-item[data-catalog-cats]");
-        if (!roots.length || !items.length) return;
+    var CANONICAL = [
+        "science",
+        "technology",
+        "engineering",
+        "mathematics",
+        "neurodiversity",
+        "certification",
+        "physical",
+        "dissidents"
+    ];
 
-        var mobileLabel = document.getElementById("catalog-active-filter-label");
-        var offcanvasEl = document.getElementById("catalogFiltersOffcanvas");
+    var activeFilters = new Set();
+    var rootListenersBound = false;
 
-        var activeFilters = new Set();
-
-        function allFilterButtons() {
-            return document.querySelectorAll(".catalog-filter-root [data-catalog-filter]");
-        }
-
-        function applyFilters() {
-            var isAll = activeFilters.size === 0;
-
-            allFilterButtons().forEach(function (btn) {
-                var val = btn.getAttribute("data-catalog-filter");
-                var isActive;
-
-                if (val === "all") {
-                    isActive = isAll;
-                } else {
-                    isActive = activeFilters.has(val);
-                }
-
-                btn.classList.toggle("active", isActive);
-                btn.setAttribute("aria-pressed", isActive ? "true" : "false");
-            });
-
-            items.forEach(function (item) {
-                if (isAll) {
-                    item.hidden = false;
-                    return;
-                }
-                var raw = item.getAttribute("data-catalog-cats") || "";
-                var cats = raw.split(/\s+/).filter(Boolean);
-                var show = cats.some(function (cat) {
-                    return activeFilters.has(cat);
-                });
-                item.hidden = !show;
-            });
-
-            if (mobileLabel) {
-                if (isAll) {
-                    var allBtn = document.querySelector(
-                        '.catalog-filter-root [data-catalog-filter="all"]'
-                    );
-                    if (allBtn) mobileLabel.textContent = allBtn.textContent.trim();
-                } else {
-                    mobileLabel.textContent = activeFilters.size + " filtro(s) activo(s)";
-                }
-            }
-        }
-
-        function handleFilterClick(filterValue, closeMobilePanel) {
-            if (filterValue === "all") {
-                activeFilters.clear();
-            } else {
-                if (activeFilters.has(filterValue)) {
-                    activeFilters.delete(filterValue);
-                } else {
-                    activeFilters.add(filterValue);
-                }
-            }
-
-            applyFilters();
-
-            if (
-                closeMobilePanel &&
-                offcanvasEl &&
-                window.bootstrap &&
-                window.bootstrap.Offcanvas &&
-                window.matchMedia("(max-width: 991.98px)").matches
-            ) {
-                window.bootstrap.Offcanvas.getOrCreateInstance(offcanvasEl).hide();
-            }
-        }
-
-        roots.forEach(function (root) {
-            root.addEventListener("click", function (e) {
-                var btn = e.target.closest("[data-catalog-filter]");
-                if (!btn || !root.contains(btn)) return;
-                e.preventDefault();
-                handleFilterClick(btn.getAttribute("data-catalog-filter"), true);
-            });
-        });
-
-        apply("all", false);
-
-        var allowed = [
-            "science",
-            "technology",
-            "engineering",
-            "mathematics",
-            "neurodiversity",
-            "certification",
-            "physical",
-            "dissidents",
-        ];
-        try {
-            var q = new URLSearchParams(window.location.search).get("filter");
-            if (q && allowed.indexOf(q) !== -1) {
-                apply(q, false);
-            }
-        } catch (ignore) {}
+    function getGridItems() {
+        return document.querySelectorAll(".catalog-grid-item[data-catalog-cats]");
     }
 
-    document.addEventListener("DOMContentLoaded", initCatalogFilter);
+    function allFilterButtons() {
+        return document.querySelectorAll(".catalog-filter-root [data-catalog-filter]");
+    }
+
+    function removeDynamicFilterButtons() {
+        document.querySelectorAll('.catalog-filter-btn[data-filter-dynamic="1"]').forEach(function (b) {
+            b.remove();
+        });
+    }
+
+    function injectDynamicFilterButtons() {
+        if (!window.LuddiesAuth || !window.LuddiesAuth.getProducts) return;
+        var products = window.LuddiesAuth.getProducts();
+        var found = {};
+        products.forEach(function (p) {
+            var raw = (p && p.category) || "";
+            raw = String(raw).toLowerCase();
+            raw.split(/\s+/).forEach(function (t) {
+                if (t && CANONICAL.indexOf(t) === -1) {
+                    found[t] = true;
+                }
+            });
+        });
+        var extras = Object.keys(found);
+        extras.sort();
+        if (!extras.length) return;
+
+        var stacks = document.querySelectorAll(".catalog-filter-stack");
+        extras.forEach(function (token) {
+            stacks.forEach(function (stack) {
+                if (stack.querySelector('[data-catalog-filter="' + token + '"]')) {
+                    return;
+                }
+                var btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "catalog-filter-btn";
+                btn.setAttribute("data-catalog-filter", token);
+                btn.setAttribute("data-filter-dynamic", "1");
+                btn.setAttribute("aria-pressed", "false");
+                btn.textContent = token;
+                stack.appendChild(btn);
+            });
+        });
+    }
+
+    function applyFilters() {
+        var items = getGridItems();
+        var isAll = activeFilters.size === 0;
+
+        allFilterButtons().forEach(function (btn) {
+            var val = btn.getAttribute("data-catalog-filter");
+            var isActive;
+            if (val === "all") {
+                isActive = isAll;
+            } else {
+                isActive = activeFilters.has(val);
+            }
+            btn.classList.toggle("active", isActive);
+            btn.setAttribute("aria-pressed", isActive ? "true" : "false");
+        });
+
+        items.forEach(function (item) {
+            if (isAll) {
+                item.hidden = false;
+                return;
+            }
+            var raw = item.getAttribute("data-catalog-cats") || "";
+            var cats = raw.split(/\s+/).filter(Boolean);
+            var show = cats.some(function (cat) {
+                return activeFilters.has(cat);
+            });
+            item.hidden = !show;
+        });
+
+        var mobileLabel = document.getElementById("catalog-active-filter-label");
+        if (mobileLabel) {
+            if (isAll) {
+                var allBtn = document.querySelector('.catalog-filter-root [data-catalog-filter="all"]');
+                if (allBtn) mobileLabel.textContent = allBtn.textContent.trim();
+            } else {
+                mobileLabel.textContent = activeFilters.size + " filtro(s) activo(s)";
+            }
+        }
+    }
+
+    function filterButtonForValue(val) {
+        if (!val) return null;
+        return document.querySelector('.catalog-filter-root [data-catalog-filter="' + val + '"]');
+    }
+
+    function initCatalogFilter() {
+        var roots = document.querySelectorAll(".catalog-filter-root");
+        if (!roots.length) return;
+
+        var offcanvasEl = document.getElementById("catalogFiltersOffcanvas");
+
+        removeDynamicFilterButtons();
+        injectDynamicFilterButtons();
+
+        var items = getGridItems();
+        if (!items.length) {
+            return;
+        }
+
+        if (!rootListenersBound) {
+            rootListenersBound = true;
+            roots.forEach(function (root) {
+                root.addEventListener("click", function (e) {
+                    var btn = e.target.closest("[data-catalog-filter]");
+                    if (!btn || !root.contains(btn)) return;
+                    e.preventDefault();
+                    var filterValue = btn.getAttribute("data-catalog-filter");
+
+                    if (filterValue === "all") {
+                        activeFilters.clear();
+                    } else {
+                        if (activeFilters.has(filterValue)) {
+                            activeFilters.delete(filterValue);
+                        } else {
+                            activeFilters.add(filterValue);
+                        }
+                    }
+
+                    applyFilters();
+
+                    if (
+                        offcanvasEl &&
+                        window.bootstrap &&
+                        window.bootstrap.Offcanvas &&
+                        window.matchMedia("(max-width: 991.98px)").matches
+                    ) {
+                        window.bootstrap.Offcanvas.getOrCreateInstance(offcanvasEl).hide();
+                    }
+                });
+            });
+        }
+
+        activeFilters.clear();
+
+        var q = null;
+        try {
+            q = new URLSearchParams(window.location.search).get("filter");
+        } catch (e1) {
+            q = null;
+        }
+        if (q && filterButtonForValue(q)) {
+            activeFilters.add(q);
+        }
+
+        applyFilters();
+    }
+
+    document.addEventListener("luddies:catalog-items-mounted", initCatalogFilter);
+
+    window.LuddiesCatalogFilter = {
+        init: initCatalogFilter
+    };
 })();

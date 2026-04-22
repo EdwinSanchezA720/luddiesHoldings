@@ -200,6 +200,9 @@
     }
 
     function init() {
+        if (window.LuddiesAuth && window.LuddiesAuth.syncProductLabelsToI18n) {
+            window.LuddiesAuth.syncProductLabelsToI18n();
+        }
         var emptyEl = document.getElementById("checkout-empty-state");
         var flowEl = document.getElementById("checkout-main-flow");
         var listEl = document.getElementById("checkout-cart-lines");
