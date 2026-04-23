@@ -24,8 +24,25 @@
     function validate(data) {
         if (!data.fullName || data.fullName.length < 2 || !nameRe.test(data.fullName)) return "reg_error_name";
         if (!data.email || !emailRe.test(data.email)) return "reg_error_email";
-        if (!data.phone || !phoneRe.test(data.phone)) return "reg_error_phone";
-        if (!data.password || !passwordRe.test(data.password)) return "reg_error_password_len";
+        var minByCountry = {
+            "+52":10,"+1":10,"+54":10,"+55":10,
+            "+56":9,"+57":10,"+506":8,"+593":9,
+            "+503":8,"+502":8,"+504":8,"+505":8,
+            "+507":8,"+595":9,"+51":9,"+1809":10,
+            "+598":8,"+58":10
+        };
+        var maxByCountry = {
+            "+52":10,"+1":10,"+54":11,"+55":11,
+            "+56":9,"+57":10,"+506":8,"+593":9,
+            "+503":8,"+502":8,"+504":8,"+505":8,
+            "+507":8,"+595":9,"+51":9,"+1809":10,
+            "+598":9,"+58":11
+        };
+        var digitsOnly = data.rawPhone.replace(/\D/g, "");
+        var min = minByCountry[data.country] || 8;
+        var max = maxByCountry[data.country] || 11;
+        if (digitsOnly.length < min || digitsOnly.length > max) return "reg_error_phone";
+        if (!data.password || data.password.length < 6) return "reg_error_password_len";
         if (data.password !== data.confirm) return "reg_error_password_match";
         return null;
     }
@@ -38,13 +55,15 @@
             e.preventDefault();
             hideAlert("register-error-alert");
             var fullName = (document.getElementById("reg-fullname") && document.getElementById("reg-fullname").value) || "";
+            var country = (document.getElementById("reg-country") && document.getElementById("reg-country").value) || "+52";
             var phone = (document.getElementById("reg-phone") && document.getElementById("reg-phone").value) || "";
+            phone = phone.replace(/\D/g, "");
             var email = (document.getElementById("reg-email") && document.getElementById("reg-email").value) || "";
             var password = (document.getElementById("reg-password") && document.getElementById("reg-password").value) || "";
             var confirm = (document.getElementById("reg-confirm") && document.getElementById("reg-confirm").value) || "";
-
-            var data = { fullName: fullName.trim(), phone: phone.trim(), email: email.trim(), password: password, confirm: confirm };
+            var data = { fullName: fullName.trim(), phone: country + phone, rawPhone: phone, country: country, email: email.trim(), password: password, confirm: confirm };
             var err = validate(data);
+            
             if (err) {
                 setAlert("danger", "register-error-alert", err);
                 return;
@@ -88,5 +107,6 @@
             }
             setAlert("danger", "register-error-alert", "auth_error_generic");
         });
+        
     });
 })();
