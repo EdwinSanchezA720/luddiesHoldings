@@ -53,28 +53,128 @@
         return window.LuddiesI18n.translations[lang] || {};
     }
 
-    function setCategoryFieldsFromString(cat) {
-        var c = (cat || "").toLowerCase().trim();
-        var tokens = c.split(/\s+/).filter(Boolean);
-        var preset = document.getElementById("product-category-preset");
-        var custom = document.getElementById("product-category-custom");
-        var wrap = document.getElementById("product-category-custom-wrap");
-        if (!preset || !custom || !wrap) return;
-        if (tokens.length === 1 && CANONICAL_CATEGORIES.indexOf(tokens[0]) !== -1) {
-            preset.value = tokens[0];
-            wrap.classList.add("d-none");
-            custom.value = "";
-        } else {
-            preset.value = "__other__";
-            wrap.classList.remove("d-none");
-            custom.value = c;
+    function setCategoryChipsFromString(cat) {
+        var tokens = (cat || "").toLowerCase().trim().split(/\s+/).filter(Boolean);
+        var grid = document.getElementById("cat-grid");
+        var extra = document.getElementById("product-category-extra");
+        var canon = {};
+        CANONICAL_CATEGORIES.forEach(function (c) {
+            canon[c] = true;
+        });
+        var extraToks = [];
+        if (grid) {
+            grid.querySelectorAll('input[type="checkbox"]').forEach(function (cb) {
+                var on = tokens.indexOf(cb.value) !== -1;
+                cb.checked = on;
+                var lab = cb.closest(".cat-chip");
+                if (lab) lab.classList.toggle("checked", on);
+            });
         }
+        tokens.forEach(function (tok) {
+            if (!canon[tok]) extraToks.push(tok);
+        });
+        if (extra) extra.value = extraToks.join(" ");
+    }
+
+    function readCategoryFromForm() {
+        var parts = [];
+        var grid = document.getElementById("cat-grid");
+        if (grid) {
+            grid.querySelectorAll('input[type="checkbox"]:checked').forEach(function (cb) {
+                parts.push(cb.value);
+            });
+        }
+        var extra = document.getElementById("product-category-extra");
+        if (extra && extra.value.trim()) {
+            extra.value
+                .toLowerCase()
+                .trim()
+                .split(/\s+/)
+                .filter(Boolean)
+                .forEach(function (tok) {
+                    if (parts.indexOf(tok) === -1) parts.push(tok);
+                });
+        }
+        return parts.join(" ");
+    }
+
+    function isValidHttpUrl(s) {
+        if (!s) return false;
+        try {
+            var u = new URL(s);
+            return u.protocol === "http:" || u.protocol === "https:";
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function updateImageUi(url) {
+        var strip = document.getElementById("img-preview-strip");
+        var imgEl = document.getElementById("img-preview-img");
+        var prevWrap = document.getElementById("prev-img");
+        var ok = isValidHttpUrl(url);
+        if (strip) strip.classList.toggle("has-img", ok);
+        if (imgEl) {
+            if (ok) {
+                imgEl.src = url;
+                imgEl.classList.add("visible");
+            } else {
+                imgEl.removeAttribute("src");
+                imgEl.classList.remove("visible");
+            }
+        }
+        if (prevWrap) {
+            if (ok) {
+                prevWrap.style.backgroundImage = "url(" + JSON.stringify(String(url)) + ")";
+                prevWrap.classList.add("has-bg");
+            } else {
+                prevWrap.style.backgroundImage = "";
+                prevWrap.classList.remove("has-bg");
+            }
+        }
+    }
+
+    function labelForCategorySlug(slug) {
+        if (CANONICAL_CATEGORIES.indexOf(slug) !== -1) return t("cat_filter_" + slug);
+        return slug;
+    }
+
+    function updatePreview() {
+        var lang = window.LuddiesI18n && window.LuddiesI18n.getLang() === "en" ? "en" : "es";
+        var titleEl = document.getElementById("product-name-" + lang);
+        var metaEl = document.getElementById("product-meta-" + lang);
+        var descEl = document.getElementById("product-desc-" + lang);
+        var priceEl = document.getElementById("product-price-" + lang);
+        var pt = document.getElementById("prev-title");
+        var pm = document.getElementById("prev-meta");
+        var pd = document.getElementById("prev-desc");
+        var pp = document.getElementById("prev-price");
+        var pc = document.getElementById("prev-cats");
+        if (pt) pt.textContent = (titleEl && titleEl.value.trim()) || tr("Título del producto", "Product title");
+        if (pm) pm.textContent = (metaEl && metaEl.value.trim()) || "—";
+        if (pd) pd.textContent = (descEl && descEl.value.trim()) || tr("La descripción aparecerá aquí.", "Description appears here.");
+        if (pp) pp.textContent = (priceEl && priceEl.value.trim()) || "—";
+        if (pc) {
+            pc.innerHTML = "";
+            readCategoryFromForm()
+                .split(/\s+/)
+                .filter(Boolean)
+                .forEach(function (slug) {
+                    var span = document.createElement("span");
+                    span.className = "preview-card__cat-tag";
+                    span.textContent = labelForCategorySlug(slug);
+                    pc.appendChild(span);
+                });
+        }
+        var imgIn = document.getElementById("f-img");
+        updateImageUi(imgIn ? imgIn.value.trim() : "");
     }
 
     function prefillFormFromProduct(p) {
         document.getElementById("product-id").value = p.id || "";
-        document.getElementById("product-img").value = p.img || "";
-        setCategoryFieldsFromString(p.category || "");
+        var fImg = document.getElementById("f-img");
+        if (fImg) fImg.value = p.img || "";
+        setCategoryChipsFromString(p.category || "");
         var purch = p.purchasable !== 0 && p.purchasable !== "0";
         document.getElementById("product-purchasable").value = purch ? "1" : "0";
 
@@ -99,28 +199,14 @@
             document.getElementById("product-price-es").value = dEs[p.price] != null ? dEs[p.price] : "";
             document.getElementById("product-price-en").value = dEn[p.price] != null ? dEn[p.price] : "";
         }
-    }
-
-    function readCategoryFromForm() {
-        var preset = document.getElementById("product-category-preset");
-        var v = preset ? preset.value : "";
-        if (v === "__other__") {
-            var custom = (document.getElementById("product-category-custom") && document.getElementById("product-category-custom").value) || "";
-            return custom
-                .toLowerCase()
-                .trim()
-                .split(/\s+/)
-                .filter(Boolean)
-                .join(" ");
-        }
-        if (v) return v.toLowerCase().trim();
-        return "";
+        updatePreview();
     }
 
     function readForm() {
+        var fImg = document.getElementById("f-img");
         return {
             id: document.getElementById("product-id").value.trim(),
-            img: document.getElementById("product-img").value.trim(),
+            img: fImg ? fImg.value.trim() : "",
             category: readCategoryFromForm() || "science",
             purchasable: document.getElementById("product-purchasable").value === "0" ? 0 : 1,
             labels: {
@@ -142,17 +228,8 @@
 
     function validateForm(data) {
         if (!data.img) return false;
-        try {
-            // eslint-disable-next-line no-new
-            new URL(data.img);
-        } catch (e) {
-            return false;
-        }
-        var preset = document.getElementById("product-category-preset");
-        if (!preset || !preset.value) return false;
-        if (preset.value === "__other__") {
-            if (!readCategoryFromForm()) return false;
-        }
+        if (!isValidHttpUrl(data.img)) return false;
+        if (!readCategoryFromForm()) return false;
         if (!data.labels.es.name || !data.labels.en.name) return false;
         if (!data.labels.es.description || !data.labels.en.description) return false;
         return true;
@@ -181,16 +258,23 @@
                 "</td><td>" +
                 escapeHtml(p.category || "") +
                 "</td><td class=\"text-nowrap\">" +
-                "<button type=\"button\" class=\"btn btn-sm btn-luddies btn-luddies--outline me-1 js-admin-edit\" data-id=\"" +
+                "<div class=\"admin-table-actions\">" +
+                "<button type=\"button\" class=\"btn btn-sm admin-table-action admin-table-action--edit js-admin-edit\" data-id=\"" +
                 escapeAttr(p.id) +
                 "\">" +
-                t("admin_btn_edit") +
-                "</button>" +
-                "<button type=\"button\" class=\"btn btn-sm btn-luddies btn-luddies--secondary js-admin-del-product\" data-id=\"" +
+                "<i class=\"fa-solid fa-pen\" aria-hidden=\"true\"></i>" +
+                "<span>" +
+                escapeHtml(t("admin_btn_edit")) +
+                "</span></button>" +
+                "<button type=\"button\" class=\"btn btn-sm admin-table-action admin-table-action--delete js-admin-del-product\" data-id=\"" +
                 escapeAttr(p.id) +
+                "\" aria-label=\"" +
+                escapeAttr(t("admin_btn_delete")) +
+                "\" title=\"" +
+                escapeAttr(t("admin_btn_delete")) +
                 "\">" +
-                t("admin_btn_delete") +
-                "</button></td>";
+                "<i class=\"fa-solid fa-trash-can\" aria-hidden=\"true\"></i>" +
+                "</button></div></td>";
             body.appendChild(trEl);
         });
     }
@@ -205,12 +289,17 @@
             var roleLabel = u.role === "admin" ? t("admin_role_admin") : t("admin_role_user");
             var delBtn =
                 u.role === "user"
-                    ? "<button type=\"button\" class=\"btn btn-sm btn-luddies btn-luddies--secondary js-admin-del-user\" data-id=\"" +
+                    ? "<div class=\"admin-table-actions\">" +
+                      "<button type=\"button\" class=\"btn btn-sm admin-table-action admin-table-action--delete js-admin-del-user\" data-id=\"" +
                       escapeAttr(u.id) +
+                      "\" aria-label=\"" +
+                      escapeAttr(t("admin_user_delete")) +
+                      "\" title=\"" +
+                      escapeAttr(t("admin_user_delete")) +
                       "\">" +
-                      t("admin_user_delete") +
-                      "</button>"
-                    : "—";
+                      "<i class=\"fa-solid fa-trash-can\" aria-hidden=\"true\"></i>" +
+                      "</button></div>"
+                    : "<span class=\"text-secondary\">—</span>";
             trEl.innerHTML =
                 "<td>" +
                 escapeHtml(u.fullName || "") +
@@ -244,13 +333,11 @@
             prefillFormFromProduct(product);
         } else {
             document.getElementById("product-id").value = "";
-            document.getElementById("product-img").value = "";
-            var pSel = document.getElementById("product-category-preset");
-            if (pSel) pSel.value = "";
-            var cIn = document.getElementById("product-category-custom");
-            if (cIn) cIn.value = "";
-            var cWrap = document.getElementById("product-category-custom-wrap");
-            if (cWrap) cWrap.classList.add("d-none");
+            var fi = document.getElementById("f-img");
+            if (fi) fi.value = "";
+            setCategoryChipsFromString("");
+            var extra = document.getElementById("product-category-extra");
+            if (extra) extra.value = "";
             document.getElementById("product-purchasable").value = "1";
             document.getElementById("product-name-es").value = "";
             document.getElementById("product-name-en").value = "";
@@ -265,6 +352,7 @@
         if (window.LuddiesI18n && window.LuddiesI18n.applyTranslations) {
             window.LuddiesI18n.applyTranslations(window.LuddiesI18n.getLang());
         }
+        updatePreview();
         if (window.bootstrap && window.bootstrap.Modal) {
             window.bootstrap.Modal.getOrCreateInstance(modalEl).show();
         }
@@ -349,16 +437,49 @@
                 }
             });
 
-        var catPreset = document.getElementById("product-category-preset");
-        if (catPreset) {
-            catPreset.addEventListener("change", function () {
-                var wrap = document.getElementById("product-category-custom-wrap");
-                if (!wrap) return;
-                if (catPreset.value === "__other__") {
-                    wrap.classList.remove("d-none");
-                } else {
-                    wrap.classList.add("d-none");
-                }
+        var catGrid = document.getElementById("cat-grid");
+        if (catGrid) {
+            catGrid.addEventListener("change", function (e) {
+                var cb = e.target;
+                if (!cb || cb.type !== "checkbox") return;
+                var lab = cb.closest(".cat-chip");
+                if (lab) lab.classList.toggle("checked", cb.checked);
+                updatePreview();
+            });
+        }
+
+        var previewIds = [
+            "f-img",
+            "product-name-es",
+            "product-name-en",
+            "product-desc-es",
+            "product-desc-en",
+            "product-meta-es",
+            "product-meta-en",
+            "product-price-es",
+            "product-price-en",
+            "product-category-extra"
+        ];
+        previewIds.forEach(function (id) {
+            var el = document.getElementById(id);
+            if (!el) return;
+            el.addEventListener("input", updatePreview);
+            el.addEventListener("change", updatePreview);
+        });
+        var purch = document.getElementById("product-purchasable");
+        if (purch) purch.addEventListener("change", updatePreview);
+
+        var prevImg = document.getElementById("img-preview-img");
+        if (prevImg) {
+            prevImg.addEventListener("error", function () {
+                prevImg.classList.remove("visible");
+            });
+        }
+
+        var modalEl = document.getElementById("product-form-modal");
+        if (modalEl) {
+            modalEl.addEventListener("shown.bs.modal", function () {
+                updatePreview();
             });
         }
 
