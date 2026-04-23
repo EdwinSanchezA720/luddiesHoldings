@@ -22,12 +22,13 @@
     <header id="site-header"></header>
 
     <main>
-        <section class="hero-about catalog-hero">
+        <section class="hero-about admin-hero pt-3 pb-4" style="padding-top:2.5rem !important;">
             <div class="container">
                 <div class="row justify-content-center">
-                    <div class="col-12 col-lg-9 text-center fade-in">
-                        <h1 class="hero-title mb-3" data-i18n="admin_page_title">Admin</h1>
-                        <p class="hero-lead mx-auto mb-0" data-i18n="admin_hero_lead">Products and users.</p>
+                    <div class="col-12 col-lg-10 col-xl-8 text-center fade-in">
+                        <h1 class="hero-title mb-2" style="margin-top:-0.5rem;margin-bottom:0.8rem;" data-i18n="admin_page_title">Administration</h1>
+                        <p class="hero-lead mx-auto mb-3" data-i18n="admin_hero_lead">Catalog and accounts.</p>
+                        <p class="admin-hero-desc mx-auto mb-0" data-i18n="admin_hero_desc">Manage products and users from this screen.</p>
                     </div>
                 </div>
             </div>
@@ -36,7 +37,7 @@
         <section class="page-section pt-0">
             <div class="container">
                 <div class="alert alert-warning d-none" id="admin-page-error" role="alert"></div>
-                <ul class="nav nav-pills gap-2 mb-4" role="tablist">
+                <ul class="nav nav-pills admin-tabs-nav gap-2 mb-4" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" id="admin-tab-pill" data-bs-toggle="pill" data-bs-target="#admin-tab-products" type="button" role="tab" data-i18n="admin_tab_products">Products</button>
                     </li>
@@ -89,7 +90,7 @@
     <footer id="site-footer" class="footer-lite"></footer>
 
     <div class="modal fade" id="product-form-modal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header border-bottom-0">
                     <h2 class="modal-title h5" data-i18n="admin_modal_product_title">Product</h2>
@@ -99,97 +100,116 @@
                     <div class="alert alert-danger d-none" id="admin-form-error" role="alert"></div>
                     <form id="product-form" novalidate>
                         <input type="hidden" id="product-id" name="id" value="">
-                        <div class="form-floating mb-2">
-                            <input type="url" class="form-control" id="product-img" name="img" placeholder=" " required>
-                            <label for="product-img" data-i18n="admin_form_img">Image URL</label>
-                        </div>
-                        <div class="mb-2">
-                            <label class="form-label" for="product-category-preset" data-i18n="admin_form_category">Category</label>
-                            <select class="form-select" id="product-category-preset" name="categoryPreset" required>
-                                <option value="" data-i18n="admin_category_select_placeholder">— Choose —</option>
-                                <option value="science" data-i18n="cat_filter_science">Science</option>
-                                <option value="technology" data-i18n="cat_filter_technology">Technology</option>
-                                <option value="engineering" data-i18n="cat_filter_engineering">Engineering</option>
-                                <option value="mathematics" data-i18n="cat_filter_mathematics">Mathematics</option>
-                                <option value="neurodiversity" data-i18n="cat_filter_neurodiversity">Neurodiversity</option>
-                                <option value="certification" data-i18n="cat_filter_certification">Certification</option>
-                                <option value="physical" data-i18n="cat_filter_physical">Physical kits</option>
-                                <option value="dissidents" data-i18n="cat_filter_dissidents">STEM Dissidents</option>
-                                <option value="__other__" data-i18n="admin_category_option_other">Other</option>
-                            </select>
-                        </div>
-                        <div id="product-category-custom-wrap" class="d-none mb-2">
-                            <label class="form-label" for="product-category-custom" data-i18n="admin_category_custom_label">Custom tags</label>
-                            <input type="text" class="form-control" id="product-category-custom" name="categoryCustom" placeholder="e.g. certification mathematics" autocomplete="off">
-                            <p class="form-text small text-secondary mb-0" id="product-category-custom-hint" data-i18n="admin_category_custom_help"></p>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="product-purchasable" data-i18n="admin_form_purchasable">Purchasable</label>
-                            <select class="form-select" id="product-purchasable" name="purchasable">
-                                <option value="1" data-i18n="admin_option_yes">Yes</option>
-                                <option value="0" data-i18n="admin_option_no">No</option>
-                            </select>
-                        </div>
-                        <p class="small text-secondary mb-2" data-i18n="admin_form_bilingual_note">Bilingual</p>
-                        <div class="row g-2">
-                            <div class="col-md-6">
-                                <div class="form-floating mb-2">
-                                    <input type="text" class="form-control" id="product-name-es" name="nameEs" placeholder=" " required>
-                                    <label for="product-name-es" data-i18n="admin_form_name_es">Title (ES)</label>
+                        <div class="admin-layout">
+                            <div>
+                                <div class="admin-form-card">
+                                    <p class="admin-section-label">
+                                        <span class="pill-icon" style="width:1.8rem;height:1.8rem;font-size:0.75rem;" aria-hidden="true"><i class="fa-solid fa-tag"></i></span>
+                                        <span data-i18n="admin_form_section_info">Product information</span>
+                                    </p>
+                                    <p class="small text-secondary mb-3" data-i18n="admin_form_bilingual_note">Product copy (ES and EN).</p>
+                                    <div class="field-row">
+                                        <div class="field-group mb-0">
+                                            <label class="field-label" for="product-name-es"><span data-i18n="admin_form_name_es">Title (ES)</span> <span class="req">*</span></label>
+                                            <input type="text" class="field-input" id="product-name-es" name="nameEs" required autocomplete="off">
+                                        </div>
+                                        <div class="field-group mb-0">
+                                            <label class="field-label" for="product-name-en"><span data-i18n="admin_form_name_en">Title (EN)</span> <span class="req">*</span></label>
+                                            <input type="text" class="field-input" id="product-name-en" name="nameEn" required autocomplete="off">
+                                        </div>
+                                    </div>
+                                    <div class="field-row">
+                                        <div class="field-group mb-0">
+                                            <label class="field-label" for="product-meta-es"><span data-i18n="admin_form_meta_es">Meta (ES)</span> <span class="req">*</span></label>
+                                            <input type="text" class="field-input" id="product-meta-es" name="metaEs" required autocomplete="off">
+                                        </div>
+                                        <div class="field-group mb-0">
+                                            <label class="field-label" for="product-meta-en"><span data-i18n="admin_form_meta_en">Meta (EN)</span> <span class="req">*</span></label>
+                                            <input type="text" class="field-input" id="product-meta-en" name="metaEn" required autocomplete="off">
+                                        </div>
+                                    </div>
+                                    <div class="field-row">
+                                        <div class="field-group mb-0">
+                                            <label class="field-label" for="product-desc-es"><span data-i18n="admin_form_desc_es">Description (ES)</span> <span class="req">*</span></label>
+                                            <textarea class="field-textarea" id="product-desc-es" name="descEs" required></textarea>
+                                        </div>
+                                        <div class="field-group mb-0">
+                                            <label class="field-label" for="product-desc-en"><span data-i18n="admin_form_desc_en">Description (EN)</span> <span class="req">*</span></label>
+                                            <textarea class="field-textarea" id="product-desc-en" name="descEn" required></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="field-row">
+                                        <div class="field-group mb-0">
+                                            <label class="field-label" for="product-price-es"><span data-i18n="admin_form_price_es">Price (ES)</span> <span class="req">*</span></label>
+                                            <input type="text" class="field-input" id="product-price-es" name="priceEs" required autocomplete="off">
+                                        </div>
+                                        <div class="field-group mb-0">
+                                            <label class="field-label" for="product-price-en"><span data-i18n="admin_form_price_en">Price (EN)</span> <span class="req">*</span></label>
+                                            <input type="text" class="field-input" id="product-price-en" name="priceEn" required autocomplete="off">
+                                        </div>
+                                    </div>
+                                    <div class="field-group">
+                                        <label class="field-label" for="f-img"><span data-i18n="admin_form_img">Image URL</span> <span class="req">*</span></label>
+                                        <input type="url" class="field-input" id="f-img" name="img" required autocomplete="off">
+                                    </div>
+                                    <div class="img-preview-strip" id="img-preview-strip">
+                                        <div class="img-preview-placeholder"><i class="fa-regular fa-image"></i><span data-i18n="admin_preview_strip">Image preview</span></div>
+                                        <img id="img-preview-img" src="" alt="">
+                                    </div>
+                                    <div class="divider-soft"></div>
+                                    <p class="admin-section-label">
+                                        <span class="pill-icon" style="width:1.8rem;height:1.8rem;font-size:0.75rem;" aria-hidden="true"><i class="fa-solid fa-layer-group"></i></span>
+                                        <span data-i18n="admin_form_category">Category</span> <span class="req">*</span>
+                                    </p>
+                                    <div class="cat-grid" id="cat-grid">
+                                        <label class="cat-chip"><input type="checkbox" value="science"><span class="dot"></span><span data-i18n="cat_filter_science">Science</span></label>
+                                        <label class="cat-chip"><input type="checkbox" value="technology"><span class="dot"></span><span data-i18n="cat_filter_technology">Technology</span></label>
+                                        <label class="cat-chip"><input type="checkbox" value="engineering"><span class="dot"></span><span data-i18n="cat_filter_engineering">Engineering</span></label>
+                                        <label class="cat-chip"><input type="checkbox" value="mathematics"><span class="dot"></span><span data-i18n="cat_filter_mathematics">Mathematics</span></label>
+                                        <label class="cat-chip"><input type="checkbox" value="neurodiversity"><span class="dot"></span><span data-i18n="cat_filter_neurodiversity">Neurodiversity</span></label>
+                                        <label class="cat-chip"><input type="checkbox" value="certification"><span class="dot"></span><span data-i18n="cat_filter_certification">Certification</span></label>
+                                        <label class="cat-chip"><input type="checkbox" value="physical"><span class="dot"></span><span data-i18n="cat_filter_physical">Physical kits</span></label>
+                                        <label class="cat-chip"><input type="checkbox" value="dissidents"><span class="dot"></span><span data-i18n="cat_filter_dissidents">STEM Dissidents</span></label>
+                                    </div>
+                                    <div class="field-group">
+                                        <label class="field-label" for="product-category-extra" data-i18n="admin_category_custom_label">Custom tags</label>
+                                        <input type="text" class="field-input" id="product-category-extra" name="categoryExtra" placeholder="" autocomplete="off">
+                                        <p class="field-hint mb-0" data-i18n="admin_category_custom_help"></p>
+                                    </div>
+                                    <div class="field-group">
+                                        <label class="field-label" for="product-purchasable" data-i18n="admin_form_purchasable">Purchasable</label>
+                                        <select class="form-select field-input" id="product-purchasable" name="purchasable" style="padding-top:0.65rem;padding-bottom:0.65rem;height:auto;">
+                                            <option value="1" data-i18n="admin_option_yes">Yes</option>
+                                            <option value="0" data-i18n="admin_option_no">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="divider-soft"></div>
+                                    <div class="d-flex flex-wrap gap-2 justify-content-end">
+                                        <button type="button" class="btn btn-luddies btn-luddies--outline" data-bs-dismiss="modal" data-i18n="admin_form_cancel">Cancel</button>
+                                        <button type="submit" class="btn btn-luddies btn-luddies--primary" data-i18n="admin_form_save">Save</button>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-floating mb-2">
-                                    <input type="text" class="form-control" id="product-name-en" name="nameEn" placeholder=" " required>
-                                    <label for="product-name-en" data-i18n="admin_form_name_en">Title (EN)</label>
+                            <aside class="admin-sticky">
+                                <p class="admin-section-label" style="margin-bottom:0.85rem;">
+                                    <span class="pill-icon" style="width:1.8rem;height:1.8rem;font-size:0.75rem;" aria-hidden="true"><i class="fa-solid fa-eye"></i></span>
+                                    <span data-i18n="admin_preview_section">Preview</span>
+                                </p>
+                                <div class="preview-card mb-0">
+                                    <div class="preview-card__img" id="prev-img" role="img" aria-label=""><i class="fa-regular fa-image"></i></div>
+                                    <div class="preview-card__body">
+                                        <p class="preview-card__meta" id="prev-meta">—</p>
+                                        <h3 class="preview-card__title h6 mb-0" id="prev-title">—</h3>
+                                        <p class="preview-card__desc" id="prev-desc">—</p>
+                                        <p class="preview-card__price" id="prev-price">—</p>
+                                        <div class="preview-card__cats" id="prev-cats"></div>
+                                        <div class="preview-card__actions">
+                                            <button type="button" class="btn btn-sm btn-luddies btn-luddies--primary" tabindex="-1" data-i18n="cat_acquire_btn">Acquire</button>
+                                            <span class="btn btn-sm btn-luddies btn-luddies--outline" data-i18n="cat_prod_more_info">More info</span>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="row g-2">
-                            <div class="col-md-6">
-                                <div class="form-floating mb-2">
-                                    <textarea class="form-control" id="product-desc-es" name="descEs" placeholder=" " style="height: 5rem" required></textarea>
-                                    <label for="product-desc-es" data-i18n="admin_form_desc_es">Description (ES)</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating mb-2">
-                                    <textarea class="form-control" id="product-desc-en" name="descEn" placeholder=" " style="height: 5rem" required></textarea>
-                                    <label for="product-desc-en" data-i18n="admin_form_desc_en">Description (EN)</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row g-2">
-                            <div class="col-md-6">
-                                <div class="form-floating mb-2">
-                                    <input type="text" class="form-control" id="product-meta-es" name="metaEs" placeholder=" " required>
-                                    <label for="product-meta-es" data-i18n="admin_form_meta_es">Meta (ES)</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating mb-2">
-                                    <input type="text" class="form-control" id="product-meta-en" name="metaEn" placeholder=" " required>
-                                    <label for="product-meta-en" data-i18n="admin_form_meta_en">Meta (EN)</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row g-2">
-                            <div class="col-md-6">
-                                <div class="form-floating mb-2">
-                                    <input type="text" class="form-control" id="product-price-es" name="priceEs" placeholder=" " required>
-                                    <label for="product-price-es" data-i18n="admin_form_price_es">Price (ES)</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating mb-2">
-                                    <input type="text" class="form-control" id="product-price-en" name="priceEn" placeholder=" " required>
-                                    <label for="product-price-en" data-i18n="admin_form_price_en">Price (EN)</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex flex-wrap gap-2 justify-content-end pt-2">
-                            <button type="button" class="btn btn-luddies btn-luddies--outline" data-bs-dismiss="modal" data-i18n="admin_form_cancel">Cancel</button>
-                            <button type="submit" class="btn btn-luddies btn-luddies--primary" data-i18n="admin_form_save">Save</button>
+                            </aside>
                         </div>
                     </form>
                 </div>
