@@ -16,6 +16,8 @@
             nav_about: "Nosotros",
             nav_contact: "Contacto",
             nav_checkout: "Mi selección",
+            nav_login: "Iniciar sesión",
+            nav_register: "Registrarse",
             nav_profile: "Perfil",
             hero_title: "Creamos experiencias STEM para transformar el futuro.",
             hero_lead:
@@ -161,6 +163,11 @@
             home_cta_band_lead: "Escríbenos para publicar material o integrar Luddies en tu institución.",
             home_cta_band_catalog: "Ver catálogo",
             home_cta_band_contact: "Contactar",
+            catalog_publish_cta_title: "¿Tienes material educativo para publicar?",
+            catalog_publish_cta_lead:
+                "Si quieres publicar productos o nuevo material en Luddies —creación propia, alianza editorial o catálogo institucional— escríbenos y te orientamos en el proceso.",
+            catalog_publish_cta_contact: "Contactar al equipo",
+            catalog_publish_cta_terms: "Ver términos y condiciones",
             catalog_hero_title: "Catálogo de activos pedagógicos",
             catalog_hero_lead:
                 "Explora, filtra y añade al carrito. Con Ir a compra confirmas pedido y correo; el cobro será con Stripe (ahora verás una página de demostración).",
@@ -178,6 +185,7 @@
             cat_prod_badge_consult: "Consultar",
             cat_prod_badge_soon: "Próximamente",
             cat_acquire_btn: "Adquirir",
+            cat_acquire_login: "Inicia sesión para adquirir",
             cat_acquire_soon: "Próximamente — no disponible",
             cat_cart_bar: "Tu selección: {n} producto(s)",
             cat_cart_contact: "Ir a contacto",
@@ -203,6 +211,7 @@
             checkout_back_catalog: "Ir al catálogo",
             checkout_remove: "Quitar",
             checkout_items_count: "{n} producto(s)",
+            checkout_total_label: "Total estimado",
             checkout_subtotal_note: "Precios orientativos; el total se confirma al cerrar la compra contigo.",
             checkout_cta_purchase: "Finalizar compra",
             checkout_disclaimer:
@@ -351,6 +360,8 @@
             nav_about: "About Us",
             nav_contact: "Contact",
             nav_checkout: "My selection",
+            nav_login: "Log in",
+            nav_register: "Sign up",
             nav_profile: "Profile",
             hero_title: "We create STEM experiences to transform the future.",
             hero_lead:
@@ -500,6 +511,11 @@
             home_cta_band_lead: "Write to us to publish materials or integrate Luddies at your institution.",
             home_cta_band_catalog: "View catalog",
             home_cta_band_contact: "Get in touch",
+            catalog_publish_cta_title: "Do you have educational materials to publish?",
+            catalog_publish_cta_lead:
+                "If you want to publish products or new materials on Luddies —your own content, an editorial partnership, or an institutional catalog— contact us and we will guide you through the process.",
+            catalog_publish_cta_contact: "Contact the team",
+            catalog_publish_cta_terms: "Terms and conditions",
             catalog_hero_title: "Pedagogical asset catalog",
             catalog_hero_lead:
                 "Browse, filter, and add to your cart. Go to checkout to confirm your order and email; payment will be with Stripe (for now you will see a demo page).",
@@ -517,6 +533,7 @@
             cat_prod_badge_consult: "Ask us",
             cat_prod_badge_soon: "Coming soon",
             cat_acquire_btn: "Add",
+            cat_acquire_login: "Log in to add",
             cat_acquire_soon: "Coming soon — not available",
             cat_cart_bar: "Your selection: {n} item(s)",
             cat_cart_contact: "Go to contact",
@@ -542,6 +559,7 @@
             checkout_back_catalog: "Go to catalog",
             checkout_remove: "Remove",
             checkout_items_count: "{n} item(s)",
+            checkout_total_label: "Estimated total",
             checkout_subtotal_note: "Indicative prices; totals are confirmed when we close your purchase.",
             checkout_cta_purchase: "Complete purchase",
             checkout_disclaimer:

@@ -170,6 +170,11 @@
         if (!btn) return;
         if (btn.disabled || btn.getAttribute("aria-disabled") === "true") return;
         if (btn.getAttribute("data-catalog-purchasable") === "0") return;
+        if (!window.LuddiesAuth || !window.LuddiesAuth.getSession()) {
+            e.preventDefault();
+            window.location.href = "login.html?return=" + encodeURIComponent(window.location.href);
+            return;
+        }
         e.preventDefault();
         var id = btn.getAttribute("data-product-id");
         var titleKey = btn.getAttribute("data-product-title-key");

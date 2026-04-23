@@ -201,6 +201,32 @@ body.page-checkout {
     outline: none;
 }
 
+.checkout-cart-total {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(162, 155, 254, 0.18);
+}
+
+.checkout-cart-total__label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--secondary-accent);
+}
+
+.checkout-cart-total__value {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-main);
+    letter-spacing: 0.02em;
+}
+
 .checkout-note {
     font-size: 0.8rem;
     font-weight: 300;

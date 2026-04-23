@@ -44,13 +44,21 @@
         clone.querySelector(".catalog-card-price").setAttribute("data-i18n", priceKey);
 
         var purchasable = product.purchasable !== 0 && product.purchasable !== "0";
+        var guest = purchasable && window.LuddiesAuth && !window.LuddiesAuth.getSession();
         var btn = clone.querySelector(".js-catalog-acquire");
         btn.setAttribute("data-product-id", product.id);
         btn.setAttribute("data-product-title-key", nameKey);
         btn.setAttribute("data-product-price-key", priceKey);
         btn.setAttribute("data-catalog-purchasable", purchasable ? "1" : "0");
         if (purchasable) {
-            btn.setAttribute("data-i18n", "cat_acquire_btn");
+            if (guest) {
+                btn.setAttribute("data-i18n", "cat_acquire_login");
+                btn.classList.remove("btn-luddies--primary");
+                btn.classList.add("btn-luddies--outline", "catalog-acquire--guest");
+            } else {
+                btn.setAttribute("data-i18n", "cat_acquire_btn");
+                btn.classList.remove("catalog-acquire--guest");
+            }
             btn.classList.remove("disabled");
         } else {
             btn.setAttribute("data-i18n", "cat_acquire_soon");
@@ -58,7 +66,7 @@
             btn.classList.add("disabled");
         }
 
-        clone.querySelector(".btn-luddies--outline").setAttribute("data-i18n", "cat_prod_more_info");
+        clone.querySelector(".catalog-card-actions a[href='contact.html']").setAttribute("data-i18n", "cat_prod_more_info");
         clone.querySelector(".catalog-badge").setAttribute("data-i18n", "cat_prod_badge_consult");
 
         return clone;
