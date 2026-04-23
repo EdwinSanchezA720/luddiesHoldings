@@ -3,6 +3,8 @@
 
     var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     var phoneRe = /^\+?[\d\s-]{8,20}$/;
+    var nameRe = /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+$/;
+    var passwordRe = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
 
     function setAlert(type, id, key) {
         var el = document.getElementById(id);
@@ -20,10 +22,10 @@
     }
 
     function validate(data) {
-        if (!data.fullName || data.fullName.length < 2) return "reg_error_name";
+        if (!data.fullName || data.fullName.length < 2 || !nameRe.test(data.fullName)) return "reg_error_name";
         if (!data.email || !emailRe.test(data.email)) return "reg_error_email";
         if (!data.phone || !phoneRe.test(data.phone)) return "reg_error_phone";
-        if (!data.password || data.password.length < 6) return "reg_error_password_len";
+        if (!data.password || !passwordRe.test(data.password)) return "reg_error_password_len";
         if (data.password !== data.confirm) return "reg_error_password_match";
         return null;
     }
