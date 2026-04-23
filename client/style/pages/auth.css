@@ -26,10 +26,34 @@
     margin-bottom: 1.5rem;
 }
 
+.page-auth__brand-link {
+    display: inline-block;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 0.85rem;
+    transition: opacity 0.2s ease, transform 0.15s ease;
+}
+
+.page-auth__brand-link:hover {
+    opacity: 0.9;
+}
+
+.page-auth__brand-link:focus-visible {
+    outline: 2px solid var(--primary-accent, #a29bfe);
+    outline-offset: 4px;
+}
+
+.page-auth__brand-link:hover img,
+.page-auth__brand-link:focus-visible img {
+    transform: scale(1.04);
+}
+
 .page-auth__brand img {
     width: 56px;
     height: 56px;
     object-fit: contain;
+    display: block;
+    transition: transform 0.15s ease;
 }
 
 .page-auth__title {

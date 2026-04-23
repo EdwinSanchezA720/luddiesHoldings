@@ -36,6 +36,55 @@
             : [];
     }
 
+    /** Extrae el primer importe numérico tras $ en textos tipo "Desde $249 MXN" / "From $249 MXN". */
+    function parseMXNAmountFromPriceText(priceText) {
+        if (!priceText || typeof priceText !== "string") return NaN;
+        var m = priceText.match(/\$\s*([\d,.]+)/);
+        if (!m) return NaN;
+        var raw = m[1].replace(/,/g, "");
+        var n = parseFloat(raw);
+        return isFinite(n) ? n : NaN;
+    }
+
+    function formatMXNTotal(amount) {
+        var lang = window.LuddiesI18n && window.LuddiesI18n.getLang ? window.LuddiesI18n.getLang() : "es";
+        try {
+            return (
+                "$" +
+                amount.toLocaleString(lang === "en" ? "en-US" : "es-MX", {
+                    maximumFractionDigits: 0,
+                }) +
+                " MXN"
+            );
+        } catch (e) {
+            return "$" + Math.round(amount) + " MXN";
+        }
+    }
+
+    function renderCartTotal(wrapEl, valEl, items) {
+        if (!wrapEl || !valEl) return;
+        if (!items.length) {
+            wrapEl.hidden = true;
+            return;
+        }
+        var sum = 0;
+        var ok = 0;
+        items.forEach(function (item) {
+            var txt = item.priceKey ? t(item.priceKey) : "";
+            var n = parseMXNAmountFromPriceText(txt);
+            if (!isNaN(n)) {
+                sum += n;
+                ok += 1;
+            }
+        });
+        if (ok !== items.length || sum <= 0) {
+            wrapEl.hidden = true;
+            return;
+        }
+        wrapEl.hidden = false;
+        valEl.textContent = formatMXNTotal(sum);
+    }
+
     function cfgFor(mapKey) {
         var validation = window.LuddiesI18n && window.LuddiesI18n.getContactValidation
             ? window.LuddiesI18n.getContactValidation()
@@ -124,7 +173,7 @@
         return ok;
     }
 
-    function renderCartLines(listEl, countEl) {
+    function renderCartLines(listEl, countEl, totalWrapEl, totalValEl) {
         if (!listEl) return;
         var items = getCart();
         listEl.innerHTML = "";
@@ -162,6 +211,8 @@
             li.appendChild(rm);
             listEl.appendChild(li);
         });
+
+        renderCartTotal(totalWrapEl, totalValEl, items);
     }
 
     function syncVisibility(emptyEl, flowEl) {
@@ -207,6 +258,8 @@
         var flowEl = document.getElementById("checkout-main-flow");
         var listEl = document.getElementById("checkout-cart-lines");
         var countEl = document.getElementById("checkout-cart-count");
+        var totalRowEl = document.getElementById("checkout-cart-total-row");
+        var totalValEl = document.getElementById("checkout-cart-total-value");
         var form = document.getElementById("checkout-payment-form");
         var btnSubmit = document.getElementById("checkout-submit-purchase");
         var correo = document.getElementById("checkoutCorreo");
@@ -214,7 +267,7 @@
 
         function refresh() {
             syncVisibility(emptyEl, flowEl);
-            renderCartLines(listEl, countEl);
+            renderCartLines(listEl, countEl, totalRowEl, totalValEl);
         }
 
         refresh();

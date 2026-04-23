@@ -7,6 +7,11 @@
     if (!window.LuddiesAuth) return;
 
     var path = window.location.pathname || "";
+
+    function isPublicPage(p) {
+        return /(?:^|[\\/])(index|catalog|about-us|contact|terms|privacy)\.html$/i.test(p);
+    }
+
     var isLogin = /login\.html$/i.test(path);
     var isRegister = /register\.html$/i.test(path);
     var isAuthPage = isLogin || isRegister;
@@ -20,7 +25,7 @@
         return;
     }
 
-    if (!session) {
+    if (!session && !isPublicPage(path)) {
         var ret = encodeURIComponent(window.location.href);
         window.location.replace("login.html?return=" + ret);
         return;
