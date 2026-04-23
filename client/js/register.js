@@ -2,6 +2,10 @@
     "use strict";
 
     var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    var phoneRe = /^\+?[\d\s-]{8,20}$/;
+    var nameRe = /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]+$/;
+    var passwordRe = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+
     function setAlert(type, id, key) {
         var el = document.getElementById(id);
         if (!el) return;
@@ -18,7 +22,7 @@
     }
 
     function validate(data) {
-        if (!data.fullName || data.fullName.length < 2) return "reg_error_name";
+        if (!data.fullName || data.fullName.length < 2 || !nameRe.test(data.fullName)) return "reg_error_name";
         if (!data.email || !emailRe.test(data.email)) return "reg_error_email";
         var minByCountry = {
             "+52":10,"+1":10,"+54":10,"+55":10,
