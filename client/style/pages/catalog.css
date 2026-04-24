@@ -5,24 +5,90 @@
     background-attachment: fixed;
 }
 
+.page-catalog .catalog-hero {
+    padding-top: calc(var(--navbar-height, 72px) + 1.25rem);
+    /* Aire claro entre el texto introductorio y el catálogo de abajo */
+    padding-bottom: clamp(2.25rem, 5vw, var(--section-padding-y));
+}
 
-    .page-catalog .catalog-hero {
-        padding-top: calc(var(--navbar-height, 72px) + 1.25rem);
+/* Lead del hero: mismo tono que section-subtitle / bloques de introducción del sitio */
+.page-catalog .catalog-hero-lead {
+    max-width: min(100%, 40rem);
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.65;
+    font-weight: 300;
+    font-size: 1.05rem;
+    opacity: 0.88;
+    color: var(--text-main);
+}
+
+@media (max-width: 767.98px) {
+    .page-catalog .catalog-hero-lead {
+        font-size: 0.95rem;
+        line-height: 1.6;
     }
-
+}
 
 /* Space for fixed selection bar */
 .page-catalog main {
     padding-bottom: 6.25rem;
 }
 
-.page-catalog #destacados.page-section {
-    padding-top: 2.75rem;
+/* Texto final del catálogo: misma sección #destacados, misma columna que las tarjetas (9/12 con offset) */
+.page-catalog .catalog-publish-row {
+    margin-top: clamp(2.75rem, 5vw, 4.25rem);
+    padding-bottom: var(--section-padding-y-sm);
 }
 
-@media (min-width: 992px) {
+@media (min-width: 768px) {
+    .page-catalog .catalog-publish-row {
+        padding-bottom: var(--section-padding-y);
+    }
+}
+
+.page-catalog .catalog-publish-wrap {
+    padding-top: clamp(2rem, 4vw, 3rem);
+}
+
+.page-catalog .catalog-publish-lead {
+    font-size: 1.0625rem;
+    font-weight: 300;
+    line-height: 1.75;
+    color: var(--text-main);
+    opacity: 0.92;
+    margin-bottom: 0;
+    max-width: 52rem;
+}
+
+@media (max-width: 767.98px) {
+    .page-catalog .catalog-publish-lead {
+        font-size: 1rem;
+        line-height: 1.68;
+        max-width: none;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .page-catalog .catalog-publish-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .page-catalog .catalog-publish-actions .btn {
+        width: 100%;
+    }
+}
+
+.page-catalog #destacados.page-section {
+    padding-top: clamp(3rem, 6vw, calc(var(--section-padding-y) + 0.75rem));
+    padding-bottom: 0;
+}
+
+@media (min-width: 768px) {
     .page-catalog #destacados.page-section {
-        padding-top: 3.25rem;
+        padding-top: calc(var(--section-padding-y) + 1rem);
+        padding-bottom: 0;
     }
 }
 

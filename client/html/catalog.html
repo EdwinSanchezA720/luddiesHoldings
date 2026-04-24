@@ -14,6 +14,10 @@
     <link rel="stylesheet" href="../style/components.css">
     <link rel="stylesheet" href="../style/layout.css">
     <link rel="stylesheet" href="../style/pages/catalog.css">
+    <script src="../js/luddies-storage-keys.js"></script>
+    <script src="../js/catalog-seed.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/auth-guard.js"></script>
 </head>
 <body class="page-catalog" data-site-page="catalog">
     <header id="site-header"></header>
@@ -24,7 +28,7 @@
                 <div class="row justify-content-center">
                     <div class="col-12 col-lg-9 text-center fade-in">
                         <h1 class="hero-title mb-3" data-i18n="catalog_hero_title"></h1>
-                        <p class="hero-lead mx-auto mb-0" data-i18n="catalog_hero_lead"></p>
+                        <p class="hero-lead catalog-hero-lead mx-auto mb-0" data-i18n="catalog_hero_lead"></p>
                     </div>
                 </div>
             </div>
@@ -67,6 +71,17 @@
                     <div class="col-12 col-lg-9 catalog-grid-area">
                         <div class="row catalog-products-row" id="catalog-products-container">
                             <!--Catalog items will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row catalog-publish-row">
+                    <div class="col-12 col-lg-9 offset-lg-3 catalog-publish-wrap fade-in">
+                        <h2 class="section-title mb-3" id="catalog-publish-cta-title" data-i18n="catalog_publish_cta_title"></h2>
+                        <p class="catalog-publish-lead mb-4" data-i18n="catalog_publish_cta_lead"></p>
+                        <div class="d-flex flex-wrap gap-3 catalog-publish-actions">
+                            <a class="btn btn-luddies btn-luddies--primary" href="contact.html" data-i18n="catalog_publish_cta_contact"></a>
+                            <a class="btn btn-luddies btn-luddies--outline" href="terms.html" data-i18n="catalog_publish_cta_terms"></a>
                         </div>
                     </div>
                 </div>
@@ -132,6 +147,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script defer src="../js/i18n.js"></script>
     <script defer src="../js/layout.js"></script>
+    <script defer src="../js/auth-ui.js"></script>
     <script defer src="../js/catalog-builder.js"></script>
     <script defer src="../js/fade-in.js"></script>
     <script defer src="../js/catalog-filter.js"></script>

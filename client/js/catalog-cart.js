@@ -9,7 +9,7 @@
 
     function readCart() {
         try {
-            var raw = sessionStorage.getItem(STORAGE_KEY);
+            var raw = localStorage.getItem(STORAGE_KEY);
             var data = raw ? JSON.parse(raw) : [];
             var arr = Array.isArray(data) ? data : [];
             var filtered = arr.filter(function (p) {
@@ -17,7 +17,7 @@
             });
             if (filtered.length !== arr.length) {
                 try {
-                    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
                 } catch (e2) {
                     /* ignore */
                 }
@@ -30,7 +30,7 @@
 
     function writeCart(items) {
         try {
-            sessionStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
         } catch (e) {
             /* ignore */
         }
@@ -170,6 +170,11 @@
         if (!btn) return;
         if (btn.disabled || btn.getAttribute("aria-disabled") === "true") return;
         if (btn.getAttribute("data-catalog-purchasable") === "0") return;
+        if (!window.LuddiesAuth || !window.LuddiesAuth.getSession()) {
+            e.preventDefault();
+            window.location.href = "login.html?return=" + encodeURIComponent(window.location.href);
+            return;
+        }
         e.preventDefault();
         var id = btn.getAttribute("data-product-id");
         var titleKey = btn.getAttribute("data-product-title-key");
