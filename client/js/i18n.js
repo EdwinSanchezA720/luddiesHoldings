@@ -636,7 +636,7 @@
             auth_btn_signin: "Sign in",
             auth_btn_register: "Register",
             auth_no_account: "No account yet?",
-            auth_link_register: "Create one",
+            auth_link_register: "Sign up",
             auth_link_signin: "Back to sign in",
             auth_register_title: "Create account",
             auth_register_lead: "Join Luddies to access the platform.",

@@ -356,3 +356,232 @@ a.btn-luddies--primary:hover {
   transform: translateY(-5px) scale(1.05);
   box-shadow: 0 6px 20px rgba(74, 63, 77, 0.25);
 }
+
+.nav-popup-wrap {
+    position: relative;
+}
+
+.nav-popup {
+    position: absolute;
+    top: calc(100% + 0.6rem);
+    right: 0;
+    left: auto;
+
+    min-width: 13rem;
+    padding: 1rem 1.1rem 1.1rem;
+    border-radius: 1.1rem;
+
+    background: rgba(255, 255, 255, 0.97);
+    border: 1px solid rgba(162, 155, 254, 0.22);
+    box-shadow:
+        0 8px 32px rgba(74, 63, 77, 0.12),
+        0 2px 8px rgba(162, 155, 254, 0.1);
+
+    z-index: 1070;
+
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-6px);
+    transition:
+        opacity 0.22s ease,
+        transform 0.22s ease;
+}
+
+.nav-popup::before {
+    content: "";
+    position: absolute;
+    top: -6px;
+    right: 1.1rem;
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    border-left: 1px solid rgba(162, 155, 254, 0.22);
+    border-top: 1px solid rgba(162, 155, 254, 0.22);
+    transform: rotate(45deg);
+    border-radius: 2px;
+}
+
+.nav-popup__hint {
+    margin: 0 0 0.65rem;
+    font-size: 0.82rem;
+    font-weight: 400;
+    color: var(--text-main);
+    opacity: 0.8;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+.nav-popup__cta.btn-luddies--primary {
+    display: flex;
+    width: 100%;
+    padding: 0.55rem 1rem;
+    font-size: 0.875rem;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.nav-popup-wrap:hover .nav-popup,
+.nav-popup-wrap:focus-within .nav-popup {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.nav-popup:hover {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+@media (max-width: 991.98px) {
+    .nav-popup {
+        position: static;
+        transform: none !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        box-shadow: none;
+        border: none;
+        border-top: 1px solid rgba(162, 155, 254, 0.18);
+        border-radius: 0;
+        background: transparent;
+        padding: 0.6rem 0.5rem 0.75rem;
+        min-width: 0;
+    }
+
+    .nav-popup::before {
+        display: none;
+    }
+
+    .nav-popup__hint {
+        white-space: normal;
+        font-size: 0.8rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .nav-popup__cta.btn-luddies--primary {
+        width: auto;
+        display: inline-flex;
+        font-size: 0.82rem;
+        padding: 0.45rem 1rem;
+    }
+}
+
+.nav-popup-wrap {
+    position: relative;
+}
+
+.nav-popup-wrap::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: 1.4rem;
+    background: transparent;
+}
+
+.nav-popup {
+    position: absolute;
+    top: 100%;
+    padding: 1.4rem 1.1rem 1.1rem; 
+    right: 0;
+    left: auto;
+
+    min-width: 13rem;
+    padding: 1rem 1.1rem 1.1rem;
+    border-radius: 1.1rem;
+
+    background: rgba(255, 255, 255, 0.97);
+    border: 1px solid rgba(162, 155, 254, 0.22);
+    box-shadow:
+        0 8px 32px rgba(74, 63, 77, 0.12),
+        0 2px 8px rgba(162, 155, 254, 0.1);
+
+    z-index: 1070;
+
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-6px);
+    transition:
+        opacity 0.22s ease,
+        transform 0.22s ease;
+}
+
+.nav-popup::before {
+    content: "";
+    position: absolute;
+    top: -6px;
+    right: 1.1rem;
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    border-left: 1px solid rgba(162, 155, 254, 0.22);
+    border-top: 1px solid rgba(162, 155, 254, 0.22);
+    transform: rotate(45deg);
+    border-radius: 2px;
+}
+
+.nav-popup__hint {
+    margin: 0 0 0.65rem;
+    font-size: 0.82rem;
+    font-weight: 400;
+    color: var(--text-main);
+    opacity: 0.8;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+.nav-popup__cta.btn-luddies--primary {
+    display: flex;
+    width: 100%;
+    padding: 0.55rem 1rem;
+    font-size: 0.875rem;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.nav-popup-wrap:hover .nav-popup,
+.nav-popup-wrap:focus-within .nav-popup {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.nav-popup:hover {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+@media (max-width: 991.98px) {
+    .nav-popup {
+        position: static;
+        transform: none !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        box-shadow: none;
+        border: none;
+        border-top: 1px solid rgba(162, 155, 254, 0.18);
+        border-radius: 0;
+        background: transparent;
+        padding: 0.6rem 0.5rem 0.75rem;
+        min-width: 0;
+    }
+
+    .nav-popup::before {
+        display: none;
+    }
+
+    .nav-popup__hint {
+        white-space: normal;
+        font-size: 0.8rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .nav-popup__cta.btn-luddies--primary {
+        width: auto;
+        display: inline-flex;
+        font-size: 0.82rem;
+        padding: 0.45rem 1rem;
+    }
+}
