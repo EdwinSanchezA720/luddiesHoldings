@@ -60,21 +60,22 @@
     transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.page-admin .admin-tabs-nav .nav-link:hover {
-    background: rgba(255, 255, 255, 0.9);
-    border-color: rgba(158, 108, 124, 0.55);
+.page-admin .admin-tabs-nav .nav-link:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.55);
+    border-color: rgba(158, 108, 124, 0.35);
 }
 
 .page-admin .admin-tabs-nav .nav-link.active {
     color: #2f2630;
-    border-color: transparent;
+    border: none;
+    padding: calc(0.5rem + 2px) calc(1.15rem + 2px);
     background: linear-gradient(135deg, #a29bfe, #9e6c7c);
     box-shadow: 0 6px 20px rgba(162, 155, 254, 0.35);
 }
 
 .page-admin .admin-tabs-nav .nav-link.active:hover {
     color: #2f2630;
-    filter: brightness(1.04);
+    filter: none;
 }
 
 /* Toolbar & tables */

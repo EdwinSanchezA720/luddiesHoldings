@@ -153,7 +153,7 @@
     font-weight: 600;
     padding: 0.62rem 1.1rem;
     border-radius: var(--luddies-btn-radius);
-    border: 2px solid rgba(158, 108, 124, 0.28);
+    border: 2px solid rgba(162, 155, 254, 0.35);
     background: #fff;
     color: var(--text-main);
     cursor: pointer;
@@ -171,8 +171,16 @@
 
 .catalog-filter-btn.active {
     background: linear-gradient(135deg, #a29bfe, #9e6c7c);
-    border-color: transparent;
+    border: none;
+    padding: 0.72rem 1.1rem;
     color: #2f2630;
+}
+
+.catalog-filter-btn:not(.active) {
+    background: #ffffff;
+    border: 2px solid rgba(162, 155, 254, 0.4);
+    color: var(--text-main);
+    box-shadow: none;
 }
 
 .catalog-acquire-btn--disabled,
