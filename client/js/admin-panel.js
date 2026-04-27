@@ -6,6 +6,8 @@
 
     var pendingDeleteProductId = null;
     var pendingDeleteUserId = null;
+    var currentProductPage = 1;
+    var PRODUCTS_PER_PAGE = 10;
 
     var CANONICAL_CATEGORIES = [
         "science",
@@ -247,8 +249,16 @@
         var body = document.getElementById("admin-products-tbody");
         if (!body || !window.LuddiesAuth) return;
         var products = window.LuddiesAuth.getProducts();
+        var totalPages = Math.max(1, Math.ceil(products.length / PRODUCTS_PER_PAGE));
+
+        // Si la página actual quedó fuera de rango (ej. tras borrar el último de una página)
+        if (currentProductPage > totalPages) currentProductPage = totalPages;
+
+        var start = (currentProductPage - 1) * PRODUCTS_PER_PAGE;
+        var pageProducts = products.slice(start, start + PRODUCTS_PER_PAGE);
+
         body.innerHTML = "";
-        products.forEach(function (p) {
+        pageProducts.forEach(function (p) {
             var trEl = document.createElement("tr");
             trEl.innerHTML =
                 "<td>" +
@@ -277,6 +287,57 @@
                 "</button></div></td>";
             body.appendChild(trEl);
         });
+
+        renderProductPagination(products.length);
+    }
+
+    function renderProductPagination(total) {
+        var wrap = document.getElementById("admin-products-pagination");
+        if (!wrap) return;
+        wrap.innerHTML = "";
+        var totalPages = Math.max(1, Math.ceil(total / PRODUCTS_PER_PAGE));
+        if (totalPages <= 1) return;
+
+        function makeBtn(label, page, isActive, isDisabled) {
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "admin-pagination-btn" + (isActive ? " active" : "");
+            btn.textContent = label;
+            btn.disabled = !!isDisabled;
+            if (!isActive && !isDisabled) {
+                btn.addEventListener("click", function () {
+                    currentProductPage = page;
+                    renderProductTable();
+                });
+            }
+            return btn;
+        }
+
+        // Anterior
+        wrap.appendChild(makeBtn("‹", currentProductPage - 1, false, currentProductPage === 1));
+
+        // Números de página (con elipsis si hay muchas)
+        for (var i = 1; i <= totalPages; i++) {
+            if (
+                totalPages <= 7 ||
+                i === 1 ||
+                i === totalPages ||
+                (i >= currentProductPage - 1 && i <= currentProductPage + 1)
+            ) {
+                wrap.appendChild(makeBtn(i, i, i === currentProductPage, false));
+            } else if (
+                i === currentProductPage - 2 ||
+                i === currentProductPage + 2
+            ) {
+                var ellipsis = document.createElement("span");
+                ellipsis.className = "admin-pagination-ellipsis";
+                ellipsis.textContent = "…";
+                wrap.appendChild(ellipsis);
+            }
+        }
+
+        // Siguiente
+        wrap.appendChild(makeBtn("›", currentProductPage + 1, false, currentProductPage === totalPages));
     }
 
     function renderUserTable() {
