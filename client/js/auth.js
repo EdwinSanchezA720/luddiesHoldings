@@ -188,6 +188,7 @@
         if (!id) {
             id = nextProductId(list);
         }
+        var now = Date.now();
         var row = {
             id: String(id),
             custom: true,
@@ -212,8 +213,13 @@
             return String(p.id) === String(id);
         });
         if (idx === -1) {
+            row.createdAt = now;
+            row.updatedAt = now;
             list.push(row);
         } else {
+            var prev = list[idx] || {};
+            row.createdAt = prev.createdAt || now;
+            row.updatedAt = now;
             list[idx] = row;
         }
         saveProducts(list);

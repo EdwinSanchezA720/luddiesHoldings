@@ -8,6 +8,7 @@
     var pendingDeleteUserId = null;
     var currentProductPage = 1;
     var PRODUCTS_PER_PAGE = 10;
+    var currentProductSort = "created_desc";
 
     var CANONICAL_CATEGORIES = [
         "science",
@@ -245,10 +246,64 @@
         return d[p.name] != null ? d[p.name] : p.name;
     }
 
+    function syntheticTimestamp(p) {
+        
+        var n = parseInt(p && p.id, 10);
+        if (isNaN(n)) return 0;
+        return n * 1000;
+    }
+
+    function getCreatedAt(p) {
+        return typeof p.createdAt === "number" ? p.createdAt : syntheticTimestamp(p);
+    }
+
+    function getUpdatedAt(p) {
+        if (typeof p.updatedAt === "number") return p.updatedAt;
+        if (typeof p.createdAt === "number") return p.createdAt;
+        return syntheticTimestamp(p);
+    }
+
+    function sortProducts(list, mode) {
+        var arr = list.slice();
+        switch (mode) {
+            case "name_asc":
+                arr.sort(function (a, b) {
+                    return displayName(a).localeCompare(displayName(b), undefined, { sensitivity: "base" });
+                });
+                break;
+            case "name_desc":
+                arr.sort(function (a, b) {
+                    return displayName(b).localeCompare(displayName(a), undefined, { sensitivity: "base" });
+                });
+                break;
+            case "created_asc":
+                arr.sort(function (a, b) {
+                    return getCreatedAt(a) - getCreatedAt(b);
+                });
+                break;
+            case "created_desc":
+                arr.sort(function (a, b) {
+                    return getCreatedAt(b) - getCreatedAt(a);
+                });
+                break;
+            case "updated_asc":
+                arr.sort(function (a, b) {
+                    return getUpdatedAt(a) - getUpdatedAt(b);
+                });
+                break;
+            case "updated_desc":
+                arr.sort(function (a, b) {
+                    return getUpdatedAt(b) - getUpdatedAt(a);
+                });
+                break;
+        }
+        return arr;
+    }
+
     function renderProductTable() {
         var body = document.getElementById("admin-products-tbody");
         if (!body || !window.LuddiesAuth) return;
-        var products = window.LuddiesAuth.getProducts();
+        var products = sortProducts(window.LuddiesAuth.getProducts(), currentProductSort);
         var totalPages = Math.max(1, Math.ceil(products.length / PRODUCTS_PER_PAGE));
 
         // Si la página actual quedó fuera de rango (ej. tras borrar el último de una página)
@@ -460,6 +515,16 @@
     }
 
     function init() {
+        var sortSel = document.getElementById("admin-products-sort");
+        if (sortSel) {
+            sortSel.value = currentProductSort;
+            sortSel.addEventListener("change", function () {
+                currentProductSort = sortSel.value || "created_desc";
+                currentProductPage = 1;
+                renderProductTable();
+            });
+        }
+
         renderProductTable();
         renderUserTable();
 
