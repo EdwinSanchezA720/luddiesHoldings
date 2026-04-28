@@ -50,7 +50,18 @@
                     <div class="tab-pane fade show active" id="admin-tab-products" role="tabpanel">
                         <div class="admin-toolbar">
                             <h2 class="h5 mb-0" data-i18n="admin_tab_products">Products</h2>
-                            <button type="button" class="btn btn-luddies btn-luddies--primary" id="admin-btn-new-product" data-i18n="admin_btn_add_product">New product</button>
+                            <div class="admin-toolbar__actions">
+                                <label for="admin-products-sort" class="admin-sort-label" data-i18n="admin_sort_label">Sort by</label>
+                                <select id="admin-products-sort" class="admin-sort-select" aria-label="Sort products">
+                                    <option value="created_desc" data-i18n="admin_sort_created_desc">Most recent</option>
+                                    <option value="created_asc" data-i18n="admin_sort_created_asc">Oldest</option>
+                                    <option value="updated_desc" data-i18n="admin_sort_updated_desc">Recently updated</option>
+                                    <option value="updated_asc" data-i18n="admin_sort_updated_asc">Least recently updated</option>
+                                    <option value="name_asc" data-i18n="admin_sort_name_asc">Name A–Z</option>
+                                    <option value="name_desc" data-i18n="admin_sort_name_desc">Name Z–A</option>
+                                </select>
+                                <button type="button" class="btn btn-luddies btn-luddies--primary" id="admin-btn-new-product" data-i18n="admin_btn_add_product">New product</button>
+                            </div>
                         </div>
                         <div class="table-responsive">
                             <table class="table table-hover align-middle mb-0">
