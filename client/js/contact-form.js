@@ -4,9 +4,21 @@
 (function () {
     "use strict";
 
+    var EMAILJS_PUBLIC_KEY  = "zjeS02tuh47P8cwVz";
+    var EMAILJS_SERVICE_ID  = "service_qv2w9u4";
+    var EMAILJS_TEMPLATE_ID = "template_s14luki";
+
     document.addEventListener("DOMContentLoaded", function () {
         var form = document.getElementById("contactUsForm");
         if (!form) return;
+
+        if (window.emailjs && typeof window.emailjs.init === "function") {
+            try {
+                window.emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+            } catch (e) {
+                try { window.emailjs.init(EMAILJS_PUBLIC_KEY); } catch (_) {}
+            }
+        }
 
         (function consumeCheckoutPrefill() {
             try {
@@ -25,9 +37,7 @@
                     m.value = d.mensaje;
                     m.dispatchEvent(new Event("input", { bubbles: true }));
                 }
-            } catch (e) {
-                /* ignore */
-            }
+            } catch (e) {}
         })();
 
         var btnSubmit = document.getElementById("btnSubmit");
@@ -38,6 +48,8 @@
         var fields = Array.from(form.querySelectorAll("input, select, textarea"));
 
         if (!btnSubmit || !successBanner || !btnNew || !inputMensaje || !charCounter) return;
+
+        var isSubmitting = false;
 
         function messagesForField(fieldId) {
             var validation = window.LuddiesI18n
@@ -100,6 +112,39 @@
             });
             charCounter.textContent = "0 / 500";
             charCounter.classList.remove("near-limit");
+            hideSubmitError();
+        }
+
+        function showSubmitError(message) {
+            var holder = document.getElementById("submitErrorMsg");
+            if (!holder) {
+                holder = document.createElement("p");
+                holder.id = "submitErrorMsg";
+                holder.className = "error-msg visible";
+                holder.setAttribute("role", "alert");
+                holder.innerHTML =
+                    '<i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>' +
+                    '<span id="submitErrorMsgText"></span>';
+                btnSubmit.parentNode.insertBefore(holder, btnSubmit);
+            } else {
+                holder.classList.add("visible");
+            }
+            var textEl = document.getElementById("submitErrorMsgText");
+            if (textEl) textEl.textContent = message;
+        }
+
+        function hideSubmitError() {
+            var holder = document.getElementById("submitErrorMsg");
+            if (holder) holder.classList.remove("visible");
+        }
+
+        function getSubmitErrorMessage() {
+            var lang = (window.LuddiesI18n && window.LuddiesI18n.getLang)
+                ? window.LuddiesI18n.getLang()
+                : "es";
+            return lang === "en"
+                ? "We couldn't send your message. Please try again in a moment."
+                : "No pudimos enviar tu mensaje. Inténtalo de nuevo en un momento.";
         }
 
         inputMensaje.addEventListener("input", function () {
@@ -124,24 +169,46 @@
 
         form.addEventListener("submit", function (e) {
             e.preventDefault();
+            if (isSubmitting) return;
+
+            hideSubmitError();
+
             var allValid = fields.every(updateField);
             if (!allValid) {
                 var firstInvalid = form.querySelector(".is-invalid");
-                if (firstInvalid) {
-                    firstInvalid.focus();
-                }
+                if (firstInvalid) firstInvalid.focus();
                 return;
             }
 
+            if (!window.emailjs || typeof window.emailjs.sendForm !== "function") {
+                showSubmitError(getSubmitErrorMessage());
+                return;
+            }
+
+            isSubmitting = true;
             btnSubmit.disabled = true;
             btnSubmit.classList.add("loading");
 
-            setTimeout(function () {
-                btnSubmit.disabled = false;
-                btnSubmit.classList.remove("loading");
-                form.style.display = "none";
-                successBanner.classList.add("visible");
-            }, 1400);
+            window.emailjs
+                .sendForm(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, form)
+                .then(function () {
+                    btnSubmit.classList.remove("loading");
+                    btnSubmit.disabled = false;
+                    isSubmitting = false;
+
+                    form.style.display = "none";
+                    successBanner.classList.add("visible");
+                })
+                .catch(function (err) {
+                    if (window.console && console.error) {
+                        console.error("[contact-form] EmailJS error:", err);
+                    }
+                    btnSubmit.classList.remove("loading");
+                    btnSubmit.disabled = false;
+                    isSubmitting = false;
+
+                    showSubmitError(getSubmitErrorMessage());
+                });
         });
 
         btnNew.addEventListener("click", function () {
@@ -150,9 +217,7 @@
             successBanner.classList.remove("visible");
             form.style.display = "block";
             var first = document.getElementById("inputNombre");
-            if (first) {
-                first.focus();
-            }
+            if (first) first.focus();
         });
 
         document.addEventListener("luddies:lang-changed", function () {
