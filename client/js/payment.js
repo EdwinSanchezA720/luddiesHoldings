@@ -175,6 +175,7 @@
         var cvcInput = document.getElementById("cc-cvc");
         var checkoutData = null;
         var cartSummary = null;
+        var paymentReference = "";
 
         function renderEmail() {
             if (!elEmail) return;
@@ -183,6 +184,27 @@
                 return;
             }
             elEmail.textContent = t("payment_email_missing");
+        }
+
+        function readStoredReference() {
+            try {
+                var rawReceipt = sessionStorage.getItem(RECEIPT_KEY);
+                if (!rawReceipt) return "";
+                var receipt = JSON.parse(rawReceipt);
+                return receipt && receipt.reference ? String(receipt.reference) : "";
+            } catch (e) {
+                return "";
+            }
+        }
+
+        function renderReference() {
+            if (!referenceEl || viewSuccess.hidden) return;
+            if (!paymentReference) {
+                paymentReference = readStoredReference();
+            }
+            referenceEl.textContent = paymentReference
+                ? t("payment_reference_prefix") + " " + paymentReference
+                : t("payment_reference_prefix") + " --";
         }
 
         // 1. Mostrar email guardado desde checkout
@@ -301,9 +323,7 @@
                     if (viewCheckout) viewCheckout.hidden = true;
                     if (viewSuccess) viewSuccess.hidden = false;
                     var reference = makeReference();
-                    if (referenceEl) {
-                        referenceEl.textContent = t("payment_reference_prefix") + " " + reference;
-                    }
+                    paymentReference = reference;
                     try {
                         sessionStorage.setItem(
                             RECEIPT_KEY,
@@ -317,6 +337,7 @@
                     } catch (err) {
                         /* ignore */
                     }
+                    renderReference();
                     clearCart();
                 }, 2000); // 2 segundos de simulación
             });
@@ -325,11 +346,7 @@
         document.addEventListener("luddies:lang-changed", function () {
             renderTotal();
             renderEmail();
-            if (referenceEl && !viewSuccess.hidden) {
-                var current = referenceEl.textContent || "";
-                var code = current.split(":").slice(1).join(":").trim();
-                referenceEl.textContent = code ? t("payment_reference_prefix") + " " + code : t("payment_reference_prefix") + " --";
-            }
+            renderReference();
             var message = validateCheckoutReadiness(cartSummary || { itemCount: 0, isValid: false }, checkoutData && checkoutData.email);
             if (message) {
                 showBanner(errorBanner, message);
