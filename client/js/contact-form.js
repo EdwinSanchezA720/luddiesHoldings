@@ -4,9 +4,9 @@
 (function () {
     "use strict";
 
-    var EMAILJS_PUBLIC_KEY  = "zjeS02tuh47P8cwVz";
-    var EMAILJS_SERVICE_ID  = "service_qv2w9u4";
-    var EMAILJS_TEMPLATE_ID = "template_s14luki";
+    var EMAILJS_PUBLIC_KEY  = "Pv5f5fYqgI6KWycAm";
+    var EMAILJS_SERVICE_ID  = "service_uardkoo";
+    var EMAILJS_TEMPLATE_ID = "template_i5z4ltl";
 
     document.addEventListener("DOMContentLoaded", function () {
         var form = document.getElementById("contactUsForm");
