@@ -1,6 +1,8 @@
 /**
  * Simulación de Pago - Luddies
  * EmailJS: confirmación de orden al completar pago simulado.
+ * Las credenciales se leen desde window.LuddiesConfig (js/config.js).
+ * config.js está en .gitignore; ver config.example.js para referencia.
  */
 (function () {
     "use strict";
@@ -9,11 +11,12 @@
     var CART_KEY    = "luddies.catalog_cart";
     var RECEIPT_KEY = "luddies.payment_receipt";
 
-    // ── EmailJS ────────────────────────────────────────────────────────────────
-    var EMAILJS_PUBLIC_KEY  = "yXUbZi8er02u07qBW";
-    var EMAILJS_SERVICE_ID  = "service_q0tdm3h";
-    var EMAILJS_TEMPLATE_ID = "template_efhpl7b";
-    // ──────────────────────────────────────────────────────────────────────────
+    // ── Credenciales desde config.js (nunca hardcodeadas aquí) ───────────────
+    var _cfg               = (window.LuddiesConfig && window.LuddiesConfig.emailjs) || {};
+    var EMAILJS_PUBLIC_KEY = _cfg.publicKeyPayment  || "";
+    var EMAILJS_SERVICE_ID = _cfg.serviceIdPayment  || "";
+    var EMAILJS_TEMPLATE_ID= _cfg.templateIdPayment || "";
+    // ─────────────────────────────────────────────────────────────────────────
 
     function t(key) {
         return window.LuddiesI18n && window.LuddiesI18n.t ? window.LuddiesI18n.t(key) : key;

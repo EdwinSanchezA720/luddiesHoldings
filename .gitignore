@@ -1,7 +1,13 @@
-# Dependencies
+# ══════════════════════════════════════════════════════════════════
+# Luddies Holdings — .gitignore
+# ══════════════════════════════════════════════════════════════════
+
+
+# ── Dependencias ─────────────────────────────────────────────────
 node_modules/
 
-# npm / yarn / pnpm
+
+# ── npm / yarn / pnpm ────────────────────────────────────────────
 .npm
 npm-debug.log*
 yarn-debug.log*
@@ -9,31 +15,43 @@ yarn-error.log*
 pnpm-debug.log*
 package-lock.json.bak
 
-# Entorno (secretos)
+
+# ── Secretos y entorno ───────────────────────────────────────────
+# .env y todas sus variantes quedan fuera del repo.
+# Usa .env.example como referencia de qué variables se necesitan.
 .env
 .env.*
 !.env.example
 
-# Caché (gh-pages, bundlers, etc.)
+# config.js contiene las keys reales de EmailJS para el frontend.
+# Usa client/js/config.example.js como referencia.
+client/js/config.js
+
+
+# ── Caché ────────────────────────────────────────────────────────
 .cache/
 
-# Logs y tests
+
+# ── Logs y tests ─────────────────────────────────────────────────
 logs/
 *.log
 coverage/
 .nyc_output/
 
-# Build
+
+# ── Build ────────────────────────────────────────────────────────
 dist/
 build/
 *.tsbuildinfo
 
-# SO
+
+# ── Sistema operativo ────────────────────────────────────────────
 .DS_Store
 Thumbs.db
 Desktop.ini
 
-# IDE
+
+# ── IDE ──────────────────────────────────────────────────────────
 .idea/
 *.swp
 *.swo
