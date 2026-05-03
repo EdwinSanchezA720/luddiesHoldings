@@ -1,13 +1,9 @@
-# ══════════════════════════════════════════════════════════════════
-# Luddies Holdings — .gitignore
-# ══════════════════════════════════════════════════════════════════
 
-
-# ── Dependencias ─────────────────────────────────────────────────
+#Dependencies
 node_modules/
 
 
-# ── npm / yarn / pnpm ────────────────────────────────────────────
+#npm / yarn / pnpm
 .npm
 npm-debug.log*
 yarn-debug.log*
@@ -16,9 +12,7 @@ pnpm-debug.log*
 package-lock.json.bak
 
 
-# ── Secretos y entorno ───────────────────────────────────────────
-# .env y todas sus variantes quedan fuera del repo.
-# Usa .env.example como referencia de qué variables se necesitan.
+# Entorno
 .env
 .env.*
 !.env.example
@@ -28,30 +22,30 @@ package-lock.json.bak
 client/js/config.js
 
 
-# ── Caché ────────────────────────────────────────────────────────
+#Caché
 .cache/
 
 
-# ── Logs y tests ─────────────────────────────────────────────────
+#Logs and tests
 logs/
 *.log
 coverage/
 .nyc_output/
 
 
-# ── Build ────────────────────────────────────────────────────────
+# Build
 dist/
 build/
 *.tsbuildinfo
 
 
-# ── Sistema operativo ────────────────────────────────────────────
+# OS
 .DS_Store
 Thumbs.db
 Desktop.ini
 
 
-# ── IDE ──────────────────────────────────────────────────────────
+# IDE
 .idea/
 *.swp
 *.swo

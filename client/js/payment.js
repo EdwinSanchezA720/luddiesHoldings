@@ -1,9 +1,3 @@
-/**
- * Simulación de Pago - Luddies
- * EmailJS: confirmación de orden al completar pago simulado.
- * Las credenciales se leen desde window.LuddiesConfig (js/config.js).
- * config.js está en .gitignore; ver config.example.js para referencia.
- */
 (function () {
     "use strict";
 
@@ -11,12 +5,10 @@
     var CART_KEY    = "luddies.catalog_cart";
     var RECEIPT_KEY = "luddies.payment_receipt";
 
-    // ── Credenciales desde config.js (nunca hardcodeadas aquí) ───────────────
     var _cfg               = (window.LuddiesConfig && window.LuddiesConfig.emailjs) || {};
     var EMAILJS_PUBLIC_KEY = _cfg.publicKeyPayment  || "";
     var EMAILJS_SERVICE_ID = _cfg.serviceIdPayment  || "";
     var EMAILJS_TEMPLATE_ID= _cfg.templateIdPayment || "";
-    // ─────────────────────────────────────────────────────────────────────────
 
     function t(key) {
         return window.LuddiesI18n && window.LuddiesI18n.t ? window.LuddiesI18n.t(key) : key;
@@ -127,7 +119,6 @@
         return itemCount + " " + template;
     }
 
-    // ── Validadores ────────────────────────────────────────────────────────────
     function isValidLuhn(val) {
         var sum = 0;
         var shouldDouble = false;
@@ -153,9 +144,6 @@
         if (year === currentYear && month < currentMonth) return false;
         return true;
     }
-    // ──────────────────────────────────────────────────────────────────────────
-
-    // ── EmailJS: init + envío de confirmación ─────────────────────────────────
     function initEmailJS() {
         if (!window.emailjs) return;
         try {
@@ -189,14 +177,11 @@
                 console.error("[payment] EmailJS error:", err);
             });
     }
-    // ──────────────────────────────────────────────────────────────────────────
 
     document.addEventListener("DOMContentLoaded", function () {
 
-        // ── Init EmailJS ──────────────────────────────────────────────────────
         initEmailJS();
 
-        // ── Referencias DOM ───────────────────────────────────────────────────
         var elEmail     = document.getElementById("payment-stub-email");
         var elTotal     = document.getElementById("payment-total");
         var form        = document.getElementById("payment-simulation-form");
@@ -215,7 +200,6 @@
         var cartSummary    = null;
         var paymentReference = "";
 
-        // ── Helpers de render ─────────────────────────────────────────────────
         function renderEmail() {
             if (!elEmail) return;
             elEmail.textContent = (checkoutData && checkoutData.email)
@@ -253,18 +237,16 @@
             }
         }
 
-        // ── 1. Leer datos del checkout guardados en sessionStorage ─────────────
         try {
             var rawStub = sessionStorage.getItem(STUB_KEY);
             if (rawStub) {
                 var d = JSON.parse(rawStub);
                 if (d && d.email) checkoutData = d;
             }
-        } catch (e) { /* ignorar */ }
+        } catch (e) {  }
 
         renderEmail();
 
-        // ── 2. Renderizar total y validar estado inicial ───────────────────────
         renderTotal();
 
         var readinessError = validateCheckoutReadiness(
@@ -294,7 +276,6 @@
             }
         });
 
-        // ── 3. Formateo dinámico de campos de tarjeta ─────────────────────────
         if (ccInput && expInput && cvcInput) {
             ccInput.addEventListener("input", function (e) {
                 var value = e.target.value.replace(/\D/g, "");
@@ -321,7 +302,6 @@
             });
         }
 
-        // ── 4. Submit: validar y simular pago ─────────────────────────────────
         if (form) {
             form.addEventListener("submit", function (e) {
                 e.preventDefault();
@@ -358,7 +338,6 @@
 
                 setSubmitState(btnPay, true, true);
 
-                // ── Capturar productos ANTES de limpiar el carrito ────────────
                 var itemsSnapshot = readCart();
                 var productNames  = itemsSnapshot.map(function (item) {
                     return item.titleKey
@@ -375,7 +354,6 @@
                     var reference    = makeReference();
                     paymentReference = reference;
 
-                    // ── Guardar recibo en sessionStorage ──────────────────────
                     try {
                         sessionStorage.setItem(
                             RECEIPT_KEY,
@@ -390,8 +368,6 @@
                     } catch (e) { /* ignore */ }
 
                     renderReference();
-
-                    // ── Enviar confirmación por EmailJS ───────────────────────
                     sendOrderConfirmation({
                         email: checkoutData ? checkoutData.email : "",
                         name:  checkoutData ? checkoutData.name  : "",
@@ -403,7 +379,6 @@
                                })
                     });
 
-                    // ── Limpiar carrito al final ───────────────────────────────
                     clearCart();
 
                 }, 2000);

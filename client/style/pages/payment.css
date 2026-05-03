@@ -118,7 +118,6 @@
     opacity: 0.65;
 }
 
-/* Heredado de contact: labels + inputs lila redondeados */
 .page-pago .form-label-luddies {
     display: flex;
     align-items: center;

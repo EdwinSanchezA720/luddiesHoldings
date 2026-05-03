@@ -1,17 +1,10 @@
-/**
- * Contact form — validación, prefill desde checkout y envío con EmailJS.
- * Las credenciales se leen desde window.LuddiesConfig (js/config.js).
- * config.js está en .gitignore; ver config.example.js para referencia.
- */
 (function () {
     "use strict";
 
-    // ── Credenciales desde config.js (nunca hardcodeadas aquí) ───────────────
     var _cfg               = (window.LuddiesConfig && window.LuddiesConfig.emailjs) || {};
     var EMAILJS_PUBLIC_KEY = _cfg.publicKeyContact  || "";
     var EMAILJS_SERVICE_ID = _cfg.serviceIdContact  || "";
     var EMAILJS_TEMPLATE_ID= _cfg.templateIdContact || "";
-    // ─────────────────────────────────────────────────────────────────────────
 
     document.addEventListener("DOMContentLoaded", function () {
         var form = document.getElementById("contactUsForm");

@@ -843,7 +843,6 @@
             var s = sessionStorage.getItem(STORAGE_KEY);
             if (s === "en" || s === "es") return s;
         } catch (e) {
-            /* ignore */
         }
         return "es";
     }
@@ -899,7 +898,6 @@
         try {
             sessionStorage.setItem(STORAGE_KEY, lang);
         } catch (e) {
-            /* ignore */
         }
         applyTranslations(lang);
         document.dispatchEvent(new CustomEvent("luddies:lang-changed", { detail: { lang: lang } }));
