@@ -1,7 +1,3 @@
-/**
- * Checkout: carrito + bloque pago/envío (correo obligatorio, nombre opcional).
- * Validación alineada a contacto; handoff provisional a pago.html (stub Stripe).
- */
 (function () {
     "use strict";
 
@@ -26,7 +22,6 @@
         try {
             sessionStorage.setItem(PROFILE_KEY, JSON.stringify(data));
         } catch (e) {
-            /* ignore */
         }
     }
 
@@ -36,7 +31,6 @@
             : [];
     }
 
-    /** Extrae el primer importe numérico tras $ en textos tipo "Desde $249 MXN" / "From $249 MXN". */
     function parseMXNAmountFromPriceText(priceText) {
         if (!priceText || typeof priceText !== "string") return NaN;
         var m = priceText.match(/\$\s*([\d,.]+)/);

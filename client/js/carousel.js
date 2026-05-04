@@ -13,10 +13,8 @@
         var base = track.innerHTML.trim();
         if (!base) return;
 
-        /* Una vuelta completa del equipo, duplicada para el loop infinito */
         track.innerHTML = base + base;
 
-        /* Con pocos miembros la franja puede ser más corta que la pantalla: duplicar hasta cubrir ~2.2× el viewport */
         var guard = 0;
         while (track.scrollWidth < window.innerWidth * 2.2 && guard++ < 8) {
             track.innerHTML = track.innerHTML + track.innerHTML;
@@ -35,7 +33,6 @@
             position -= speed;
             var half = track.scrollWidth / 2;
             if (half <= 0) { requestAnimationFrame(tick); return; }
-            // Loop suave: mantener position en [-half, 0)
             position = ((position % half) + half) % half - half;
             track.style.transform = "translateX(" + position + "px)";
             requestAnimationFrame(tick);

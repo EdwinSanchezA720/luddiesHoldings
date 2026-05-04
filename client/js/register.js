@@ -96,7 +96,6 @@
                 try {
                     sessionStorage.setItem("luddies.register.json", json);
                 } catch (e2) {
-                    /* ignore */
                 }
                 window.location.href = "login.html?registered=1";
                 return;

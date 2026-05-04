@@ -1,7 +1,9 @@
-# Dependencies
+
+#Dependencies
 node_modules/
 
-# npm / yarn / pnpm
+
+#npm / yarn / pnpm
 .npm
 npm-debug.log*
 yarn-debug.log*
@@ -9,29 +11,39 @@ yarn-error.log*
 pnpm-debug.log*
 package-lock.json.bak
 
-# Entorno (secretos)
+
+# Entorno
 .env
 .env.*
 !.env.example
 
-# Caché (gh-pages, bundlers, etc.)
+# config.js contiene las keys reales de EmailJS para el frontend.
+# Usa client/js/config.example.js como referencia.
+client/js/config.js
+
+
+#Caché
 .cache/
 
-# Logs y tests
+
+#Logs and tests
 logs/
 *.log
 coverage/
 .nyc_output/
+
 
 # Build
 dist/
 build/
 *.tsbuildinfo
 
-# SO
+
+# OS
 .DS_Store
 Thumbs.db
 Desktop.ini
+
 
 # IDE
 .idea/
