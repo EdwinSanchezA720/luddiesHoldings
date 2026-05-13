@@ -1,0 +1,24 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - feature/github-pages-deploy  # ← tu rama de pruebas por ahora
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Deploy a GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages          # rama donde se desplegará
+          folder: client            # carpeta raíz de tu frontend
+          clean: true               # limpia archivos viejos antes de deployar
