@@ -1,120 +1,298 @@
-/**
- * Simulación de Pago - Luddies
- */
 (function () {
     "use strict";
 
-    var STUB_KEY = "luddies.payment_stub";
-    var CART_KEY = "luddies.catalog_cart";
+    var STUB_KEY    = "luddies.payment_stub";
+    var CART_KEY    = "luddies.catalog_cart";
+    var RECEIPT_KEY = "luddies.payment_receipt";
+
+    var _cfg               = (window.LuddiesConfig && window.LuddiesConfig.emailjs) || {};
+    var EMAILJS_PUBLIC_KEY = _cfg.publicKeyPayment  || "";
+    var EMAILJS_SERVICE_ID = _cfg.serviceIdPayment  || "";
+    var EMAILJS_TEMPLATE_ID= _cfg.templateIdPayment || "";
 
     function t(key) {
         return window.LuddiesI18n && window.LuddiesI18n.t ? window.LuddiesI18n.t(key) : key;
     }
 
-    function getCartTotal() {
+    function readCart() {
         try {
-            var raw = sessionStorage.getItem(CART_KEY);
-            var items = raw ? JSON.parse(raw) : [];
-            var total = 0;
-
-            items.forEach(function (item) {
-                var priceStr = t(item.priceKey);
-                // Extrae los números del string del precio (ej: "Desde $249 MXN" -> 249)
-                var match = priceStr.match(/\d+/);
-                if (match) {
-                    total += parseInt(match[0], 10);
-                }
-            });
-            return total;
+            if (window.LuddiesCatalogCart && window.LuddiesCatalogCart.readCart) {
+                return window.LuddiesCatalogCart.readCart();
+            }
+            var raw = localStorage.getItem(CART_KEY);
+            var data = raw ? JSON.parse(raw) : [];
+            return Array.isArray(data) ? data : [];
         } catch (e) {
-            return 0;
+            return [];
         }
     }
 
-    // Validador de Algoritmo de Luhn
+    function parseMXNAmountFromPriceText(priceText) {
+        if (!priceText || typeof priceText !== "string") return NaN;
+        var m = priceText.match(/\$\s*([\d,.]+)/);
+        if (!m) return NaN;
+        var raw = m[1].replace(/,/g, "");
+        var n = parseFloat(raw);
+        return isFinite(n) ? n : NaN;
+    }
+
+    function formatMXNTotal(amount) {
+        var lang = window.LuddiesI18n && window.LuddiesI18n.getLang ? window.LuddiesI18n.getLang() : "es";
+        try {
+            return (
+                "$" +
+                amount.toLocaleString(lang === "en" ? "en-US" : "es-MX", {
+                    maximumFractionDigits: 0,
+                }) +
+                " MXN"
+            );
+        } catch (e) {
+            return "$" + Math.round(amount) + " MXN";
+        }
+    }
+
+    function computeCartSummary(items) {
+        var total = 0;
+        var validItems = 0;
+        items.forEach(function (item) {
+            var txt = item && item.priceKey ? t(item.priceKey) : "";
+            var n = parseMXNAmountFromPriceText(txt);
+            if (!isNaN(n)) {
+                total += n;
+                validItems += 1;
+            }
+        });
+        return {
+            itemCount: items.length,
+            validItems: validItems,
+            total: total,
+            isValid: items.length > 0 && validItems === items.length && total > 0,
+        };
+    }
+
+    function makeReference() {
+        var stamp = Date.now().toString(36).toUpperCase();
+        var rand  = Math.random().toString(36).substring(2, 8).toUpperCase();
+        return "LUD-" + stamp + "-" + rand;
+    }
+
+    function showBanner(el, message) {
+        if (!el) return;
+        el.textContent = message;
+        el.hidden = false;
+    }
+
+    function hideBanner(el) {
+        if (!el) return;
+        el.hidden = true;
+        el.textContent = "";
+    }
+
+    function validateCheckoutReadiness(summary, email) {
+        if (!summary.itemCount)  return t("payment_error_empty_cart");
+        if (!summary.isValid)    return t("payment_error_invalid_total");
+        if (!email)              return t("payment_error_missing_email");
+        return "";
+    }
+
+    function setSubmitState(button, disabled, loading) {
+        if (!button) return;
+        button.disabled = !!disabled;
+        button.classList.toggle("loading", !!loading);
+        button.setAttribute("aria-busy", loading ? "true" : "false");
+    }
+
+    function clearCart() {
+        if (window.LuddiesCatalogCart && window.LuddiesCatalogCart.clearCart) {
+            window.LuddiesCatalogCart.clearCart();
+            return;
+        }
+        try {
+            localStorage.setItem(CART_KEY, JSON.stringify([]));
+        } catch (e) { /* ignore */ }
+    }
+
+    function countLabel(itemCount) {
+        var template = t("payment_items_count");
+        if (!template || template === "payment_items_count") return itemCount + " items";
+        if (template.indexOf("{n}") >= 0) return template.replace(/\{n\}/g, String(itemCount));
+        return itemCount + " " + template;
+    }
+
     function isValidLuhn(val) {
         var sum = 0;
         var shouldDouble = false;
         for (var i = val.length - 1; i >= 0; i--) {
             var digit = parseInt(val.charAt(i), 10);
-            if (shouldDouble) {
-                if ((digit *= 2) > 9) digit -= 9;
-            }
+            if (shouldDouble) { if ((digit *= 2) > 9) digit -= 9; }
             sum += digit;
             shouldDouble = !shouldDouble;
         }
         return (sum % 10) === 0;
     }
 
-    // Validador de Fecha de Vencimiento (MM/YY)
     function isValidExpiry(val) {
         var parts = val.split("/");
         if (parts.length !== 2) return false;
         var month = parseInt(parts[0], 10);
-        var year = parseInt(parts[1], 10);
+        var year  = parseInt(parts[1], 10);
         if (month < 1 || month > 12) return false;
-        var now = new Date();
-        var currentYear = parseInt(now.getFullYear().toString().substring(2, 4), 10);
+        var now          = new Date();
+        var currentYear  = parseInt(now.getFullYear().toString().substring(2, 4), 10);
         var currentMonth = now.getMonth() + 1;
         if (year < currentYear) return false;
         if (year === currentYear && month < currentMonth) return false;
         return true;
     }
+    function initEmailJS() {
+        if (!window.emailjs) return;
+        try {
+            window.emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+        } catch (e) {
+            try { window.emailjs.init(EMAILJS_PUBLIC_KEY); } catch (_) {}
+        }
+    }
+
+    function sendOrderConfirmation(orderData) {
+        if (!window.emailjs || typeof window.emailjs.send !== "function") {
+            console.warn("[payment] EmailJS no disponible, se omite el envío.");
+            return;
+        }
+
+        var templateParams = {
+            to_email:    orderData.email,
+            to_name:     orderData.name  || "Comprador",
+            order_ref:   orderData.ref,
+            order_total: orderData.total,
+            order_items: orderData.items,
+            order_date:  orderData.date
+        };
+
+        window.emailjs
+            .send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+            .then(function () {
+                console.log("[payment] EmailJS: confirmación enviada a " + orderData.email);
+            })
+            .catch(function (err) {
+                console.error("[payment] EmailJS error:", err);
+            });
+    }
 
     document.addEventListener("DOMContentLoaded", function () {
-        var elEmail = document.getElementById("payment-stub-email");
-        var elTotal = document.getElementById("payment-total");
-        var form = document.getElementById("payment-simulation-form");
-        var viewCheckout = document.getElementById("payment-checkout-view");
-        var viewSuccess = document.getElementById("payment-success-view");
-        var btnPay = document.getElementById("btn-simulate-pay");
 
-        var ccInput = document.getElementById("cc-number");
+        initEmailJS();
+
+        var elEmail     = document.getElementById("payment-stub-email");
+        var elTotal     = document.getElementById("payment-total");
+        var form        = document.getElementById("payment-simulation-form");
+        var viewCheckout = document.getElementById("payment-checkout-view");
+        var viewSuccess  = document.getElementById("payment-success-view");
+        var btnPay       = document.getElementById("btn-simulate-pay");
+        var errorBanner  = document.getElementById("payment-error-banner");
+        var cartCountEl  = document.getElementById("payment-cart-count");
+        var referenceEl  = document.getElementById("payment-confirmation-ref");
+
+        var ccInput  = document.getElementById("cc-number");
         var expInput = document.getElementById("cc-exp");
         var cvcInput = document.getElementById("cc-cvc");
 
-        // 1. Mostrar email guardado desde checkout
+        var checkoutData   = null;
+        var cartSummary    = null;
+        var paymentReference = "";
+
+        function renderEmail() {
+            if (!elEmail) return;
+            elEmail.textContent = (checkoutData && checkoutData.email)
+                ? checkoutData.email
+                : t("payment_email_missing");
+        }
+
+        function readStoredReference() {
+            try {
+                var rawReceipt = sessionStorage.getItem(RECEIPT_KEY);
+                if (!rawReceipt) return "";
+                var receipt = JSON.parse(rawReceipt);
+                return receipt && receipt.reference ? String(receipt.reference) : "";
+            } catch (e) {
+                return "";
+            }
+        }
+
+        function renderReference() {
+            if (!referenceEl || viewSuccess.hidden) return;
+            if (!paymentReference) paymentReference = readStoredReference();
+            referenceEl.textContent = paymentReference
+                ? t("payment_reference_prefix") + " " + paymentReference
+                : t("payment_reference_prefix") + " --";
+        }
+
+        function renderTotal() {
+            var items = readCart();
+            cartSummary = computeCartSummary(items);
+            if (elTotal && cartSummary) {
+                elTotal.textContent = cartSummary.isValid ? formatMXNTotal(cartSummary.total) : "$0 MXN";
+            }
+            if (cartCountEl && cartSummary) {
+                cartCountEl.textContent = countLabel(cartSummary.itemCount);
+            }
+        }
+
         try {
             var rawStub = sessionStorage.getItem(STUB_KEY);
             if (rawStub) {
                 var d = JSON.parse(rawStub);
-                if (d && d.email && elEmail) {
-                    elEmail.textContent = d.email;
-                }
+                if (d && d.email) checkoutData = d;
             }
-        } catch (e) {
-            /* ignorar */
-        }
+        } catch (e) {  }
 
-        // 2. Mostrar total calculado del carrito
-        function renderTotal() {
-            var total = getCartTotal();
-            if (elTotal) {
-                elTotal.textContent = "$" + total + ".00 MXN";
-            }
-        }
+        renderEmail();
+
         renderTotal();
 
-        // 3. Formateo dinámico de campos
+        var readinessError = validateCheckoutReadiness(
+            cartSummary || { itemCount: 0, isValid: false },
+            checkoutData && checkoutData.email
+        );
+        if (readinessError) {
+            showBanner(errorBanner, readinessError);
+            setSubmitState(btnPay, true, false);
+        } else {
+            hideBanner(errorBanner);
+            setSubmitState(btnPay, false, false);
+        }
+
+        document.addEventListener("luddies:catalog-cart-changed", function () {
+            renderTotal();
+            var msg = validateCheckoutReadiness(
+                cartSummary || { itemCount: 0, isValid: false },
+                checkoutData && checkoutData.email
+            );
+            if (msg) {
+                showBanner(errorBanner, msg);
+                setSubmitState(btnPay, true, false);
+            } else {
+                hideBanner(errorBanner);
+                setSubmitState(btnPay, false, false);
+            }
+        });
+
         if (ccInput && expInput && cvcInput) {
             ccInput.addEventListener("input", function (e) {
                 var value = e.target.value.replace(/\D/g, "");
-                var formattedValue = "";
+                var formatted = "";
                 for (var i = 0; i < value.length; i++) {
-                    if (i > 0 && i % 4 === 0) formattedValue += " ";
-                    formattedValue += value[i];
+                    if (i > 0 && i % 4 === 0) formatted += " ";
+                    formatted += value[i];
                 }
-                e.target.value = formattedValue;
-                ccInput.setCustomValidity(""); // Limpiar mensaje de error al escribir
+                e.target.value = formatted;
+                ccInput.setCustomValidity("");
             });
 
             expInput.addEventListener("input", function (e) {
                 var value = e.target.value.replace(/\D/g, "");
-                if (value.length > 2) {
-                    e.target.value = value.substring(0, 2) + "/" + value.substring(2, 4);
-                } else {
-                    e.target.value = value;
-                }
+                e.target.value = value.length > 2
+                    ? value.substring(0, 2) + "/" + value.substring(2, 4)
+                    : value;
                 expInput.setCustomValidity("");
             });
 
@@ -124,39 +302,86 @@
             });
         }
 
-        // 4. Validar y simular el proceso de pago
         if (form) {
             form.addEventListener("submit", function (e) {
                 e.preventDefault();
+                hideBanner(errorBanner);
 
-                // Comprobaciones antes de procesar pago
+                renderTotal();
+                var guardedError = validateCheckoutReadiness(
+                    cartSummary || { itemCount: 0, isValid: false },
+                    checkoutData && checkoutData.email
+                );
+                if (guardedError) {
+                    showBanner(errorBanner, guardedError);
+                    return;
+                }
+
                 if (ccInput && expInput && cvcInput) {
                     var ccVal = ccInput.value.replace(/\s/g, "");
                     if (ccVal.length < 13 || !isValidLuhn(ccVal)) {
-                        ccInput.setCustomValidity("Número de tarjeta inválido. Comprueba los dígitos.");
+                        ccInput.setCustomValidity(t("payment_error_card_invalid"));
                         ccInput.reportValidity();
                         return;
                     }
                     if (!isValidExpiry(expInput.value)) {
-                        expInput.setCustomValidity("Fecha de vencimiento inválida o expirada.");
+                        expInput.setCustomValidity(t("payment_error_exp_invalid"));
                         expInput.reportValidity();
                         return;
                     }
                     if (cvcInput.value.length < 3) {
-                        cvcInput.setCustomValidity("CVC debe tener al menos 3 dígitos.");
+                        cvcInput.setCustomValidity(t("payment_error_cvc_invalid"));
                         cvcInput.reportValidity();
                         return;
                     }
                 }
 
-                btnPay.classList.add("loading"); // Activar spinner
+                setSubmitState(btnPay, true, true);
+
+                var itemsSnapshot = readCart();
+                var productNames  = itemsSnapshot.map(function (item) {
+                    return item.titleKey
+                        ? t(item.titleKey)
+                        : (item.name ? t(item.name) : "Producto");
+                }).join(", ") || "Sin productos";
 
                 setTimeout(function () {
-                    btnPay.classList.remove("loading");
+                    setSubmitState(btnPay, false, false);
+
                     if (viewCheckout) viewCheckout.hidden = true;
-                    if (viewSuccess) viewSuccess.hidden = false;
-                    sessionStorage.removeItem(CART_KEY); // Limpiar carrito
-                }, 2000); // 2 segundos de simulación
+                    if (viewSuccess)  viewSuccess.hidden  = false;
+
+                    var reference    = makeReference();
+                    paymentReference = reference;
+
+                    try {
+                        sessionStorage.setItem(
+                            RECEIPT_KEY,
+                            JSON.stringify({
+                                reference: reference,
+                                total:     cartSummary ? cartSummary.total : 0,
+                                email:     checkoutData ? checkoutData.email : "",
+                                name:      checkoutData ? checkoutData.name  : "",
+                                at:        Date.now()
+                            })
+                        );
+                    } catch (e) { /* ignore */ }
+
+                    renderReference();
+                    sendOrderConfirmation({
+                        email: checkoutData ? checkoutData.email : "",
+                        name:  checkoutData ? checkoutData.name  : "",
+                        ref:   reference,
+                        total: cartSummary ? formatMXNTotal(cartSummary.total) : "$0 MXN",
+                        items: productNames,
+                        date:  new Date().toLocaleDateString("es-MX", {
+                                   year: "numeric", month: "long", day: "numeric"
+                               })
+                    });
+
+                    clearCart();
+
+                }, 2000);
             });
         }
     });

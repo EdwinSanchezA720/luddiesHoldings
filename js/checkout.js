@@ -1,7 +1,3 @@
-/**
- * Checkout: carrito + bloque pago/envío (correo obligatorio, nombre opcional).
- * Validación alineada a contacto; handoff provisional a pago.html (stub Stripe).
- */
 (function () {
     "use strict";
 
@@ -26,7 +22,6 @@
         try {
             sessionStorage.setItem(PROFILE_KEY, JSON.stringify(data));
         } catch (e) {
-            /* ignore */
         }
     }
 
@@ -36,7 +31,6 @@
             : [];
     }
 
-    /** Extrae el primer importe numérico tras $ en textos tipo "Desde $249 MXN" / "From $249 MXN". */
     function parseMXNAmountFromPriceText(priceText) {
         if (!priceText || typeof priceText !== "string") return NaN;
         var m = priceText.match(/\$\s*([\d,.]+)/);
@@ -264,6 +258,7 @@
         var btnSubmit = document.getElementById("checkout-submit-purchase");
         var correo = document.getElementById("checkoutCorreo");
         var nombre = document.getElementById("checkoutNombre");
+        var btnClear = document.getElementById("checkout-clear-cart");
 
         function refresh() {
             syncVisibility(emptyEl, flowEl);
@@ -349,7 +344,15 @@
                 window.location.href = "pago.html";
             });
         }
-    }
+
+        if (btnClear) {
+            btnClear.addEventListener("click", function () {
+            if (!window.LuddiesCatalogCart || !window.LuddiesCatalogCart.clearCart) return;
+            window.LuddiesCatalogCart.clearCart();
+            refresh();
+        });
+       }
+}
 
     document.addEventListener("DOMContentLoaded", init);
 })();

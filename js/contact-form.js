@@ -1,12 +1,22 @@
-/**
- * Contact form validation and success state (runs only when #contactUsForm exists).
- */
 (function () {
     "use strict";
+
+    var _cfg               = (window.LuddiesConfig && window.LuddiesConfig.emailjs) || {};
+    var EMAILJS_PUBLIC_KEY = _cfg.publicKeyContact  || "";
+    var EMAILJS_SERVICE_ID = _cfg.serviceIdContact  || "";
+    var EMAILJS_TEMPLATE_ID= _cfg.templateIdContact || "";
 
     document.addEventListener("DOMContentLoaded", function () {
         var form = document.getElementById("contactUsForm");
         if (!form) return;
+
+        if (window.emailjs && typeof window.emailjs.init === "function") {
+            try {
+                window.emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+            } catch (e) {
+                try { window.emailjs.init(EMAILJS_PUBLIC_KEY); } catch (_) {}
+            }
+        }
 
         (function consumeCheckoutPrefill() {
             try {
@@ -25,19 +35,19 @@
                     m.value = d.mensaje;
                     m.dispatchEvent(new Event("input", { bubbles: true }));
                 }
-            } catch (e) {
-                /* ignore */
-            }
+            } catch (e) { /* ignore */ }
         })();
 
-        var btnSubmit = document.getElementById("btnSubmit");
-        var successBanner = document.getElementById("successBanner");
-        var btnNew = document.getElementById("btnNewMessage");
+        var btnSubmit    = document.getElementById("btnSubmit");
+        var successBanner= document.getElementById("successBanner");
+        var btnNew       = document.getElementById("btnNewMessage");
         var inputMensaje = document.getElementById("inputMensaje");
-        var charCounter = document.getElementById("charCounterMensaje");
-        var fields = Array.from(form.querySelectorAll("input, select, textarea"));
+        var charCounter  = document.getElementById("charCounterMensaje");
+        var fields       = Array.from(form.querySelectorAll("input, select, textarea"));
 
         if (!btnSubmit || !successBanner || !btnNew || !inputMensaje || !charCounter) return;
+
+        var isSubmitting = false;
 
         function messagesForField(fieldId) {
             var validation = window.LuddiesI18n
@@ -58,109 +68,107 @@
 
         function getMessage(field) {
             var cfg = messagesForField(field.id);
-            if (field.validity.valueMissing) {
-                return cfg.valueMissing || "This field is required.";
-            }
-            if (field.validity.typeMismatch) {
-                return cfg.typeMismatch || "Invalid format.";
-            }
-            if (field.validity.tooShort) {
-                return cfg.tooShort || "Value is too short.";
-            }
-            if (field.validity.patternMismatch) {
-                return cfg.patternMismatch || "Invalid format.";
-            }
+            if (field.validity.valueMissing)   return cfg.valueMissing   || "This field is required.";
+            if (field.validity.typeMismatch)   return cfg.typeMismatch   || "Invalid format.";
+            if (field.validity.tooShort)       return cfg.tooShort       || "Value is too short.";
+            if (field.validity.patternMismatch)return cfg.patternMismatch|| "Invalid format.";
             return "";
         }
 
         function updateField(field) {
-            var valid = field.checkValidity();
-            var nodes = getErrorNodes(field);
-            field.classList.toggle("is-invalid", !valid);
-            field.classList.toggle("is-valid", valid);
-            if (nodes.container) {
-                nodes.container.classList.toggle("visible", !valid);
-            }
-            if (nodes.text) {
-                nodes.text.textContent = valid ? "" : getMessage(field);
-            }
-            return valid;
+            var nodes   = getErrorNodes(field);
+            var isValid = field.checkValidity();
+            field.classList.toggle("is-invalid", !isValid);
+            field.classList.toggle("is-valid",    isValid && field.value.trim() !== "");
+            if (nodes.container) nodes.container.classList.toggle("visible", !isValid);
+            if (nodes.text && !isValid) nodes.text.textContent = getMessage(field);
+            return isValid;
         }
 
-        function resetUI() {
-            fields.forEach(function (field) {
-                field.classList.remove("is-valid", "is-invalid");
-                var nodes = getErrorNodes(field);
-                if (nodes.container) {
-                    nodes.container.classList.remove("visible");
-                }
-                if (nodes.text) {
-                    nodes.text.textContent = "";
-                }
-            });
-            charCounter.textContent = "0 / 500";
-            charCounter.classList.remove("near-limit");
+        function showSubmitError(msg) {
+            var el = document.getElementById("submit-error-msg");
+            if (el) { el.textContent = msg; el.classList.add("visible"); }
+        }
+
+        function hideSubmitError() {
+            var el = document.getElementById("submit-error-msg");
+            if (el) { el.textContent = ""; el.classList.remove("visible"); }
+        }
+
+        function getSubmitErrorMessage() {
+            var lang = window.LuddiesI18n ? window.LuddiesI18n.getLang() : "es";
+            return lang === "en"
+                ? "We couldn't send your message. Please try again in a moment."
+                : "No pudimos enviar tu mensaje. Inténtalo de nuevo en un momento.";
         }
 
         inputMensaje.addEventListener("input", function () {
             var len = inputMensaje.value.length;
             charCounter.textContent = len + " / 500";
             charCounter.classList.toggle("near-limit", len >= 450);
-            if (inputMensaje.classList.contains("is-invalid")) {
-                updateField(inputMensaje);
-            }
+            if (inputMensaje.classList.contains("is-invalid")) updateField(inputMensaje);
         });
 
         fields.forEach(function (field) {
-            field.addEventListener("blur", function () {
-                updateField(field);
-            });
+            field.addEventListener("blur",  function () { updateField(field); });
             field.addEventListener("input", function () {
-                if (field.classList.contains("is-invalid")) {
-                    updateField(field);
-                }
+                if (field.classList.contains("is-invalid")) updateField(field);
             });
         });
 
         form.addEventListener("submit", function (e) {
             e.preventDefault();
+            if (isSubmitting) return;
+
+            hideSubmitError();
+
             var allValid = fields.every(updateField);
             if (!allValid) {
                 var firstInvalid = form.querySelector(".is-invalid");
-                if (firstInvalid) {
-                    firstInvalid.focus();
-                }
+                if (firstInvalid) firstInvalid.focus();
                 return;
             }
 
+            if (!window.emailjs || typeof window.emailjs.sendForm !== "function") {
+                showSubmitError(getSubmitErrorMessage());
+                return;
+            }
+
+            isSubmitting = true;
             btnSubmit.disabled = true;
             btnSubmit.classList.add("loading");
 
-            setTimeout(function () {
-                btnSubmit.disabled = false;
-                btnSubmit.classList.remove("loading");
-                form.style.display = "none";
-                successBanner.classList.add("visible");
-            }, 1400);
+            window.emailjs
+                .sendForm(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, form)
+                .then(function () {
+                    btnSubmit.classList.remove("loading");
+                    btnSubmit.disabled = false;
+                    isSubmitting = false;
+                    form.style.display = "none";
+                    successBanner.classList.add("visible");
+                })
+                .catch(function (err) {
+                    if (window.console && console.error) {
+                        console.error("[contact-form] EmailJS error:", err);
+                    }
+                    btnSubmit.classList.remove("loading");
+                    btnSubmit.disabled = false;
+                    isSubmitting = false;
+                    showSubmitError(getSubmitErrorMessage());
+                });
         });
 
         btnNew.addEventListener("click", function () {
             form.reset();
-            resetUI();
+            form.style.display = "";
             successBanner.classList.remove("visible");
-            form.style.display = "block";
-            var first = document.getElementById("inputNombre");
-            if (first) {
-                first.focus();
-            }
-        });
-
-        document.addEventListener("luddies:lang-changed", function () {
+            charCounter.textContent = "0 / 500";
             fields.forEach(function (field) {
-                if (field.classList.contains("is-invalid")) {
-                    updateField(field);
-                }
+                field.classList.remove("is-valid", "is-invalid");
+                var nodes = getErrorNodes(field);
+                if (nodes.container) nodes.container.classList.remove("visible");
             });
+            hideSubmitError();
         });
     });
 })();

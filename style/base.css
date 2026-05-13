@@ -4,7 +4,6 @@
 }
 
 html {
-    /* Anclas (#team, etc.) con barra fija + notch */
     scroll-padding-top: calc(6.25rem + env(safe-area-inset-top, 0px));
 }
 
@@ -18,7 +17,6 @@ body {
     overflow-x: hidden;
 }
 
-/* Barra siempre visible al hacer scroll (sticky fallaba con overflow-x en body) */
 #site-header {
     position: fixed;
     top: 0;

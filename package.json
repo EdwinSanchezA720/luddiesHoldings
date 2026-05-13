@@ -1,9 +1,0 @@
-{
-  "homepage": "https://juliosmorfin.github.io/luddiesHoldings",
-  "devDependencies": {
-    "gh-pages": "^6.3.0"
-  },
-  "scripts": {
-    "deploy": "gh-pages -d ."
-  }
-}

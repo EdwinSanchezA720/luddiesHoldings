@@ -746,7 +746,6 @@
     white-space: nowrap;
 }
 
-/* ─── Tipografía del thead (alineada a hero-title y admin-section-label) ─── */
 .page-admin .admin-table-head th {
     font-size: 0.85rem;
     font-weight: 700;
@@ -756,7 +755,6 @@
     white-space: nowrap;
 }
 
-/* ─── Titular del toolbar (h2) ─── */
 .page-admin .admin-toolbar h2 {
     color: var(--secondary-accent);
     font-weight: 600;
@@ -764,7 +762,6 @@
     letter-spacing: 0.01em;
 }
 
-/* ─── Paginación de productos ─── */
 .admin-pagination-wrap {
     display: flex;
     align-items: center;
@@ -820,4 +817,35 @@
     opacity: 0.5;
     padding: 0 0.2rem;
     user-select: none;
+}
+
+.page-admin .admin-pagination-btn.active {
+    background: linear-gradient(135deg, #a29bfe, #9e6c7c);
+    border: none;
+    color: #2f2630;
+}
+
+@media (max-width: 767.98px) {
+    .page-admin .table-responsive {
+        font-size: 0.78rem;
+    }
+    .page-admin .table > thead > tr > th,
+    .page-admin .table > tbody > tr > td {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        white-space: normal;
+        word-break: break-word;
+    }
+    .page-admin .table > thead > tr > th:first-child,
+    .page-admin .table > tbody > tr > td:first-child {
+        padding-left: 0.75rem;
+    }
+    .page-admin .admin-table-head tr th:nth-child(1),
+    .page-admin #admin-products-tbody tr td:nth-child(1) { width: 70px; }
+    .page-admin .admin-table-head tr th:nth-child(3),
+    .page-admin #admin-products-tbody tr td:nth-child(3) { width: auto; }
+    .page-admin .admin-table-head tr th:nth-child(4),
+    .page-admin #admin-products-tbody tr td:nth-child(4) { width: 120px; }
+    .page-admin .admin-table-action--edit span { display: none; }
+    .page-admin .admin-table-action--edit { padding: 0.4rem 0.55rem; }
 }
