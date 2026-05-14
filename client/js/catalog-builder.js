@@ -83,7 +83,10 @@
         }
 
         registerAllProductI18n();
-        var products = window.LuddiesAuth.getProducts();
+        container.innerHTML = "";
+        var products = window.LuddiesAuth.getProducts().filter(function (p) {
+            return p && p.apiIsActive !== false;
+        });
         var fragment = document.createDocumentFragment();
         products.forEach(function (product) {
             var card = buildCatalogCard(product);
@@ -99,7 +102,15 @@
         document.dispatchEvent(new CustomEvent("luddies:catalog-items-mounted", { bubbles: true }));
     }
 
-    document.addEventListener("DOMContentLoaded", renderCatalog);
+    function bootCatalog() {
+        if (window.LuddiesAuth && window.LuddiesAuth.usesApi && window.LuddiesAuth.usesApi() && window.LuddiesAuth.loadProducts) {
+            window.LuddiesAuth.loadProducts().finally(renderCatalog);
+        } else {
+            renderCatalog();
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", bootCatalog);
     document.addEventListener("luddies:lang-changed", function () {
         registerAllProductI18n();
         if (window.LuddiesI18n) window.LuddiesI18n.applyTranslations(window.LuddiesI18n.getLang());
