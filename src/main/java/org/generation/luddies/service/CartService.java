@@ -17,7 +17,7 @@ public class CartService {
 
     public Cart getById(Long id) { return cartRepository.findById(id).orElse(null); }
 
-    public List<Cart> getByUser(Long userId) { return cartRepository.findByUserId(userId); }
+    public List<Cart> getByUser(Long userId) { return cartRepository.findByUser_Id(userId); }
 
     public Cart save(Cart cart) { return cartRepository.save(cart); }
 

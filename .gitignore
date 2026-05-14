@@ -20,11 +20,6 @@ package-lock.json.bak
 server/src/main/resources/application.properties
 src/main/resources/application.properties
 
-# config.js contiene las keys reales de EmailJS para el frontend.
-# Usa client/js/config.example.js como referencia.
-client/js/config.js
-
-
 #Caché
 .cache/
 
