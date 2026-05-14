@@ -1,6 +1,9 @@
 (function () {
     "use strict";
 
+    /** Misma regla que en register.js: local@dominio.tld */
+    var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     function getReturnUrl() {
         var params = new URLSearchParams(window.location.search);
         var r = params.get("return");
@@ -48,26 +51,46 @@
 
             var email = (emailInput && emailInput.value) || "";
             var pass  = (passInput  && passInput.value)  || "";
+            var emailTrim = email.trim();
 
-            var emailOk = email.trim().length > 0;
-            var passOk  = pass.length > 0;
+            var emailEmpty = emailTrim.length === 0;
+            var passEmpty = pass.length === 0;
+            var emailBadFormat = !emailEmpty && !emailRe.test(emailTrim);
 
-            setFieldError(emailInput, !emailOk);
-            setFieldError(passInput,  !passOk);
+            setFieldError(emailInput, emailEmpty || emailBadFormat);
+            setFieldError(passInput, passEmpty);
 
-            if (!emailOk || !passOk) {
+            if (emailEmpty || passEmpty) {
                 showAlert("login-error-alert", "auth_error_required");
+                return;
+            }
+            if (emailBadFormat) {
+                showAlert("login-error-alert", "reg_error_email");
                 return;
             }
 
             if (!window.LuddiesAuth) { showAlert("login-error-alert", "auth_error_generic"); return; }
 
-            var res = window.LuddiesAuth.login(email.trim(), pass);
-            if (res && res.ok) { window.location.href = getReturnUrl(); return; }
+            function onLoginResult(res) {
+                if (res && res.ok) {
+                    window.location.href = getReturnUrl();
+                    return;
+                }
+                setFieldError(emailInput, true);
+                setFieldError(passInput, res && res.error === "invalid_email" ? false : true);
+                var alertKey =
+                    res && res.error === "invalid_email" ? "reg_error_email" : "auth_error_invalid";
+                showAlert("login-error-alert", alertKey);
+            }
 
-            setFieldError(emailInput, true);
-            setFieldError(passInput,  true);
-            showAlert("login-error-alert", "auth_error_invalid");
+            var resOrPromise = window.LuddiesAuth.login(emailTrim, pass);
+            if (resOrPromise && typeof resOrPromise.then === "function") {
+                resOrPromise.then(onLoginResult).catch(function () {
+                    showAlert("login-error-alert", "auth_error_generic");
+                });
+            } else {
+                onLoginResult(resOrPromise);
+            }
         });
 
         [emailInput, passInput].forEach(function(inp) {

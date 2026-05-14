@@ -1,8 +1,23 @@
 /**
- * Local auth and CRUD for users/products. Passwords are plain for the demo; replace with server-side hash/JWT when integrating Spring Boot.
+ * Auth + catalog CRUD. Without apiBaseUrl: localStorage demo. With LuddiesConfig.apiBaseUrl: Spring Boot API.
  */
 (function () {
     "use strict";
+
+    window.LuddiesConfig = window.LuddiesConfig || {};
+    if (window.LuddiesConfig.apiBaseUrl == null) {
+        window.LuddiesConfig.apiBaseUrl = "";
+    }
+    /* Si config.js no cargó (404, Live Server con otra raíz) y estás en local, usa el API por defecto. */
+    if (
+        !window.__LUDDIES_CONFIG_LOADED__ &&
+        typeof location !== "undefined" &&
+        (location.hostname === "localhost" || location.hostname === "127.0.0.1")
+    ) {
+        if (!String(window.LuddiesConfig.apiBaseUrl || "").trim()) {
+            window.LuddiesConfig.apiBaseUrl = "http://localhost:8080";
+        }
+    }
 
     var KEYS = window.LuddiesStorageKeys;
     if (!KEYS) {
@@ -11,6 +26,10 @@
 
     var SEED_PASSWORD = "123456";
     var RESERVED_ADMIN = "admin@luddies.com.mx";
+
+    function usesApi() {
+        return window.LuddiesApi && window.LuddiesApi.uses();
+    }
 
     function readJson(key, fallback) {
         try {
@@ -27,9 +46,9 @@
     }
 
     function ensureUsers() {
+        if (usesApi()) return;
         var users = readJson(KEYS.USERS, null);
         if (users && users.length) return;
-        // TODO: replace with /api/auth bootstrap from Spring
         var seed = [
             {
                 id: "u-admin",
@@ -52,6 +71,7 @@
     }
 
     function ensureCatalog() {
+        if (usesApi()) return;
         var p = readJson(KEYS.PRODUCTS, null);
         if (p && p.length) return;
         var seed = window.LUDDIES_CATALOG_SEED;
@@ -69,6 +89,12 @@
 
     function init() {
         if (!KEYS) return;
+        if (window.console && console.info && !usesApi()) {
+            console.info(
+                "[Luddies] Modo demo: apiBaseUrl vacío. Registro/login y datos van a localStorage. " +
+                    "Edita client/js/config.js y define apiBaseUrl (p. ej. http://localhost:8080) para usar MySQL."
+            );
+        }
         ensureUsers();
         ensureCatalog();
     }
@@ -82,8 +108,9 @@
             localStorage.removeItem(KEYS.SESSION);
             return;
         }
+        var uid = user.id != null && user.id !== "" ? user.id : user.userId;
         writeJson(KEYS.SESSION, {
-            userId: user.id,
+            userId: uid,
             email: user.email,
             role: user.role,
             fullName: user.fullName
@@ -101,7 +128,33 @@
         });
     }
 
-    function login(email, password) {
+    function mapApiUserRow(u) {
+        var roleName = (u.role && u.role.name) || "USER";
+        var role = String(roleName).toUpperCase() === "ADMIN" ? "admin" : "user";
+        return {
+            id: String(u.id),
+            fullName: u.fullName || "",
+            email: u.email || "",
+            role: role,
+            password: ""
+        };
+    }
+
+    function mapAuthUserBody(body) {
+        if (!body || body.id == null) {
+            return null;
+        }
+        return {
+            id: String(body.id),
+            fullName: body.fullName || "",
+            email: body.email || "",
+            role: body.role || "user",
+            phone: (body.phoneDial || "") + (body.phoneNumber || ""),
+            password: ""
+        };
+    }
+
+    function syncLogin(email, password) {
         var u = getUserByEmail(email);
         if (!u || u.password !== password) {
             return { ok: false, error: "invalid_credentials" };
@@ -110,12 +163,31 @@
         return { ok: true, user: u };
     }
 
+    function login(email, password) {
+        if (usesApi()) {
+            return window.LuddiesApi
+                .postJson("/api/auth/login", { email: email, password: password })
+                .then(function (body) {
+                    var u = mapAuthUserBody(body);
+                    if (!u) {
+                        return { ok: false, error: "invalid_credentials" };
+                    }
+                    setSession(u);
+                    return { ok: true, user: u };
+                })
+                .catch(function (err) {
+                    var code = (err.body && err.body.error) || "invalid_credentials";
+                    return { ok: false, error: code };
+                });
+        }
+        return Promise.resolve(syncLogin(email, password));
+    }
+
     function logout() {
         setSession(null);
     }
 
-    function register(payload) {
-        // payload: fullName, phone, email, password — TODO: match POST /api/users
+    function syncRegister(payload) {
         if (!payload || !payload.email) return { ok: false, error: "invalid_payload" };
         var email = payload.email.trim().toLowerCase();
         if (email === RESERVED_ADMIN) {
@@ -138,7 +210,33 @@
         return { ok: true, user: getUserByEmail(email) };
     }
 
-    function deleteUser(userId, actingUserId) {
+    function register(payload) {
+        if (usesApi()) {
+            return window.LuddiesApi
+                .postJson("/api/auth/register", {
+                    fullName: (payload && payload.fullName) || "",
+                    phone: (payload && payload.phone) || "",
+                    email: (payload && payload.email) || "",
+                    password: (payload && payload.password) || ""
+                })
+                .then(function (body) {
+                    var u = mapAuthUserBody(body);
+                    if (!u) {
+                        return { ok: false, error: "invalid_payload" };
+                    }
+                    return { ok: true, user: u };
+                })
+                .catch(function (err) {
+                    var code = (err.body && err.body.error) || "invalid_payload";
+                    if (code === "email_taken") return { ok: false, error: "email_taken" };
+                    if (code === "reserved_email") return { ok: false, error: "reserved_email" };
+                    return { ok: false, error: code };
+                });
+        }
+        return Promise.resolve(syncRegister(payload));
+    }
+
+    function syncDeleteUser(userId, actingUserId) {
         var users = getUsers();
         var actor = users.find(function (u) {
             return u.id === actingUserId;
@@ -165,8 +263,72 @@
         return { ok: true };
     }
 
+    function deleteUser(userId, actingUserId) {
+        if (usesApi()) {
+            if (String(userId) === String(actingUserId)) {
+                return Promise.resolve({ ok: false, error: "cannot_delete_self" });
+            }
+            return window.LuddiesApi
+                .delete("/api/users/" + encodeURIComponent(String(userId)))
+                .then(function () {
+                    return { ok: true };
+                })
+                .catch(function () {
+                    return { ok: false, error: "forbidden" };
+                });
+        }
+        return Promise.resolve(syncDeleteUser(userId, actingUserId));
+    }
+
     function getProducts() {
         return readJson(KEYS.PRODUCTS, window.LUDDIES_CATALOG_SEED ? window.LUDDIES_CATALOG_SEED.slice() : []);
+    }
+
+    function loadUsers() {
+        if (!usesApi()) {
+            return Promise.resolve(getUsers());
+        }
+        return window.LuddiesApi.getJson("/api/users").then(function (list) {
+            var mapped = (list || []).map(mapApiUserRow);
+            writeJson(KEYS.USERS, mapped);
+            return mapped;
+        });
+    }
+
+    function loadProducts() {
+        if (!usesApi()) {
+            return Promise.resolve(getProducts());
+        }
+        if (!window.LuddiesCatalogApi || !window.LuddiesCatalogApi.mapApiProductToClient) {
+            console.error("[LuddiesAuth] LuddiesCatalogApi missing");
+            return Promise.resolve([]);
+        }
+        return Promise.all([
+            window.LuddiesApi.getJson("/api/products"),
+            window.LuddiesApi.getJson("/api/categories")
+        ]).then(function (pair) {
+            var products = pair[0] || [];
+            return Promise.all(
+                products.map(function (p) {
+                    return window.LuddiesApi
+                        .getJson("/api/product-categories/product/" + p.id)
+                        .then(function (rows) {
+                            var slugs = (rows || [])
+                                .map(function (row) {
+                                    return row && row.category && row.category.slug;
+                                })
+                                .filter(Boolean);
+                            return window.LuddiesCatalogApi.mapApiProductToClient(p, slugs);
+                        })
+                        .catch(function () {
+                            return window.LuddiesCatalogApi.mapApiProductToClient(p, []);
+                        });
+                })
+            );
+        }).then(function (rows) {
+            writeJson(KEYS.PRODUCTS, rows);
+            return rows;
+        });
     }
 
     function saveProducts(list) {
@@ -182,7 +344,7 @@
         return String(max + 1);
     }
 
-    function saveProduct(product) {
+    function syncSaveProduct(product) {
         var list = getProducts();
         var id = product.id;
         if (!id) {
@@ -220,13 +382,76 @@
             var prev = list[idx] || {};
             row.createdAt = prev.createdAt || now;
             row.updatedAt = now;
+            row.apiIsCustom = prev.apiIsCustom;
+            row.apiIsActive = prev.apiIsActive;
             list[idx] = row;
         }
         saveProducts(list);
         return { ok: true, product: row };
     }
 
-    function deleteProduct(productId) {
+    function saveProduct(product) {
+        if (!usesApi()) {
+            return Promise.resolve(syncSaveProduct(product));
+        }
+        if (!window.LuddiesCatalogApi) {
+            return Promise.resolve({ ok: false, error: "labels_required" });
+        }
+        var tokens = (product.category || "").toLowerCase().trim().split(/\s+/).filter(Boolean);
+        var existing =
+            getProducts().find(function (p) {
+                return String(p.id) === String(product.id || "");
+            }) || null;
+        var payload = window.LuddiesCatalogApi.mapFormDataToProductPayload(product, existing);
+        var idStr = product.id ? String(product.id) : null;
+        var saveReq = idStr
+            ? window.LuddiesApi.putJson("/api/products/" + encodeURIComponent(idStr), payload)
+            : window.LuddiesApi.postJson("/api/products", payload);
+
+        return saveReq
+            .then(function (saved) {
+                var sid = saved && saved.id != null ? saved.id : idStr;
+                return window.LuddiesApi
+                    .delete("/api/product-categories/product/" + encodeURIComponent(String(sid)))
+                    .catch(function () {
+                        return null;
+                    })
+                    .then(function () {
+                        return window.LuddiesApi.getJson("/api/categories").then(function (cats) {
+                            var slugTo = {};
+                            (cats || []).forEach(function (c) {
+                                if (c && c.slug) slugTo[c.slug] = c;
+                            });
+                            var ops = [];
+                            tokens.forEach(function (slug) {
+                                var cat = slugTo[slug];
+                                if (!cat) return;
+                                ops.push(
+                                    window.LuddiesApi.postJson("/api/product-categories", {
+                                        product: { id: sid },
+                                        category: { id: cat.id }
+                                    })
+                                );
+                            });
+                            return Promise.all(ops);
+                        });
+                    })
+                    .then(function () {
+                        return loadProducts();
+                    })
+                    .then(function (list) {
+                        var row = (list || []).find(function (x) {
+                            return String(x.id) === String(sid);
+                        });
+                        return { ok: true, product: row || { id: String(sid), custom: true, labels: product.labels } };
+                    });
+            })
+            .catch(function () {
+                return { ok: false, error: "labels_required" };
+            });
+    }
+
+    function syncDeleteProduct(productId) {
         var list = getProducts();
         var next = list.filter(function (p) {
             return String(p.id) !== String(productId);
@@ -234,6 +459,22 @@
         if (next.length === list.length) return { ok: false, error: "not_found" };
         saveProducts(next);
         return { ok: true };
+    }
+
+    function deleteProduct(productId) {
+        if (usesApi()) {
+            return window.LuddiesApi
+                .delete("/api/products/" + encodeURIComponent(String(productId)))
+                .then(function () {
+                    return loadProducts().then(function () {
+                        return { ok: true };
+                    });
+                })
+                .catch(function () {
+                    return { ok: false, error: "not_found" };
+                });
+        }
+        return Promise.resolve(syncDeleteProduct(productId));
     }
 
     function isAdmin() {
@@ -268,6 +509,9 @@
 
     window.LuddiesAuth = {
         init: init,
+        usesApi: usesApi,
+        loadProducts: loadProducts,
+        loadUsers: loadUsers,
         getSession: getSession,
         setSession: setSession,
         getUsers: getUsers,

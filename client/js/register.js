@@ -79,32 +79,48 @@
                 return;
             }
 
-            var res = window.LuddiesAuth.register({
+            function handleRegisterResult(res) {
+                if (res && res.ok) {
+                    var json = JSON.stringify({
+                        fullName: res.user.fullName,
+                        phone: res.user.phone,
+                        email: res.user.email,
+                        role: res.user.role
+                    });
+                    try {
+                        sessionStorage.setItem("luddies.register.json", json);
+                    } catch (e2) {
+                    }
+                    window.location.href = "login.html?registered=1";
+                    return;
+                }
+                if (res && res.error === "email_taken") {
+                    setAlert("danger", "register-error-alert", "reg_error_taken");
+                    return;
+                }
+                if (res && res.error === "reserved_email") {
+                    setAlert("danger", "register-error-alert", "reg_error_reserved");
+                    return;
+                }
+                if (res && res.error === "invalid_email") {
+                    setAlert("danger", "register-error-alert", "reg_error_email");
+                    return;
+                }
+                setAlert("danger", "register-error-alert", "auth_error_generic");
+            }
+
+            var resOrPromise = window.LuddiesAuth.register({
                 fullName: data.fullName,
                 phone: data.phone,
                 email: data.email,
                 password: data.password
             });
 
-            if (res && res.ok) {
-                var json = JSON.stringify({
-                    fullName: res.user.fullName,
-                    phone: res.user.phone,
-                    email: res.user.email,
-                    role: res.user.role
-                });
-                try {
-                    sessionStorage.setItem("luddies.register.json", json);
-                } catch (e2) {
-                }
-                window.location.href = "login.html?registered=1";
-                return;
+            if (resOrPromise && typeof resOrPromise.then === "function") {
+                resOrPromise.then(handleRegisterResult);
+            } else {
+                handleRegisterResult(resOrPromise);
             }
-            if (res && res.error === "email_taken") {
-                setAlert("danger", "register-error-alert", "reg_error_taken");
-                return;
-            }
-            setAlert("danger", "register-error-alert", "auth_error_generic");
         });
         
     });

@@ -34,6 +34,9 @@
         } catch (e) {
             /* ignore */
         }
+        if (window.LuddiesCommerce && window.LuddiesCommerce.scheduleSyncCart) {
+            window.LuddiesCommerce.scheduleSyncCart();
+        }
     }
 
     function getDict() {

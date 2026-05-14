@@ -1,4 +1,3 @@
-
 #Dependencies
 node_modules/
 
@@ -17,10 +16,9 @@ package-lock.json.bak
 .env.*
 !.env.example
 
-# config.js contiene las keys reales de EmailJS para el frontend.
-# Usa client/js/config.example.js como referencia.
-client/js/config.js
-
+# Local backend config with real credentials
+server/src/main/resources/application.properties
+src/main/resources/application.properties
 
 #Caché
 .cache/
@@ -36,7 +34,15 @@ coverage/
 # Build
 dist/
 build/
+target/
+server/target/
 *.tsbuildinfo
+
+# Gradle
+.gradle/
+gradle-app.setting
+!gradle-wrapper.jar
+!gradle-wrapper.properties
 
 
 # OS
