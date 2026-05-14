@@ -368,10 +368,8 @@
             return btn;
         }
 
-        // Anterior
         wrap.appendChild(makeBtn("‹", currentProductPage - 1, false, currentProductPage === 1));
 
-        // Números de página (con elipsis si hay muchas)
         for (var i = 1; i <= totalPages; i++) {
             if (
                 totalPages <= 7 ||
@@ -391,7 +389,6 @@
             }
         }
 
-        // Siguiente
         wrap.appendChild(makeBtn("›", currentProductPage + 1, false, currentProductPage === totalPages));
     }
 

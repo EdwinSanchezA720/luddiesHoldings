@@ -70,7 +70,6 @@
             showAlert("login-error-alert", "auth_error_invalid");
         });
 
-        // Limpiar error al escribir
         [emailInput, passInput].forEach(function(inp) {
             if (!inp) return;
             inp.addEventListener("input", function() {

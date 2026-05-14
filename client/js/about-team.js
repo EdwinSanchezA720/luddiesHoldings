@@ -8,31 +8,31 @@
     var TEAM_MEMBERS = [
         {
             slug: "antonio",
-            name: "Jose Antonio Martinez Torres",
+            name: "José Antonio Martínez Torres",
             role: "Product Owner",
             img: "../images/team/antonio.jpg",
         },
         {
             slug: "azul",
-            name: "Azul Alcatraz Pineda Guereca",
+            name: "Azúl Alcatraz Pineda Güereca",
             role: "Scrum Master",
             img: "../images/team/azul.png",
         },
         {
             slug: "julio",
-            name: "Julio Alberto Sanchez Morfin",
+            name: "Julio Alberto Sanchez Morfín",
             role: "Development",
             img: "../images/team/julio.png",
         },
         {
             slug: "cleyri",
-            name: "Cleyri Solano Garcia",
+            name: "Cleyri Solano García",
             role: "Development",
             img: "../images/team/cleyri-solano.png",
         },
         {
             slug: "daniela",
-            name: "Daniela Hernandez Santillan",
+            name: "Daniela Hernandez Santillán",
             role: "Development",
             img: "../images/team/daniela.png",
         },
@@ -44,13 +44,13 @@
         },
         {
             slug: "edwin",
-            name: "Edwin Eduardo Sanchez Aguilar",
+            name: "Edwin Eduardo Sánchez Aguilar",
             role: "Development",
             img: "../images/team/edwins.png",
         },
         {
             slug: "erick",
-            name: "Erick Martinez Candelario",
+            name: "Erick Martínez Candelario",
             role: "Development",
             img: "../images/team/erik.jpg",
         },
