@@ -103,9 +103,10 @@
 
     function isValidHttpUrl(s) {
         if (!s) return false;
+        if (/^(https?:\/\/|data:image\/|\.?\.?\/)/.test(s)) return true;
         try {
-            var u = new URL(s);
-            return u.protocol === "http:" || u.protocol === "https:";
+            var u = new URL(s, window.location.href);
+            return true;
         } catch (e) {
             return false;
         }

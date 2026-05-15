@@ -154,8 +154,8 @@
     }
 
     function sendOrderConfirmation(orderData) {
-        if (!window.emailjs || typeof window.emailjs.send !== "function") {
-            console.warn("[payment] EmailJS no disponible, se omite el envío.");
+        if (!window.emailjs || typeof window.emailjs.send !== "function" || !EMAILJS_SERVICE_ID) {
+            console.warn("[payment] EmailJS no disponible o faltan claves, se omite el envío.");
             return;
         }
 
