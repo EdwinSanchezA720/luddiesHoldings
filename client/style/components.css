@@ -312,7 +312,7 @@ a.btn-luddies--primary:hover {
   height: 55px;
   z-index: -1;
   opacity: 0;
-  transition: opacity 0.3s ease, z-index 0.3s ease;
+  transition: opacity 0.3s ease, z-index 0.3s ease, bottom 0.3s ease;
 }
 
 .lh-gotop-button {
