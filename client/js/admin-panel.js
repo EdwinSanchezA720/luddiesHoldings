@@ -103,9 +103,12 @@
 
     function isValidHttpUrl(s) {
         if (!s) return false;
-        if (/^(https?:\/\/|data:image\/|\.?\.?\/)/.test(s)) return true;
+        // Permite URLs absolutas (http, https, data), rutas relativas comunes (./, ../, /) 
+        // y también rutas que empiecen con nombres de carpeta (assets/, img/, etc.)
+        if (/^(https?:\/\/|data:image\/|\/|\.\/|\.\.\/|[a-zA-Z0-9_-]+\/)/.test(s)) return true;
         try {
-            var u = new URL(s, window.location.href);
+            // Intento final con el constructor URL (maneja protocolos raros o rutas absolutas de sistema)
+            new URL(s, window.location.href);
             return true;
         } catch (e) {
             return false;
@@ -231,11 +234,14 @@
     }
 
     function validateForm(data) {
-        if (!data.img) return false;
-        if (!isValidHttpUrl(data.img)) return false;
+        if (!data.img || !isValidHttpUrl(data.img)) return false;
+        // Validar que haya al menos una categoría (la de readForm es solo un fallback de seguridad)
         if (!readCategoryFromForm()) return false;
+        // Validar campos obligatorios en ambos idiomas
         if (!data.labels.es.name || !data.labels.en.name) return false;
         if (!data.labels.es.description || !data.labels.en.description) return false;
+        if (!data.labels.es.meta || !data.labels.en.meta) return false;
+        if (!data.labels.es.price || !data.labels.en.price) return false;
         return true;
     }
 
@@ -248,7 +254,7 @@
     }
 
     function syntheticTimestamp(p) {
-        
+
         var n = parseInt(p && p.id, 10);
         if (isNaN(n)) return 0;
         return n * 1000;
@@ -404,15 +410,15 @@
             var delBtn =
                 u.role === "user"
                     ? "<div class=\"admin-table-actions\">" +
-                      "<button type=\"button\" class=\"btn btn-sm admin-table-action admin-table-action--delete js-admin-del-user\" data-id=\"" +
-                      escapeAttr(u.id) +
-                      "\" aria-label=\"" +
-                      escapeAttr(t("admin_user_delete")) +
-                      "\" title=\"" +
-                      escapeAttr(t("admin_user_delete")) +
-                      "\">" +
-                      "<i class=\"fa-solid fa-trash-can\" aria-hidden=\"true\"></i>" +
-                      "</button></div>"
+                    "<button type=\"button\" class=\"btn btn-sm admin-table-action admin-table-action--delete js-admin-del-user\" data-id=\"" +
+                    escapeAttr(u.id) +
+                    "\" aria-label=\"" +
+                    escapeAttr(t("admin_user_delete")) +
+                    "\" title=\"" +
+                    escapeAttr(t("admin_user_delete")) +
+                    "\">" +
+                    "<i class=\"fa-solid fa-trash-can\" aria-hidden=\"true\"></i>" +
+                    "</button></div>"
                     : "<span class=\"text-secondary\">—</span>";
             trEl.innerHTML =
                 "<td>" +
@@ -544,9 +550,9 @@
         } else {
             refreshTables();
         }
-            document.getElementById("admin-btn-new-product").addEventListener("click", function () {
-                openProductModal(null);
-            });
+        document.getElementById("admin-btn-new-product").addEventListener("click", function () {
+            openProductModal(null);
+        });
 
         document.getElementById("admin-products-tbody") &&
             document.getElementById("admin-products-tbody").addEventListener("click", function (e) {
