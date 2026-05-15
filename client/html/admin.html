@@ -167,7 +167,8 @@
                                     </div>
                                     <div class="field-group">
                                         <label class="field-label" for="f-img"><span data-i18n="admin_form_img">Image URL</span> <span class="req">*</span></label>
-                                        <input type="url" class="field-input" id="f-img" name="img" required autocomplete="off">
+                                        <input type="url" class="field-input" id="f-img" name="img" maxlength="1024" required autocomplete="off">
+                                        <p class="field-hint mb-0" data-i18n="admin_form_img_help"></p>
                                     </div>
                                     <div class="img-preview-strip" id="img-preview-strip">
                                         <div class="img-preview-placeholder"><i class="fa-regular fa-image"></i><span data-i18n="admin_preview_strip">Image preview</span></div>
