@@ -152,11 +152,14 @@
 }
 
 .footer-divider {
+    grid-column: 1 / -1;
     height: 1px;
     background: rgba(158, 108, 124, 0.15);
+    margin: 1rem 0 0.5rem;
 }
 
 .footer-bottom {
+    grid-column: 1 / -1;
     display: flex;
     align-items: center;
     justify-content: center;
