@@ -7,7 +7,7 @@
 window.__LUDDIES_CONFIG_LOADED__ = true;
 
 window.LuddiesConfig = {
-    apiBaseUrl: "http://localhost:8080",
+    apiBaseUrl: "http://18.208.174.54:8080/",
     /** Logo barra/pie/login. Vacío: si hay apiBaseUrl → ese origen + /images/brand/luddies-imagotipo-alt.svg; si no, ruta relativa al JS/HTML. */
     brandLogoUrl: "",
     emailjs: {

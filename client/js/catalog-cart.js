@@ -59,9 +59,11 @@
         var items = readCart();
         if (items.length === 0) {
             bar.hidden = true;
+            document.body.classList.remove("has-catalog-cart");
             return;
         }
         bar.hidden = false;
+        document.body.classList.add("has-catalog-cart");
         textEl.textContent = barTemplate(items.length);
     }
 
