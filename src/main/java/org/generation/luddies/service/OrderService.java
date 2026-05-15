@@ -17,7 +17,7 @@ public class OrderService {
 
     public Order getById(Long id) { return orderRepository.findById(id).orElse(null); }
 
-    public List<Order> getByUser(Long userId) { return orderRepository.findByUserId(userId); }
+    public List<Order> getByUser(Long userId) { return orderRepository.findByUser_Id(userId); }
 
     public Order save(Order order) { return orderRepository.save(order); }
 

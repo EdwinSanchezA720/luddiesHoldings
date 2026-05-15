@@ -10,6 +10,8 @@ import java.util.List;
 @Repository
 public interface ProductCategoryRepository extends JpaRepository<ProductCategory, ProductCategoryId> {
 
-    List<ProductCategory> findByProductId(Long productId);
+    void deleteByProduct_Id(Long productId);
+
+    List<ProductCategory> findByProduct_Id(Long productId);
     List<ProductCategory> findByCategoryId(Integer categoryId);
 }

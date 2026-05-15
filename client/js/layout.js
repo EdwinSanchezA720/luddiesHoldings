@@ -90,6 +90,9 @@
                 headerEl ? injectPartial(PARTIALS.header, "site-header") : Promise.resolve(),
                 footerEl ? injectPartial(PARTIALS.footer, "site-footer") : Promise.resolve(),
             ]);
+            if (window.LuddiesBrandAssets && typeof window.LuddiesBrandAssets.fix === "function") {
+                window.LuddiesBrandAssets.fix(document);
+            }
             setActiveNav();
             initNavbarScroll();
             initGoTopButton(); 

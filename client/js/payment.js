@@ -345,42 +345,79 @@
                         : (item.name ? t(item.name) : "Producto");
                 }).join(", ") || "Sin productos";
 
-                setTimeout(function () {
+                var ccDigits = ccInput && ccInput.value ? ccInput.value.replace(/\s/g, "") : "";
+
+                function completePurchaseUi(reference) {
                     setSubmitState(btnPay, false, false);
-
                     if (viewCheckout) viewCheckout.hidden = true;
-                    if (viewSuccess)  viewSuccess.hidden  = false;
-
-                    var reference    = makeReference();
+                    if (viewSuccess) viewSuccess.hidden = false;
                     paymentReference = reference;
-
                     try {
                         sessionStorage.setItem(
                             RECEIPT_KEY,
                             JSON.stringify({
                                 reference: reference,
-                                total:     cartSummary ? cartSummary.total : 0,
-                                email:     checkoutData ? checkoutData.email : "",
-                                name:      checkoutData ? checkoutData.name  : "",
-                                at:        Date.now()
+                                total: cartSummary ? cartSummary.total : 0,
+                                email: checkoutData ? checkoutData.email : "",
+                                name: checkoutData ? checkoutData.name : "",
+                                at: Date.now()
                             })
                         );
-                    } catch (e) { /* ignore */ }
-
+                    } catch (e) {
+                        /* ignore */
+                    }
                     renderReference();
                     sendOrderConfirmation({
                         email: checkoutData ? checkoutData.email : "",
-                        name:  checkoutData ? checkoutData.name  : "",
-                        ref:   reference,
+                        name: checkoutData ? checkoutData.name : "",
+                        ref: reference,
                         total: cartSummary ? formatMXNTotal(cartSummary.total) : "$0 MXN",
                         items: productNames,
-                        date:  new Date().toLocaleDateString("es-MX", {
-                                   year: "numeric", month: "long", day: "numeric"
-                               })
+                        date: new Date().toLocaleDateString("es-MX", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric"
+                        })
                     });
-
                     clearCart();
+                }
 
+                setTimeout(function () {
+                    var reference = makeReference();
+                    var useApi =
+                        window.LuddiesApi && window.LuddiesApi.uses && window.LuddiesApi.uses();
+                    var sess =
+                        window.LuddiesAuth && window.LuddiesAuth.getSession && window.LuddiesAuth.getSession();
+                    var canPersist =
+                        useApi &&
+                        sess &&
+                        window.LuddiesCommerce &&
+                        window.LuddiesCommerce.submitPaidOrder;
+
+                    if (canPersist) {
+                        window.LuddiesCommerce
+                            .submitPaidOrder({
+                                email: checkoutData ? checkoutData.email : "",
+                                name: checkoutData ? checkoutData.name : "",
+                                items: itemsSnapshot,
+                                total: cartSummary ? cartSummary.total : 0,
+                                reference: reference,
+                                cardLast4: ccDigits.length >= 4 ? ccDigits.slice(-4) : ""
+                            })
+                            .then(function () {
+                                completePurchaseUi(reference);
+                            })
+                            .catch(function (err) {
+                                setSubmitState(btnPay, false, false);
+                                if (viewCheckout) viewCheckout.hidden = false;
+                                if (viewSuccess) viewSuccess.hidden = true;
+                                if (window.console && console.error) console.error(err);
+                                showBanner(errorBanner, t("payment_error_server"));
+                            });
+                        return;
+                    }
+
+                    completePurchaseUi(reference);
                 }, 2000);
             });
         }

@@ -1,8 +1,11 @@
 -- Luddies Holdings — Sample data
 -- Run this file after create.sql
 --
--- Test credentials are shared separately
--- Password hash: bcrypt cost 10, compatible with Spring Security
+-- Cuentas demo (Spring /api/auth/login), contraseña: 123456
+--   • admin@luddies.com.mx — rol ADMIN: panel admin, listar/borrar usuarios y productos.
+--   • user@luddies.com.mx  — rol USER: flujo tienda / carrito como cliente.
+-- No elimines el admin sembrado si necesitas gestionar usuarios creados desde el registro.
+-- Password hash: bcrypt cost 10, compatible con Spring Security
 
 USE luddies_holdings;
 

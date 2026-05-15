@@ -11,6 +11,6 @@ import java.util.Optional;
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
     Optional<Order> findByOrderNumber(String orderNumber);
-    List<Order> findByUserId(Long userId);
+    List<Order> findByUser_Id(Long userId);
     List<Order> findByStatus(Order.Status status);
 }

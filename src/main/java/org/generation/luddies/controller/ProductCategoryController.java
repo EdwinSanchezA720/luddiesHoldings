@@ -31,4 +31,9 @@ public class ProductCategoryController {
     public ProductCategory create(@RequestBody ProductCategory productCategory) {
         return productCategoryService.save(productCategory);
     }
+
+    @DeleteMapping("/product/{productId}")
+    public void deleteByProduct(@PathVariable Long productId) {
+        productCategoryService.deleteByProductId(productId);
+    }
 }

@@ -495,19 +495,26 @@
         if (window.console && console.debug) {
             console.debug("Product model (JSON string):", asJson);
         }
-        var res = window.LuddiesAuth.saveProduct(data);
-        if (res && res.ok) {
-            if (window.LuddiesAuth.syncProductLabelsToI18n) {
-                window.LuddiesAuth.syncProductLabelsToI18n();
+        function finishSave(res) {
+            if (res && res.ok) {
+                if (window.LuddiesAuth.syncProductLabelsToI18n) {
+                    window.LuddiesAuth.syncProductLabelsToI18n();
+                }
+                var modalEl = document.getElementById("product-form-modal");
+                if (modalEl && window.bootstrap) {
+                    var inst = window.bootstrap.Modal.getInstance(modalEl);
+                    if (inst) inst.hide();
+                }
+                renderProductTable();
+            } else {
+                showError("admin_error_validation");
             }
-            var modalEl = document.getElementById("product-form-modal");
-            if (modalEl && window.bootstrap) {
-                var inst = window.bootstrap.Modal.getInstance(modalEl);
-                if (inst) inst.hide();
-            }
-            renderProductTable();
+        }
+        var saveRes = window.LuddiesAuth.saveProduct(data);
+        if (saveRes && typeof saveRes.then === "function") {
+            saveRes.then(finishSave);
         } else {
-            showError("admin_error_validation");
+            finishSave(saveRes);
         }
     }
 
@@ -522,10 +529,20 @@
             });
         }
 
-        renderProductTable();
-        renderUserTable();
-
-        document.getElementById("admin-btn-new-product") &&
+        function refreshTables() {
+            renderProductTable();
+            renderUserTable();
+        }
+        if (window.LuddiesAuth && window.LuddiesAuth.usesApi && window.LuddiesAuth.usesApi()) {
+            Promise.all([window.LuddiesAuth.loadProducts(), window.LuddiesAuth.loadUsers()])
+                .then(refreshTables)
+                .catch(function () {
+                    showPageError("admin_error_validation");
+                    refreshTables();
+                });
+        } else {
+            refreshTables();
+        }
             document.getElementById("admin-btn-new-product").addEventListener("click", function () {
                 openProductModal(null);
             });
@@ -611,33 +628,48 @@
 
         document.getElementById("confirm-delete-product-ok") &&
             document.getElementById("confirm-delete-product-ok").addEventListener("click", function () {
-                if (pendingDeleteProductId) {
-                    window.LuddiesAuth.deleteProduct(pendingDeleteProductId);
-                    pendingDeleteProductId = null;
+                if (!pendingDeleteProductId) return;
+                var pid = pendingDeleteProductId;
+                pendingDeleteProductId = null;
+                var delRes = window.LuddiesAuth.deleteProduct(pid);
+                function afterProductDelete(res) {
                     var m = document.getElementById("confirm-delete-product-modal");
                     if (m && window.bootstrap) {
                         var i = window.bootstrap.Modal.getInstance(m);
                         if (i) i.hide();
                     }
-                    renderProductTable();
+                    if (res && res.ok) renderProductTable();
+                }
+                if (delRes && typeof delRes.then === "function") {
+                    delRes.then(afterProductDelete);
+                } else {
+                    afterProductDelete(delRes);
                 }
             });
 
         document.getElementById("confirm-delete-user-ok") &&
             document.getElementById("confirm-delete-user-ok").addEventListener("click", function () {
                 if (!pendingDeleteUserId) return;
-                var s = window.LuddiesAuth.getSession();
-                var r = window.LuddiesAuth.deleteUser(pendingDeleteUserId, s && s.userId);
+                var uid = pendingDeleteUserId;
                 pendingDeleteUserId = null;
-                var m = document.getElementById("confirm-delete-user-modal");
-                if (m && window.bootstrap) {
-                    var i = window.bootstrap.Modal.getInstance(m);
-                    if (i) i.hide();
+                var s = window.LuddiesAuth.getSession();
+                var delRes = window.LuddiesAuth.deleteUser(uid, s && s.userId);
+                function afterUserDelete(res) {
+                    var m = document.getElementById("confirm-delete-user-modal");
+                    if (m && window.bootstrap) {
+                        var i = window.bootstrap.Modal.getInstance(m);
+                        if (i) i.hide();
+                    }
+                    if (res && res.ok) {
+                        renderUserTable();
+                    } else if (res && res.error === "forbidden") {
+                        showPageError("admin_error_forbidden");
+                    }
                 }
-                if (r && r.ok) {
-                    renderUserTable();
-                } else if (r && r.error === "forbidden") {
-                    showPageError("admin_error_forbidden");
+                if (delRes && typeof delRes.then === "function") {
+                    delRes.then(afterUserDelete);
+                } else {
+                    afterUserDelete(delRes);
                 }
             });
     }

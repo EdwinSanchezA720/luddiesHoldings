@@ -17,7 +17,7 @@ public class PaymentService {
 
     public Payment getById(Long id) { return paymentRepository.findById(id).orElse(null); }
 
-    public Payment getByOrder(Long orderId) { return paymentRepository.findByOrderId(orderId).orElse(null); }
+    public Payment getByOrder(Long orderId) { return paymentRepository.findByOrder_Id(orderId).orElse(null); }
 
     public Payment save(Payment payment) { return paymentRepository.save(payment); }
 
