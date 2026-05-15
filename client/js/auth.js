@@ -397,7 +397,15 @@
         if (!window.LuddiesCatalogApi) {
             return Promise.resolve({ ok: false, error: "labels_required" });
         }
-        var tokens = (product.category || "").toLowerCase().trim().split(/\s+/).filter(Boolean);
+        var tokens = [];
+        (product.category || "")
+            .toLowerCase()
+            .trim()
+            .split(/\s+/)
+            .filter(Boolean)
+            .forEach(function (slug) {
+                if (tokens.indexOf(slug) === -1) tokens.push(slug);
+            });
         var existing =
             getProducts().find(function (p) {
                 return String(p.id) === String(product.id || "");
@@ -408,6 +416,52 @@
             ? window.LuddiesApi.putJson("/api/products/" + encodeURIComponent(idStr), payload)
             : window.LuddiesApi.postJson("/api/products", payload);
 
+        function labelFromSlug(slug) {
+            return String(slug || "")
+                .replace(/[-_]+/g, " ")
+                .replace(/\b\w/g, function (ch) {
+                    return ch.toUpperCase();
+                });
+        }
+
+        function categoryMap(cats) {
+            var slugTo = {};
+            (cats || []).forEach(function (c) {
+                if (c && c.slug) slugTo[String(c.slug).toLowerCase()] = c;
+            });
+            return slugTo;
+        }
+
+        function ensureCategories(tokensToEnsure) {
+            return window.LuddiesApi.getJson("/api/categories").then(function (cats) {
+                var slugTo = categoryMap(cats);
+                var missing = tokensToEnsure.filter(function (slug) {
+                    return !slugTo[slug];
+                });
+                if (!missing.length) return slugTo;
+
+                return Promise.all(
+                    missing.map(function (slug) {
+                        var label = labelFromSlug(slug);
+                        return window.LuddiesApi
+                            .postJson("/api/categories", {
+                                slug: slug,
+                                nameEs: label,
+                                nameEn: label,
+                                active: true
+                            })
+                            .then(function (created) {
+                                if (created && created.slug) {
+                                    slugTo[String(created.slug).toLowerCase()] = created;
+                                }
+                            });
+                    })
+                ).then(function () {
+                    return slugTo;
+                });
+            });
+        }
+
         return saveReq
             .then(function (saved) {
                 var sid = saved && saved.id != null ? saved.id : idStr;
@@ -417,11 +471,7 @@
                         return null;
                     })
                     .then(function () {
-                        return window.LuddiesApi.getJson("/api/categories").then(function (cats) {
-                            var slugTo = {};
-                            (cats || []).forEach(function (c) {
-                                if (c && c.slug) slugTo[c.slug] = c;
-                            });
+                        return ensureCategories(tokens).then(function (slugTo) {
                             var ops = [];
                             tokens.forEach(function (slug) {
                                 var cat = slugTo[slug];
@@ -444,10 +494,18 @@
                             return String(x.id) === String(sid);
                         });
                         return { ok: true, product: row || { id: String(sid), custom: true, labels: product.labels } };
+                    })
+                    .catch(function (err) {
+                        err.luddiesCode = "product_category_save_failed";
+                        throw err;
                     });
             })
-            .catch(function () {
-                return { ok: false, error: "labels_required" };
+            .catch(function (err) {
+                if (window.console && console.error) {
+                    console.error("[LuddiesAuth] saveProduct failed", err);
+                }
+                var code = (err && err.luddiesCode) || (err && err.body && err.body.error) || "product_save_failed";
+                return { ok: false, error: code, status: err && err.status };
             });
     }
 

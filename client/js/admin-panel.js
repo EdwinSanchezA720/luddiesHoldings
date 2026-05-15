@@ -9,6 +9,7 @@
     var currentProductPage = 1;
     var PRODUCTS_PER_PAGE = 10;
     var currentProductSort = "created_desc";
+    var MAX_IMAGE_URL_LENGTH = 1024;
 
     var CANONICAL_CATEGORIES = [
         "science",
@@ -49,6 +50,16 @@
     function hideError() {
         var el = document.getElementById("admin-form-error");
         if (el) el.classList.add("d-none");
+    }
+
+    function errorKeyForSave(errorCode) {
+        var known = {
+            product_category_save_failed: "admin_error_product_category_save_failed",
+            product_save_failed: "admin_error_product_save_failed",
+            invalid_product_category: "admin_error_product_category_save_failed",
+            labels_required: "admin_error_required_fields"
+        };
+        return known[errorCode] || "admin_error_product_save_failed";
     }
 
     function getTranslationsDict(lang) {
@@ -103,6 +114,7 @@
 
     function isValidHttpUrl(s) {
         if (!s) return false;
+<<<<<<< HEAD
         // Permite URLs absolutas (http, https, data), rutas relativas comunes (./, ../, /) 
         // y también rutas que empiecen con nombres de carpeta (assets/, img/, etc.)
         if (/^(https?:\/\/|data:image\/|\/|\.\/|\.\.\/|[a-zA-Z0-9_-]+\/)/.test(s)) return true;
@@ -110,6 +122,23 @@
             // Intento final con el constructor URL (maneja protocolos raros o rutas absolutas de sistema)
             new URL(s, window.location.href);
             return true;
+=======
+        if (s.length > MAX_IMAGE_URL_LENGTH) return false;
+        if (/\s/.test(s)) return false;
+        if (/^data:image\//i.test(s)) return true;
+        if (/^https?:\/\//i.test(s)) {
+            try {
+                var absolute = new URL(s);
+                return absolute.protocol === "http:" || absolute.protocol === "https:";
+            } catch (e1) {
+                return false;
+            }
+        }
+        if (/^\.?\.?\//.test(s)) return true;
+        try {
+            var u = new URL(s, window.location.href);
+            return u.protocol === "http:" || u.protocol === "https:";
+>>>>>>> 6133e0556a820a9a56896946f2a2aa8b408eceed
         } catch (e) {
             return false;
         }
@@ -233,7 +262,28 @@
         };
     }
 
+    function getValidationError(data) {
+        if (!data.img) return "admin_error_img_required";
+        if (data.img.length > MAX_IMAGE_URL_LENGTH) return "admin_error_img_too_long";
+        if (!isValidHttpUrl(data.img)) return "admin_error_img_url";
+        if (!readCategoryFromForm()) return "admin_error_category_required";
+        if (!areCategorySlugsValid()) return "admin_error_category_invalid";
+        if (!data.labels.es.name || !data.labels.en.name) return "admin_error_required_fields";
+        if (!data.labels.es.description || !data.labels.en.description) return "admin_error_required_fields";
+        return null;
+    }
+
+    function areCategorySlugsValid() {
+        return readCategoryFromForm()
+            .split(/\s+/)
+            .filter(Boolean)
+            .every(function (slug) {
+                return slug.length <= 64 && /^[a-z0-9_-]+$/.test(slug);
+            });
+    }
+
     function validateForm(data) {
+<<<<<<< HEAD
         if (!data.img || !isValidHttpUrl(data.img)) return false;
         // Validar que haya al menos una categoría (la de readForm es solo un fallback de seguridad)
         if (!readCategoryFromForm()) return false;
@@ -243,6 +293,9 @@
         if (!data.labels.es.meta || !data.labels.en.meta) return false;
         if (!data.labels.es.price || !data.labels.en.price) return false;
         return true;
+=======
+        return !getValidationError(data);
+>>>>>>> 6133e0556a820a9a56896946f2a2aa8b408eceed
     }
 
     function displayName(p) {
@@ -488,8 +541,9 @@
         e.preventDefault();
         hideError();
         var data = readForm();
-        if (!validateForm(data)) {
-            showError("admin_error_validation");
+        var validationError = getValidationError(data);
+        if (validationError) {
+            showError(validationError);
             return;
         }
         var asJson = JSON.stringify({
@@ -514,7 +568,7 @@
                 }
                 renderProductTable();
             } else {
-                showError("admin_error_validation");
+                showError((res && errorKeyForSave(res.error)) || "admin_error_product_save_failed");
             }
         }
         var saveRes = window.LuddiesAuth.saveProduct(data);

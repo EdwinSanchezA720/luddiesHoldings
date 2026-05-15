@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/product-categories")
@@ -28,8 +29,12 @@ public class ProductCategoryController {
     }
 
     @PostMapping
-    public ProductCategory create(@RequestBody ProductCategory productCategory) {
-        return productCategoryService.save(productCategory);
+    public Map<String, Object> create(@RequestBody ProductCategory productCategory) {
+        ProductCategory saved = productCategoryService.save(productCategory);
+        return Map.of(
+                "productId", saved.getId().getProductId(),
+                "categoryId", saved.getId().getCategoryId()
+        );
     }
 
     @DeleteMapping("/product/{productId}")
